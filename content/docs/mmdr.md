@@ -2,7 +2,7 @@
 weight: 100
 title: "Multi Model Databases with Rust"
 description: "Unlearn, Relearn and Learn in GenAI Era!"
-icon: "article"
+icon: "menu_book"
 date: "2024-10-22T20:30:48.277555+07:00"
 lastmod: "2024-10-22T20:30:48.277555+07:00"
 katex: true
