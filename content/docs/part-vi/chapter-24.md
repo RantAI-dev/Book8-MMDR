@@ -834,67 +834,80 @@ Security is paramount in deploying and managing applications, particularly when 
 Both Docker and Kubernetes offer significant advantages in terms of deployment speed and scalability, but they also introduce specific security challenges that need to be addressed:
 </p>
 
-- <p style="text-align: justify;"><strong>Container Escape</strong>: Potential for malicious code within a container to "escape" and affect the underlying host or other containers.</p>
-- <p style="text-align: justify;"><strong>Misconfigured Permissions</strong>: Excessive permissions can lead to unauthorized access and potential data breaches.</p>
-- <p style="text-align: justify;"><strong>Vulnerable Images</strong>: Using outdated or vulnerable container images can expose applications to security risks.</p>
-- <p style="text-align: justify;"><strong>Network Attacks</strong>: Improperly configured network policies can allow unauthorized access to and from containers.</p>
+<ul>
+    <li><strong>Container Escape</strong>: Potential for malicious code within a container to "escape" and affect the underlying host or other containers.</li>
+    <li><strong>Misconfigured Permissions</strong>: Excessive permissions can lead to unauthorized access and potential data breaches.</li>
+    <li><strong>Vulnerable Images</strong>: Using outdated or vulnerable container images can expose applications to security risks.</li>
+    <li><strong>Network Attacks</strong>: Improperly configured network policies can allow unauthorized access to and from containers.</li>
+</ul>
+
 ## **24.10.2 Implementing Security Best Practices**
 <p style="text-align: justify;">
 To mitigate these risks, it's crucial to implement security best practices tailored to containerized environments. Below are key strategies and configurations for enhancing the security of Rust applications deployed in Kubernetes.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Using Network Policies<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Purpose</strong>: Network policies specify how groups of pods are allowed to communicate with each other and other network endpoints.</p>
-- <p style="text-align: justify;"><strong>Implementation</strong>:</p>
-- <p style="text-align: justify;">Define fine-grained network policies that restrict ingress and egress traffic to only necessary communications between services.</p>
-{{< prism lang="yaml" line-numbers="true">}}
-     apiVersion: networking.k8s.io/v1
-     kind: NetworkPolicy
-     metadata:
-       name: default-deny-all
-     spec:
-       podSelector: {}
-       policyTypes:
-       - Ingress
-       - Egress
-{{< /prism >}}
-- <p style="text-align: justify;">This policy denies all incoming and outgoing traffic by default, and specific rules must be defined to allow necessary communications.</p>
-2. <p style="text-align: justify;"><strong></strong>Managing Secrets Securely<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Purpose</strong>: Kubernetes Secrets store and manage sensitive information, such as passwords and tokens, reducing the risk of exposure.</p>
-- <p style="text-align: justify;"><strong>Implementation</strong>:</p>
-- <p style="text-align: justify;">Create and use Kubernetes Secrets rather than hard-coding sensitive information within application code or container configurations.</p>
-{{< prism lang="yaml" line-numbers="true">}}
-     apiVersion: v1
-     kind: Secret
-     metadata:
-       name: myapp-secrets
-     type: Opaque
-     data:
-       database-password: c29tZS1zZWNyZXQ=
-{{< /prism >}}
-- <p style="text-align: justify;">This configuration securely stores a base64 encoded password, which can be mounted into pods as needed.</p>
-3. <p style="text-align: justify;"><strong></strong>Applying Security Contexts<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Purpose</strong>: Security contexts define privilege and access control settings for pods or containers.</p>
-- <p style="text-align: justify;"><strong>Implementation</strong>:</p>
-- <p style="text-align: justify;">Configure security contexts to enforce the principle of least privilege.</p>
-{{< prism lang="yaml" line-numbers="true">}}
-     apiVersion: v1
-     kind: Pod
-     metadata:
-       name: secure-app
-     spec:
-       containers:
-       - name: my-container
-         image: myimage
-         securityContext:
-           runAsUser: 1000
-           readOnlyRootFilesystem: true
-           allowPrivilegeEscalation: false
-{{< /prism >}}
-- <p style="text-align: justify;">This security context ensures that the container runs with a non-root user, cannot modify the root filesystem, and cannot escalate privileges.</p>
+<ol>
+    <li style="text-align: justify;"><strong>Using Network Policies:</strong>
+        <ul>
+            <li><strong>Purpose</strong>: Network policies specify how groups of pods are allowed to communicate with each other and other network endpoints.</li>
+            <li><strong>Implementation</strong>: Define fine-grained network policies that restrict ingress and egress traffic to only necessary communications between services.</li>
+        </ul>
+        {{< prism lang="yaml" line-numbers="true">}}
+        apiVersion: networking.k8s.io/v1
+        kind: NetworkPolicy
+        metadata:
+          name: default-deny-all
+        spec:
+          podSelector: {}
+          policyTypes:
+          - Ingress
+          - Egress
+        {{< /prism >}}
+        <p style="text-align: justify;">This policy denies all incoming and outgoing traffic by default, and specific rules must be defined to allow necessary communications.</p>
+    </li>
+    <li style="text-align: justify;"><strong>Managing Secrets Securely:</strong>
+        <ul>
+            <li><strong>Purpose</strong>: Kubernetes Secrets store and manage sensitive information, such as passwords and tokens, reducing the risk of exposure.</li>
+            <li><strong>Implementation</strong>: Create and use Kubernetes Secrets rather than hard-coding sensitive information within application code or container configurations.</li>
+        </ul>
+        {{< prism lang="yaml" line-numbers="true">}}
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: myapp-secrets
+        type: Opaque
+        data:
+          database-password: c29tZS1zZWNyZXQ=
+        {{< /prism >}}
+        <p style="text-align: justify;">This configuration securely stores a base64 encoded password, which can be mounted into pods as needed.</p>
+    </li>
+    <li style="text-align: justify;"><strong>Applying Security Contexts:</strong>
+        <ul>
+            <li><strong>Purpose</strong>: Security contexts define privilege and access control settings for pods or containers.</li>
+            <li><strong>Implementation</strong>: Configure security contexts to enforce the principle of least privilege.</li>
+        </ul>
+        {{< prism lang="yaml" line-numbers="true">}}
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: secure-app
+        spec:
+          containers:
+          - name: my-container
+            image: myimage
+            securityContext:
+              runAsUser: 1000
+              readOnlyRootFilesystem: true
+              allowPrivilegeEscalation: false
+        {{< /prism >}}
+        <p style="text-align: justify;">This security context ensures that the container runs with a non-root user, cannot modify the root filesystem, and cannot escalate privileges.</p>
+    </li>
+</ol>
+
 <p style="text-align: justify;">
 Adopting rigorous security practices is essential for safeguarding applications in Docker and Kubernetes environments. By leveraging network policies, managing secrets effectively, and applying security contexts, developers can significantly enhance the security posture of their deployments. These measures not only prevent unauthorized access and data breaches but also help maintain the integrity and confidentiality of the application data, contributing to a robust and resilient deployment ecosystem.
 </p>
+
 
 #### Section 1: Introduction to Containerization with Docker
 - <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
