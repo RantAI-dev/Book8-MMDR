@@ -17,7 +17,7 @@ toc: true
 <p style="text-align: justify;"><em>Chapter 21 dives into the dynamic world of event handling and data streaming within the Rust ecosystem, particularly focusing on how to effectively manage and process real-time data streams using tools like Apache Kafka. In today's fast-paced technology landscape, the ability to handle streams of data efficiently and in real-time is crucial for many applications, from analytics and monitoring systems to interactive user interfaces and IoT devices. Rust, known for its performance and reliability, is an excellent choice for developing systems that require high throughput and low latency. This chapter will explore the foundational concepts of event-driven architecture and stream processing, demonstrating how Rust can be leveraged to build robust and scalable event handling systems. You will learn about integrating Kafka with Rust to create powerful streaming applications that can handle, transform, and react to data as it arrives, all while maintaining the safety and concurrency guarantees that Rust provides. By the end of this chapter, you will have a solid understanding of the tools and techniques required to implement advanced streaming solutions, enabling you to harness the full potential of real-time data processing in your Rust applications.</em></p>
 {{% /alert %}}
 
-### **21.1 Fundamentals of Event-Driven Architecture**
+# **21.1 Fundamentals of Event-Driven Architecture**
 <p style="text-align: justify;">
 Event-driven architecture (EDA) is a design paradigm in which software systems respond to events as they occur, enabling real-time data processing, responsiveness, and scalability. EDA is widely used in modern applications, particularly those that require asynchronous communication, such as microservices, IoT systems, and real-time analytics platforms. By decoupling event producers and consumers, event-driven systems allow applications to handle dynamic and unpredictable workloads efficiently.
 </p>
@@ -26,7 +26,7 @@ Event-driven architecture (EDA) is a design paradigm in which software systems r
 In this section, we will define the key aspects of event-driven architecture, explore its benefits, analyze its components, and demonstrate how to implement basic event handling in Rust.
 </p>
 
-#### **21.1.1 What is Event-Driven Architecture?**
+## **21.1.1 What is Event-Driven Architecture?**
 <p style="text-align: justify;">
 Event-driven architecture (EDA) is a software design pattern in which application components interact by producing and consuming events. An "event" represents a significant change or action in the system, such as a user interaction, a database update, or an incoming message from another service. These events are communicated asynchronously, meaning that components do not block or wait for responses—they respond only when new events occur.
 </p>
@@ -38,7 +38,7 @@ Event-driven architecture (EDA) is a software design pattern in which applicatio
 - <p style="text-align: justify;"><strong>Asynchronous Communication</strong>: EDA enables asynchronous communication between different components of a system, allowing them to operate independently and at their own pace. This is especially useful in systems that process large volumes of data in real time.</p>
 - <p style="text-align: justify;"><strong>Loose Coupling</strong>: Components in an event-driven architecture are decoupled, meaning that the event producers and consumers do not need to know about each other’s existence. This loose coupling allows for greater flexibility, scalability, and maintainability, as components can be modified or replaced without affecting other parts of the system.</p>
 - <p style="text-align: justify;"><strong>Event Handling</strong>: Events can be handled either immediately by event consumers (reactive processing) or stored and processed later (batch or stream processing). This makes EDA ideal for a variety of use cases, from real-time applications like trading platforms to data pipelines that aggregate and process events over time.</p>
-#### **21.1.2 Benefits of Event-Driven Systems**
+## **21.1.2 Benefits of Event-Driven Systems**
 <p style="text-align: justify;">
 Event-driven systems offer several key benefits that make them ideal for modern applications, particularly those requiring high scalability, responsiveness, and flexibility.
 </p>
@@ -47,7 +47,7 @@ Event-driven systems offer several key benefits that make them ideal for modern 
 - <p style="text-align: justify;"><strong>Responsiveness</strong>: By handling events asynchronously, event-driven systems can respond to changes in real time. This makes them ideal for applications where low-latency and immediate feedback are critical, such as in financial services, e-commerce, and social media platforms.</p>
 - <p style="text-align: justify;"><strong>Flexibility and Modularity</strong>: Components in an event-driven system are loosely coupled, making it easier to modify, replace, or scale individual components without affecting the rest of the system. This allows for rapid iteration and deployment of new features or services.</p>
 - <p style="text-align: justify;"><strong>Resilience</strong>: Since components do not depend on each other for immediate responses, event-driven architectures can be more resilient to failure. If one component goes down, the rest of the system can continue operating, and the failed component can process missed events once it comes back online.</p>
-#### **21.1.3 Components of Event-Driven Systems**
+## **21.1.3 Components of Event-Driven Systems**
 <p style="text-align: justify;">
 Event-driven systems typically consist of the following components:
 </p>
@@ -59,7 +59,7 @@ Event-driven systems typically consist of the following components:
 In a typical event-driven system, event producers generate events that are routed through an event broker to one or more consumers. The consumers then process these events and may, in turn, generate additional events that continue the process.
 </p>
 
-#### **21.1.4 Basic Event Handling in Rust**
+## **21.1.4 Basic Event Handling in Rust**
 <p style="text-align: justify;">
 Rust is well-suited for building event-driven systems because of its strong support for concurrency, performance, and safety. In Rust, event handling can be implemented using <strong>channels</strong> or <strong>asynchronous streams</strong> from the <code>tokio</code> or <code>async-std</code> crates. These tools allow developers to build non-blocking event producers and consumers that efficiently process events in real-time.
 </p>
@@ -152,7 +152,7 @@ In this asynchronous example:
 By leveraging Rust's async capabilities, you can build highly scalable and efficient event-driven systems, where multiple producers and consumers handle events concurrently without blocking the main thread.
 </p>
 
-### **21.2 Integrating Kafka with Rust**
+# **21.2 Integrating Kafka with Rust**
 <p style="text-align: justify;">
 Apache Kafka is a highly scalable, fault-tolerant distributed event streaming platform designed for handling large-scale message streams. It is widely used in real-time data pipelines, event-driven architectures, and microservices systems due to its ability to process millions of messages per second with low latency. Kafka’s robust architecture enables applications to produce and consume events asynchronously, providing the backbone for many high-throughput event-driven systems.
 </p>
@@ -161,7 +161,7 @@ Apache Kafka is a highly scalable, fault-tolerant distributed event streaming pl
 In this section, we will introduce Kafka, examine its core components, and walk through a step-by-step guide to integrating Kafka with Rust to build event producers and consumers.
 </p>
 
-#### **21.2.1 Introduction to Kafka**
+## **21.2.1 Introduction to Kafka**
 <p style="text-align: justify;">
 Apache Kafka was originally developed by LinkedIn to handle real-time event streaming and log aggregation. It has since become a popular choice for large-scale applications that need to process real-time data, such as logging systems, data pipelines, and financial transaction systems.
 </p>
@@ -178,7 +178,7 @@ Apache Kafka was originally developed by LinkedIn to handle real-time event stre
 Kafka excels in use cases where high throughput, durability, and fault tolerance are essential, particularly in systems where data consistency and availability need to be balanced across distributed environments.
 </p>
 
-#### **21.2.2 Kafka’s Architecture**
+## **21.2.2 Kafka’s Architecture**
 <p style="text-align: justify;">
 Kafka’s architecture consists of several core components that work together to facilitate event streaming and message processing. Understanding these components is critical for effectively integrating Kafka with Rust.
 </p>
@@ -219,37 +219,40 @@ Kafka’s architecture consists of several core components that work together to
 Kafka’s architecture provides built-in fault tolerance and horizontal scalability, making it an ideal choice for systems that need to process massive amounts of real-time data efficiently.
 </p>
 
-#### **21.2.3 Setting Up Kafka with Rust**
+## **21.2.3 Setting Up Kafka with Rust**
 <p style="text-align: justify;">
 Integrating Kafka with Rust involves setting up a Kafka cluster, configuring a Rust application to connect to it, and implementing producers and consumers. Kafka’s <code>librdkafka</code> library, a high-performance C client, can be used through the Rust wrapper crate <code>rdkafka</code>.
 </p>
 
 <p style="text-align: justify;">
-<strong>Step 1: Setting Up Kafka</strong>
-</p>
+<p style="text-align: justify;"><strong>Step 1: Setting Up Kafka</strong></p>
 
-<p style="text-align: justify;">
-To start using Kafka, you’ll need to install Kafka and Zookeeper on your local machine or use a cloud service that offers Kafka (e.g., Confluent Cloud or AWS MSK). For local development, follow these steps:
-</p>
+<p style="text-align: justify;">To start using Kafka, you’ll need to install Kafka and Zookeeper on your local machine or use a cloud service that offers Kafka (e.g., Confluent Cloud or AWS MSK). For local development, follow these steps:</p>
 
-1. <p style="text-align: justify;"><strong></strong>Download and Install Kafka<strong></strong>:</p>
-- <p style="text-align: justify;">Download Kafka from [Apache Kafka’s official website](https://kafka.apache.org/downloads).</p>
-- <p style="text-align: justify;">Extract the package and navigate to the Kafka directory.</p>
-2. <p style="text-align: justify;"><strong></strong>Start Zookeeper<strong></strong>: Kafka uses Zookeeper to manage brokers and topics. Start Zookeeper with the following command:</p>
-{{< prism lang="shell">}}
-   bin/zookeeper-server-start.sh config/zookeeper.properties
-   
+<p style="text-align: justify;"><strong>1. Download and Install Kafka</strong></p>
+<ul>
+    <li style="text-align: justify;">Download Kafka from <a href="https://kafka.apache.org/downloads" target="_blank">Apache Kafka’s official website</a>.</li>
+    <li style="text-align: justify;">Extract the package and navigate to the Kafka directory.</li>
+</ul>
+
+<p style="text-align: justify;"><strong>2. Start Zookeeper</strong></p>
+<p style="text-align: justify;">Kafka uses Zookeeper to manage brokers and topics. Start Zookeeper with the following command:</p>
+{{< prism lang="shell" line-numbers="true">}}
+bin/zookeeper-server-start.sh config/zookeeper.properties
 {{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Start Kafka<strong></strong>: After starting Zookeeper, start the Kafka server:</p>
-{{< prism lang="shell">}}
-   bin/kafka-server-start.sh config/server.properties
-   
+
+<p style="text-align: justify;"><strong>3. Start Kafka</strong></p>
+<p style="text-align: justify;">After starting Zookeeper, start the Kafka server:</p>
+{{< prism lang="shell" line-numbers="true">}}
+bin/kafka-server-start.sh config/server.properties
 {{< /prism >}}
-4. <p style="text-align: justify;"><strong></strong>Create a Topic<strong></strong>: Create a topic for your Rust application to produce and consume messages:</p>
-{{< prism lang="shell">}}
-   bin/kafka-topics.sh --create --topic test-topic --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
-   
+
+<p style="text-align: justify;"><strong>4. Create a Topic</strong></p>
+<p style="text-align: justify;">Create a topic for your Rust application to produce and consume messages:</p>
+{{< prism lang="shell" line-numbers="true">}}
+bin/kafka-topics.sh --create --topic test-topic --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
 {{< /prism >}}
+
 <p style="text-align: justify;">
 With Kafka running and a topic created, you’re ready to move on to the Rust application.
 </p>
@@ -262,49 +265,51 @@ With Kafka running and a topic created, you’re ready to move on to the Rust ap
 To integrate Kafka with a Rust application, we’ll use the <code>rdkafka</code> crate, which provides bindings to Kafka’s high-performance C client.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Add Dependencies<strong></strong>: In your <code>Cargo.toml</code> file, add the <code>rdkafka</code> crate:</p>
+<p style="text-align: justify;"><strong>1. Add Dependencies</strong></p>
+<p style="text-align: justify;">In your <code>Cargo.toml</code> file, add the <code>rdkafka</code> crate:</p>
 {{< prism lang="toml" line-numbers="true">}}
-   [dependencies]
-   rdkafka = { version = "0.27", features = ["tokio", "cmake"] }
-   tokio = { version = "1", features = ["full"] }
-   
+[dependencies]
+rdkafka = { version = "0.27", features = ["tokio", "cmake"] }
+tokio = { version = "1", features = ["full"] }
 {{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Create a Kafka Producer in Rust<strong></strong>: Producers send messages to Kafka topics. In this example, we’ll create a simple producer that sends messages to the <code>test-topic</code> topic.</p>
-- <p style="text-align: justify;"><strong>Example</strong>: Kafka Producer in Rust:</p>
-{{< prism lang="rust" line-numbers="true">}}
-     use rdkafka::config::ClientConfig;
-     use rdkafka::producer::{FutureProducer, FutureRecord};
-     use std::time::Duration;
-     
-     async fn produce_message() {
-         let producer: FutureProducer = ClientConfig::new()
-             .set("bootstrap.servers", "localhost:9092")
-             .create()
-             .expect("Producer creation error");
-     
-         let delivery_status = producer
-             .send(
-                 FutureRecord::to("test-topic")
-                     .payload("Hello, Kafka!")
-                     .key("Key"),
-                 Duration::from_secs(0),
-             )
-             .await;
-     
-         println!("Delivery status: {:?}", delivery_status);
-     }
-     
-     #[tokio::main]
-     async fn main() {
-         produce_message().await;
-     }
-     
-{{< /prism >}}
-<p style="text-align: justify;">
-In this example, the <code>produce_message</code> function creates a Kafka producer and sends a message to the <code>test-topic</code> topic. The <code>FutureProducer</code> is an asynchronous producer, and the <code>send</code> method returns a future, allowing for non-blocking message production.
-</p>
 
-3. <p style="text-align: justify;"><strong></strong>Create a Kafka Consumer in Rust<strong></strong>: Consumers subscribe to topics and read messages. In this example, we’ll create a Kafka consumer that listens to the <code>test-topic</code> and prints messages to the console.</p>
+<p style="text-align: justify;"><strong>2. Create a Kafka Producer in Rust</strong></p>
+<p style="text-align: justify;">Producers send messages to Kafka topics. In this example, we’ll create a simple producer that sends messages to the <code>test-topic</code> topic.</p>
+<p style="text-align: justify;"><strong>Example</strong>: Kafka Producer in Rust:</p>
+{{< prism lang="rust" line-numbers="true">}}
+use rdkafka::config::ClientConfig;
+use rdkafka::producer::{FutureProducer, FutureRecord};
+use std::time::Duration;
+
+async fn produce_message() {
+    let producer: FutureProducer = ClientConfig::new()
+        .set("bootstrap.servers", "localhost:9092")
+        .create()
+        .expect("Producer creation error");
+
+    let delivery_status = producer
+        .send(
+            FutureRecord::to("test-topic")
+                .payload("Hello, Kafka!")
+                .key("Key"),
+            Duration::from_secs(0),
+        )
+        .await;
+
+    println!("Delivery status: {:?}", delivery_status);
+}
+
+#[tokio::main]
+async fn main() {
+    produce_message().await;
+}
+{{< /prism >}}
+
+<p style="text-align: justify;">In this example, the <code>produce_message</code> function creates a Kafka producer and sends a message to the <code>test-topic</code> topic. The <code>FutureProducer</code> is an asynchronous producer, and the <code>send</code> method returns a future, allowing for non-blocking message production.</p>
+
+<p style="text-align: justify;"><strong>3. Create a Kafka Consumer in Rust</strong></p>
+<p style="text-align: justify;">Consumers subscribe to topics and read messages. In this example, we’ll create a Kafka consumer that listens to the <code>test-topic</code> and prints messages to the console.</p>
+
 - <p style="text-align: justify;"><strong>Example</strong>: Kafka Consumer in Rust:</p>
 {{< prism lang="rust" line-numbers="true">}}
      use rdkafka::config::ClientConfig;
@@ -372,7 +377,7 @@ This example demonstrates how to create a Kafka consumer that listens to the <co
 When you run the producer and consumer, you should see the consumer print the message sent by the producer (<code>Hello, Kafka!</code>).
 </p>
 
-### **21.3 Streaming Data Processing**
+# **21.3 Streaming Data Processing**
 <p style="text-align: justify;">
 Stream processing is a powerful data processing paradigm that involves continuous and real-time handling of data as it flows through a system. Unlike traditional batch processing, where data is processed in fixed intervals, stream processing deals with data in motion, allowing applications to act on data immediately as it arrives. This makes stream processing particularly valuable for real-time analytics, monitoring, event-driven architectures, and any system that requires low-latency responses to incoming data.
 </p>
@@ -381,7 +386,7 @@ Stream processing is a powerful data processing paradigm that involves continuou
 In this section, we will explore the core concepts of stream processing, discuss the differences between stateful and stateless stream processing, and provide example implementations of stream processors in Rust using Kafka streams.
 </p>
 
-#### **21.3.1 Stream Processing Concepts**
+## **21.3.1 Stream Processing Concepts**
 <p style="text-align: justify;">
 Stream processing is the continuous computation on data streams as they flow through a system. Data is ingested in the form of events, messages, or records, which are processed immediately to extract insights, trigger actions, or produce transformed data streams. The key characteristic of stream processing is that it operates in real-time, making it well-suited for applications that need to respond to data as it happens.
 </p>
@@ -397,7 +402,7 @@ Stream processing is the continuous computation on data streams as they flow thr
 Stream processing systems generally fall into two categories: <strong>stateless</strong> and <strong>stateful</strong> processing. Understanding the differences between these two approaches is key to designing efficient stream processors.
 </p>
 
-#### **21.3.2 Stateful vs. Stateless Processing**
+## **21.3.2 Stateful vs. Stateless Processing**
 <p style="text-align: justify;">
 <strong>Stateless Processing</strong>: Stateless stream processing refers to operations that do not rely on past events or context. Each event or message is processed independently of any previous messages, and there is no memory of the previous data in the system. Stateless operations are typically lightweight and fast because they don’t need to manage or store any state.
 </p>
@@ -426,7 +431,7 @@ In stateless processing, each message is processed and immediately passed downst
 Stateful processing requires the stream processor to maintain a record of past events, which may involve storing data in memory or external storage, and synchronizing state across distributed systems to ensure consistency.
 </p>
 
-#### **21.3.3 Implementing Stream Processors in Rust**
+## **21.3.3 Implementing Stream Processors in Rust**
 <p style="text-align: justify;">
 In Rust, you can implement both stateless and stateful stream processors using Kafka as the data source. By leveraging Kafka’s event streams, we can build real-time data processing systems that react to incoming messages. The <code>rdkafka</code> crate, combined with Rust’s asynchronous capabilities, allows us to create efficient stream processors.
 </p>
@@ -552,7 +557,7 @@ In this stateful stream processor:
 Kafka Streams API (available through Java and Scala bindings) provides built-in support for stateful processing, including windowing, joins, and state stores. In Rust, similar functionality can be achieved using custom implementations or third-party libraries.
 </p>
 
-### **21.4 Handling High Throughput and Scalability**
+# **21.4 Handling High Throughput and Scalability**
 <p style="text-align: justify;">
 Event-driven systems, particularly those involving stream processing, often deal with high volumes of data and must scale effectively to meet performance demands. Scaling such systems presents several challenges, such as maintaining message order, ensuring fault tolerance, and optimizing resource usage across a distributed environment. Kafka’s distributed architecture makes it well-suited for high-throughput workloads, but scaling Kafka deployments effectively requires careful planning, including partitioning, replication, and load balancing. Moreover, Rust applications that interface with Kafka must be tuned to handle large-scale data flows efficiently.
 </p>
@@ -561,7 +566,7 @@ Event-driven systems, particularly those involving stream processing, often deal
 In this section, we will explore the common challenges of scaling event-driven systems, strategies for scaling Kafka deployments, and performance optimization techniques for Rust applications integrated with Kafka.
 </p>
 
-#### **21.4.1 Challenges of Scaling Event Systems**
+## **21.4.1 Challenges of Scaling Event Systems**
 <p style="text-align: justify;">
 As event-driven systems grow, scaling becomes crucial to maintaining system performance and stability. However, scaling event systems comes with several inherent challenges:
 </p>
@@ -586,7 +591,7 @@ As event-driven systems grow, scaling becomes crucial to maintaining system perf
 <strong>5. Resource Management</strong>: Handling large volumes of messages requires efficient use of resources such as CPU, memory, and network bandwidth. Ensuring that Kafka brokers and consumers are optimized for these resources is vital for scaling.
 </p>
 
-#### **21.4.2 Scaling Strategies for Kafka**
+## **21.4.2 Scaling Strategies for Kafka**
 <p style="text-align: justify;">
 Kafka is designed to scale horizontally, allowing it to handle large message streams by distributing data across multiple brokers and partitions. Several key strategies help to scale Kafka deployments effectively:
 </p>
@@ -620,7 +625,7 @@ Kafka is designed to scale horizontally, allowing it to handle large message str
 <strong>6. Scaling Consumers</strong>: Adding more consumers to a consumer group allows for parallel processing of partitions. However, the number of consumers cannot exceed the number of partitions for a topic. Ensure that the number of partitions is large enough to allow for future scalability.
 </p>
 
-#### **21.4.3 Performance Tuning in Rust and Kafka**
+## **21.4.3 Performance Tuning in Rust and Kafka**
 <p style="text-align: justify;">
 To handle high throughput efficiently, both Kafka and Rust applications must be tuned for optimal performance. Below are some tips and techniques for performance tuning:
 </p>
@@ -700,7 +705,7 @@ Kubernetes can be used to scale Rust applications that integrate with Kafka. By 
 
 - <p style="text-align: justify;"><strong>Kubernetes Horizontal Pod Autoscaling (HPA)</strong>: Configure HPA to automatically adjust the number of consumer pods based on resource utilization (e.g., CPU or memory) or custom metrics like Kafka consumer lag.</p>
 - <p style="text-align: justify;"><strong>Fault Tolerance</strong>: Kubernetes provides built-in support for managing failures and restarting pods when needed. Kafka’s replication ensures that messages are not lost, even if a consumer pod fails.</p>
-### **21.5 Advanced Event Processing Techniques**
+# **21.5 Advanced Event Processing Techniques**
 <p style="text-align: justify;">
 As event-driven systems evolve, the need for more sophisticated event processing capabilities becomes essential. <strong>Complex Event Processing</strong> (CEP) allows systems to detect patterns, analyze correlations, and respond to complex events in real time. CEP is widely used in fields such as fraud detection, financial markets, network monitoring, and IoT, where patterns of events (rather than individual events) indicate significant occurrences. One of the key elements in CEP is managing time, as events often occur within specific windows or intervals. Understanding how to process event streams efficiently, using time-based windowing and pattern detection, is critical for building robust CEP systems.
 </p>
@@ -709,7 +714,7 @@ As event-driven systems evolve, the need for more sophisticated event processing
 In this section, we will explore the concept of Complex Event Processing (CEP), discuss the role of event windowing and time management, and provide a practical guide for building a CEP system in Rust.
 </p>
 
-#### **21.5.1 Complex Event Processing (CEP)**
+## **21.5.1 Complex Event Processing (CEP)**
 <p style="text-align: justify;">
 <strong>Complex Event Processing</strong> is a methodology used to analyze and detect patterns in event streams. In a CEP system, simple events are combined, filtered, or analyzed to identify more complex "composite" events that represent meaningful actions or occurrences. CEP systems are typically designed to work in real-time, continuously analyzing event streams for significant patterns.
 </p>
@@ -722,7 +727,7 @@ In this section, we will explore the concept of Complex Event Processing (CEP), 
 - <p style="text-align: justify;"><strong>Network Security</strong>: In cybersecurity, CEP is used to detect unusual patterns of behavior, such as repeated login attempts from different locations or abnormal data transfer rates.</p>
 - <p style="text-align: justify;"><strong>Financial Markets</strong>: CEP systems are used in trading platforms to identify market conditions based on real-time stock prices, news events, and transaction volumes.</p>
 - <p style="text-align: justify;"><strong>IoT Monitoring</strong>: In IoT, CEP is used to process data from sensors, detecting patterns such as environmental changes that indicate a need for action (e.g., turning on cooling systems when temperatures rise).</p>
-#### **21.5.2 Event Windowing and Time Management**
+## **21.5.2 Event Windowing and Time Management**
 <p style="text-align: justify;">
 In CEP systems, events are typically processed in the context of time. The timing of events, their order, and the intervals over which they occur are all critical to detecting patterns. <strong>Event windowing</strong> is a technique used to group events that occur within a specified time frame (e.g., the last 10 minutes) and analyze them together. Different types of windowing techniques exist, each suited to different use cases.
 </p>
@@ -741,7 +746,7 @@ In CEP systems, events are typically processed in the context of time. The timin
 <strong>Event Windowing and Time Management in Rust</strong>: To implement event windowing in Rust, we can use timers or stream operators to define how events should be grouped and processed based on time. The <code>tokio</code> crate, with its asynchronous runtime, provides tools for managing time-based events, while libraries like <code>rdkafka</code> allow us to process event streams from Kafka.
 </p>
 
-#### **21.5.3 Building a CEP System in Rust**
+## **21.5.3 Building a CEP System in Rust**
 <p style="text-align: justify;">
 Building a CEP system in Rust involves consuming event streams, applying pattern matching, and processing events in the context of time windows. The following example demonstrates how to implement a basic CEP system that identifies a sequence of events matching a specific pattern, such as detecting unusual financial transactions.
 </p>

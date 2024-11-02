@@ -324,27 +324,44 @@ Installing and setting up a multi-model database is a crucial first step toward 
 For the purposes of this guide, let’s walk through the general steps for setting up <strong>ArangoDB</strong>, a popular open-source multi-model database:
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Download and Installation<strong></strong>:</p>
-- <p style="text-align: justify;">Visit the official website to download the appropriate version of ArangoDB for your operating system (Linux, macOS, or Windows).</p>
-- <p style="text-align: justify;">On Linux, installation can be simplified using package managers like <strong>APT</strong> or <strong>YUM</strong>, while macOS users can use <strong>Homebrew</strong>.</p>
-- <p style="text-align: justify;">Run the installation script, which installs the database along with necessary dependencies.</p>
-2. <p style="text-align: justify;"><strong></strong>Initial Setup<strong></strong>:</p>
-- <p style="text-align: justify;">After installation, start the database using the command:</p>
-{{< prism lang="shell">}}
-     sudo systemctl start arangodb3
-{{< /prism >}}
-- <p style="text-align: justify;">ArangoDB provides a <strong>Web Interface</strong> (typically available at <code>http://localhost:8529</code>), where you can configure the initial database, users, and permissions.</p>
-3. <p style="text-align: justify;"><strong></strong>User and Database Creation<strong></strong>:</p>
-- <p style="text-align: justify;">In the web interface, you’ll be prompted to create a root user for database administration.</p>
-- <p style="text-align: justify;">After that, create a new database where you can begin implementing various data models—relational, document, and graph.</p>
-4. <p style="text-align: justify;"><strong></strong>Environment Configuration<strong></strong>:</p>
-- <p style="text-align: justify;">Set up environment variables for database connections and paths, which are essential for integrating ArangoDB with applications. For instance, you can export connection parameters to ensure smooth communication between your application and the database:</p>
-{{< prism lang="shell">}}
-     export ARANGODB_HOST=localhost export ARANGODB_PORT=8529
-{{< /prism >}}
-<p style="text-align: justify;">
-With the installation complete, the next step is to tackle the challenges related to configuration.
-</p>
+<ol>
+    <li style="text-align: justify;">Download and Installation:
+        <ul>
+            <li>Visit the official website to download the appropriate version of ArangoDB for your operating system (Linux, macOS, or Windows).</li>
+            <li>On Linux, installation can be simplified using package managers like <strong>APT</strong> or <strong>YUM</strong>, while macOS users can use <strong>Homebrew</strong>.</li>
+            <li>Run the installation script, which installs the database along with necessary dependencies.</li>
+        </ul>
+    </li>
+    <li style="text-align: justify;">Initial Setup:
+        <ul>
+            <li>After installation, start the database using the command:</li>
+        </ul>
+        {{< prism lang="shell">}}
+        sudo systemctl start arangodb3
+        {{< /prism >}}
+        <ul>
+            <li>ArangoDB provides a <strong>Web Interface</strong> (typically available at <code>http://localhost:8529</code>), where you can configure the initial database, users, and permissions.</li>
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>User and Database Creation:</strong>
+        <ul>
+            <li>In the web interface, you’ll be prompted to create a root user for database administration.</li>
+            <li>After that, create a new database where you can begin implementing various data models—relational, document, and graph.</li>
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Environment Configuration:</strong>
+        <ul>
+            <li>Set up environment variables for database connections and paths, which are essential for integrating ArangoDB with applications. For instance, you can export connection parameters to ensure smooth communication between your application and the database:</li>
+        </ul>
+        {{< prism lang="shell">}}
+        export ARANGODB_HOST=localhost
+        export ARANGODB_PORT=8529
+        {{< /prism >}}
+    </li>
+</ol>
+
+<p style="text-align: justify;">With the installation complete, the next step is to tackle the challenges related to configuration.</p>
+
 
 ## **1.4.2 Configuration Challenges**
 <p style="text-align: justify;">
@@ -402,42 +419,64 @@ When designing a schema for a multi-model database, developers must consider the
 To provide a practical understanding, let’s walk through setting up ArangoDB for a multi-model environment.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Initialize the Database<strong></strong>:</p>
-- <p style="text-align: justify;">Start by creating a new database using the ArangoDB web interface or via command-line tools. Let’s call this database <code>MultiModelDB</code>.</p>
-{{< prism lang="shell">}}
-     arangosh> db._createDatabase("MultiModelDB");
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Create Collections for Each Model<strong></strong>:</p>
-- <p style="text-align: justify;">Set up collections for the different data models:</p>
-- <p style="text-align: justify;">A collection for relational data (e.g., a <code>Customers</code> collection):</p>
-{{< prism lang="shell">}}
-       arangosh> db._create("Customers");
-{{< /prism >}}
-- <p style="text-align: justify;">A collection for document-based data (e.g., a <code>Reviews</code> collection):</p>
-{{< prism lang="shell">}}
-       arangosh> db._createDocumentCollection("Reviews");
-{{< /prism >}}
-- <p style="text-align: justify;">A collection for graph data (e.g., nodes and edges representing customer relationships):</p>
-{{< prism lang="shell">}}
-       arangosh> db._createEdgeCollection("Relationships");
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Define Cross-Model Relationships<strong></strong>:</p>
-- <p style="text-align: justify;">Use foreign keys or references to link relational data with document or graph data. For example, a <code>CustomerID</code> in the <code>Customers</code> collection can reference documents in the <code>Reviews</code> collection:</p>
-{{< prism lang="shell">}}
-     arangosh> db.Customers.insert({ "CustomerID": 1, "Name": "John Doe" }); 
-     arangosh> db.Reviews.insert({ "ReviewID": 101, "CustomerID": 1, "Review": "Great service!" });
-{{< /prism >}}
-4. <p style="text-align: justify;"><strong></strong>Configure Indexes<strong></strong>:</p>
-- <p style="text-align: justify;">To optimize query performance, create indexes tailored to each data model. For example, create a secondary index on <code>CustomerID</code> in the <code>Reviews</code> collection to speed up lookup queries:</p>
-{{< prism lang="shell">}}
-     arangosh> db.Reviews.ensureIndex({ type: "hash", fields: ["CustomerID"] });
-{{< /prism >}}
-5. <p style="text-align: justify;"><strong></strong>Query Across Models<strong></strong>:</p>
-- <p style="text-align: justify;">Finally, test querying across different models. For instance, retrieve all reviews for a particular customer using the following query:</p>
-{{< prism lang="shell">}}
-     arangosh> db._query('FOR c IN Customers FILTER c.CustomerID == 1 FOR r IN Reviews 
-     FILTER r.CustomerID == c.CustomerID RETURN {customer: c.Name, review: r.Review}');
-{{< /prism >}}
+<ol>
+    <li style="text-align: justify;"><strong>Initialize the Database:</strong>
+        <ul>
+            <li style="text-align: justify;">Start by creating a new database using the ArangoDB web interface or via command-line tools. Let’s call this database <code>MultiModelDB</code>.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        arangosh> db._createDatabase("MultiModelDB");
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Create Collections for Each Model:</strong>
+        <ul>
+            <li style="text-align: justify;">Set up collections for the different data models:</li>
+            <li style="text-align: justify;">A collection for relational data (e.g., a <code>Customers</code> collection):</li>
+        </ul>
+        {{< prism lang="shell">}}
+        arangosh> db._create("Customers");
+        {{< /prism >}}
+        <ul>
+            <li style="text-align: justify;">A collection for document-based data (e.g., a <code>Reviews</code> collection):</li>
+        </ul>
+        {{< prism lang="shell">}}
+        arangosh> db._createDocumentCollection("Reviews");
+        {{< /prism >}}
+        <ul>
+            <li style="text-align: justify;">A collection for graph data (e.g., nodes and edges representing customer relationships):</li>
+        </ul>
+        {{< prism lang="shell">}}
+        arangosh> db._createEdgeCollection("Relationships");
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Define Cross-Model Relationships:</strong>
+        <ul>
+            <li style="text-align: justify;">Use foreign keys or references to link relational data with document or graph data. For example, a <code>CustomerID</code> in the <code>Customers</code> collection can reference documents in the <code>Reviews</code> collection:</li>
+        </ul>
+        {{< prism lang="shell">}}
+        arangosh> db.Customers.insert({ "CustomerID": 1, "Name": "John Doe" });
+        arangosh> db.Reviews.insert({ "ReviewID": 101, "CustomerID": 1, "Review": "Great service!" });
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Configure Indexes:</strong>
+        <ul>
+            <li style="text-align: justify;">To optimize query performance, create indexes tailored to each data model. For example, create a secondary index on <code>CustomerID</code> in the <code>Reviews</code> collection to speed up lookup queries:</li>
+        </ul>
+        {{< prism lang="shell">}}
+        arangosh> db.Reviews.ensureIndex({ type: "hash", fields: ["CustomerID"] });
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Query Across Models:</strong>
+        <ul>
+            <li style="text-align: justify;">Finally, test querying across different models. For instance, retrieve all reviews for a particular customer using the following query:</li>
+        </ul>
+        {{< prism lang="shell">}}
+        arangosh> db._query('FOR c IN Customers FILTER c.CustomerID == 1 FOR r IN Reviews 
+        FILTER r.CustomerID == c.CustomerID RETURN {customer: c.Name, review: r.Review}');
+        {{< /prism >}}
+    </li>
+</ol>
+
 <p style="text-align: justify;">
 This hands-on approach demonstrates the practical aspects of setting up and configuring a multi-model database like ArangoDB. Through proper schema design, configuration, and cross-model querying, developers can leverage the full potential of multi-model databases.
 </p>
@@ -557,7 +596,6 @@ These detailed and probing questions are designed to enhance your understanding 
 
 ## **1.6.2 Hands On Practices**
 <p style="text-align: justify;">
-\
 <strong>Practice 1: Installing and Configuring Your First Multi-Model Database</strong>
 </p>
 

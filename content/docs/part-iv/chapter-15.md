@@ -17,12 +17,12 @@ toc: true
 <p style="text-align: justify;"><em>Chapter 15 delves deep into the sophisticated world of advanced query techniques, specifically tailored for navigating and optimizing cross-database queries within hybrid database architectures. As businesses increasingly rely on diverse data systems to accommodate varied application needs, the ability to seamlessly query across these systems becomes paramount. This chapter will guide you through the intricacies of formulating and executing queries that span multiple databases, such as PostgreSQL and SurrealDB, leveraging their individual strengths to enhance overall data retrieval performance. You will explore a range of strategies, from query federation and optimization techniques to the use of middleware and virtual databases that abstract the complexity of underlying data stores. By mastering these advanced techniques, you'll be able to craft queries that are not only efficient but also robust and scalable, ensuring that your applications can retrieve the necessary data from hybrid architectures quickly and effectively, regardless of where it resides.</em></p>
 {{% /alert %}}
 
-### **15.1 Cross-Database Query Fundamentals**
+# **15.1 Cross-Database Query Fundamentals**
 <p style="text-align: justify;">
 As multi-model databases and hybrid data architectures grow in complexity, cross-database queries—where data from multiple databases is queried and combined—become an essential aspect of modern data management. Cross-database queries enable developers to access and manipulate data from different databases simultaneously, allowing for more flexible and scalable solutions, particularly when integrating SQL and NoSQL databases. In this section, we will explore the fundamentals of cross-database querying, the challenges involved, and practical examples of querying across databases like PostgreSQL and SurrealDB.
 </p>
 
-#### **15.1.1 Introduction to Cross-Database Queries**
+## **15.1.1 Introduction to Cross-Database Queries**
 <p style="text-align: justify;">
 Cross-database queries are used when data from different databases or different types of databases needs to be retrieved and processed together. In traditional systems, each database operates independently with its own querying language and data model. However, as applications have evolved, so has the need to bring together disparate data sources to provide comprehensive results. Cross-database queries solve this by allowing developers to perform operations across multiple databases in a seamless manner.
 </p>
@@ -34,7 +34,7 @@ Cross-database queries are used when data from different databases or different 
 - <p style="text-align: justify;"><strong>Data Integration</strong>: Large organizations often maintain data in different types of databases (e.g., relational databases like PostgreSQL and document stores like MongoDB or SurrealDB). Cross-database queries allow the data to be combined and analyzed together, providing a unified view.</p>
 - <p style="text-align: justify;"><strong>Hybrid Architectures</strong>: Applications built on hybrid architectures, which utilize both SQL and NoSQL databases, need cross-database queries to access structured data from relational databases and unstructured data from NoSQL systems in a single operation.</p>
 - <p style="text-align: justify;"><strong>Polyglot Persistence</strong>: In polyglot systems where different databases are used for different purposes (e.g., a graph database for relationships and a document database for content), cross-database querying allows the system to leverage the strengths of each database while querying them simultaneously.</p>
-#### **15.1.2 Basic Techniques for Querying Across Databases**
+## **15.1.2 Basic Techniques for Querying Across Databases**
 <p style="text-align: justify;">
 To perform cross-database queries, developers need to use techniques that allow for querying different types of databases and combining the results. These techniques often involve middleware, database connectors, or APIs that bridge the gap between SQL and NoSQL systems.
 </p>
@@ -83,7 +83,7 @@ Example of querying SurrealDB via REST API:
 This query fetches data from SurrealDB, which can then be combined with results from a SQL query executed on PostgreSQL.
 </p>
 
-#### **15.1.3 Understanding the Complexity of Cross-Database Queries**
+## **15.1.3 Understanding the Complexity of Cross-Database Queries**
 <p style="text-align: justify;">
 Performing cross-database queries introduces several technical challenges and considerations. While querying a single database is straightforward, working across multiple databases—especially when they follow different models (SQL vs. NoSQL)—adds layers of complexity that need to be addressed.
 </p>
@@ -92,7 +92,7 @@ Performing cross-database queries introduces several technical challenges and co
 - <p style="text-align: justify;"><strong>Query Latency</strong>: Cross-database queries often involve network communication between different database servers, which can introduce significant latency. This is particularly true if the databases are distributed across different geographical locations or data centers.</p>
 - <p style="text-align: justify;"><strong>Syntax Differences</strong>: SQL and NoSQL databases use different query languages and syntaxes, making it difficult to directly translate queries from one system to another. This requires careful planning to ensure that queries are structured properly for each database.</p>
 - <p style="text-align: justify;"><strong>Handling Heterogeneous Data</strong>: Relational databases store structured data in tables with fixed schemas, while NoSQL databases like SurrealDB may store unstructured or semi-structured data. Combining these different types of data into a unified query result requires mapping fields between different data models and handling schema flexibility in NoSQL databases.</p>
-#### **15.1.4 Simple Query Examples**
+## **15.1.4 Simple Query Examples**
 <p style="text-align: justify;">
 To illustrate the process of cross-database querying, here are simple examples that combine data from PostgreSQL and SurrealDB using SQL joins and API calls.
 </p>
@@ -141,12 +141,12 @@ In this example, we use REST APIs to query data from SurrealDB and then combine 
 This method allows applications to make use of the strengths of both databases, providing a more flexible and scalable solution without compromising on data consistency or performance.
 </p>
 
-### **15.2 Query Optimization Strategies**
+# **15.2 Query Optimization Strategies**
 <p style="text-align: justify;">
 Cross-database queries introduce additional complexities in performance optimization, as they involve multiple systems, potentially distributed over networks with varying performance characteristics. Without proper optimization, these queries can suffer from bottlenecks, leading to high latency and reduced throughput. In this section, we will examine common performance bottlenecks encountered in cross-database queries, explore optimization techniques to mitigate these issues, and provide practical steps for implementing query optimizations in hybrid environments using databases like PostgreSQL and SurrealDB.
 </p>
 
-#### **15.2.1 Performance Bottlenecks in Cross-Database Queries**
+## **15.2.1 Performance Bottlenecks in Cross-Database Queries**
 <p style="text-align: justify;">
 When querying across databases, several performance bottlenecks can arise due to the distributed nature of the systems, varying database architectures, and the complexity of the query. The most common bottlenecks include:
 </p>
@@ -159,7 +159,7 @@ When querying across databases, several performance bottlenecks can arise due to
 - <p style="text-align: justify;"><strong>Impact</strong>: The process of serializing and deserializing data can increase both query latency and CPU usage, particularly when dealing with large datasets.</p>
 - <p style="text-align: justify;"><strong>Locking and Transaction Management</strong>: When querying across multiple databases, transaction management and locking mechanisms may behave differently, leading to bottlenecks, especially when the databases have differing consistency models (e.g., strong consistency in PostgreSQL vs. eventual consistency in SurrealDB).</p>
 - <p style="text-align: justify;"><strong>Impact</strong>: Transaction coordination across databases may introduce delays or deadlocks, further reducing the efficiency of cross-database queries.</p>
-#### **15.2.2 Optimization Techniques**
+## **15.2.2 Optimization Techniques**
 <p style="text-align: justify;">
 To overcome the bottlenecks mentioned above, several advanced optimization strategies can be employed to improve the performance of cross-database queries. These strategies focus on minimizing the overhead introduced by querying multiple systems and ensuring efficient data retrieval.
 </p>
@@ -170,7 +170,7 @@ To overcome the bottlenecks mentioned above, several advanced optimization strat
 Example of setting up query caching using Redis:
 </p>
 
-{{< prism lang="">}}
+{{< prism lang="rust" line-numbers="true">}}
   import redis
   
   cache = redis.Redis(host='localhost', port=6379)
@@ -215,7 +215,7 @@ These indexes help speed up cross-database joins by enabling faster lookups in b
 Example:
 </p>
 
-{{< prism lang="">}}
+{{< prism lang="shell" line-numbers="true">}}
   # Prefetch order data from SurrealDB
   orders_data = surrealdb_query("SELECT * FROM orders WHERE customer_id = 123")
   
@@ -239,7 +239,7 @@ Example:
 This optimization reduces the load on both the network and the databases involved by eliminating unnecessary data from the query result.
 </p>
 
-#### **15.2.3 Implementing Query Optimization**
+## **15.2.3 Implementing Query Optimization**
 <p style="text-align: justify;">
 To achieve optimal performance in cross-database queries, a systematic approach to optimization is needed. Here’s a step-by-step guide on how to implement query optimizations for cross-database environments involving PostgreSQL and SurrealDB.
 </p>
@@ -314,12 +314,12 @@ SELECT order_id, order_total FROM surrealdb_orders WHERE customer_id = 123;
 <strong>Step 5: Monitor Query Performance</strong> After applying optimizations, continuously monitor query performance to ensure that the changes have the desired effect. Use tools like Prometheus and Grafana to track query latency, resource usage, and overall performance metrics.
 </p>
 
-### **15.3 Middleware Solutions for Query Federation**
+# **15.3 Middleware Solutions for Query Federation**
 <p style="text-align: justify;">
 Query federation enables developers to query data across multiple databases seamlessly, as though they were interacting with a single unified system. This capability is particularly useful in multi-model architectures where data is stored in both SQL and NoSQL databases. Middleware solutions for query federation play a crucial role in abstracting the complexity of managing multiple databases, allowing for cross-database queries without needing to manually handle each system’s quirks. In this section, we will explore the role of middleware in query federation, discuss the benefits and limitations of using middleware, and provide practical steps for setting up middleware solutions to enable efficient cross-database queries.
 </p>
 
-#### **15.3.1 Role of Middleware in Query Federation**
+## **15.3.1 Role of Middleware in Query Federation**
 <p style="text-align: justify;">
 Middleware acts as an intermediary layer that sits between the application and the underlying databases, abstracting the details of each database and providing a unified query interface. By handling communication with different databases, middleware enables cross-database queries without requiring the application to interact with each database separately. This simplifies querying multiple databases, particularly when dealing with systems that have different query languages and data models, such as SQL-based systems like PostgreSQL and NoSQL databases like SurrealDB.
 </p>
@@ -331,7 +331,7 @@ Middleware acts as an intermediary layer that sits between the application and t
 - <p style="text-align: justify;"><strong>Query Translation</strong>: Middleware translates queries from a common query language (usually SQL or an extended form of SQL) into the specific query languages used by the underlying databases. This allows developers to write queries in one format, which the middleware then adapts for each target database.</p>
 - <p style="text-align: justify;"><strong>Data Aggregation</strong>: Middleware can aggregate results from multiple databases, combining the data into a single response that is returned to the application. This aggregation allows for cross-database joins, unions, and other operations to be performed, even when the underlying databases are independent of each other.</p>
 - <p style="text-align: justify;"><strong>Load Balancing and Fault Tolerance</strong>: In addition to query translation and aggregation, middleware can handle load balancing across different database instances, ensuring that queries are distributed efficiently to avoid overloading any single database. Some middleware solutions also offer fault tolerance, automatically redirecting queries to a backup database if the primary one becomes unavailable.</p>
-#### **15.3.2 Benefits and Drawbacks of Middleware**
+## **15.3.2 Benefits and Drawbacks of Middleware**
 <p style="text-align: justify;">
 Middleware provides several advantages when integrating multiple databases, but it also comes with certain limitations. Understanding the trade-offs is essential for deciding whether to implement middleware in a cross-database architecture.
 </p>
@@ -352,7 +352,7 @@ Middleware provides several advantages when integrating multiple databases, but 
 - <p style="text-align: justify;"><strong>Limited Query Flexibility</strong>: While middleware provides a unified query interface, it may not support all the advanced features of each underlying database. For instance, middleware might limit access to certain NoSQL-specific operations or advanced SQL features, making it less flexible for specialized use cases.</p>
 - <p style="text-align: justify;"><strong>Data Consistency Challenges</strong>: Middleware must ensure that data remains consistent across multiple databases, which can be difficult if the databases have different consistency models (e.g., PostgreSQL’s ACID transactions vs. SurrealDB’s eventual consistency). This can lead to challenges in maintaining data accuracy, especially in distributed systems.</p>
 - <p style="text-align: justify;"><strong>Complex Configuration</strong>: Setting up and configuring middleware solutions can be complex, requiring detailed knowledge of each underlying database as well as the middleware itself. This can increase the initial development time and create additional maintenance overhead.</p>
-#### **15.3.3 Setting Up Middleware for Query Federation**
+## **15.3.3 Setting Up Middleware for Query Federation**
 <p style="text-align: justify;">
 Implementing middleware for query federation requires configuring the middleware to communicate with each database, ensuring that queries can be translated and executed across systems. Below are the steps to set up middleware for enabling cross-database queries.
 </p>
@@ -372,16 +372,20 @@ Implementing middleware for query federation requires configuring the middleware
 <strong>Example: Configuring Trino for PostgreSQL and SurrealDB</strong>
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Install Trino<strong></strong>: First, install Trino and ensure that it’s properly set up to run queries.</p>
-2. <p style="text-align: justify;"><strong></strong>Configure the PostgreSQL Connector<strong></strong>:</p>
+<p style="text-align: justify;"><strong>1. Install Trino</strong></p>
+<p style="text-align: justify;">First, install Trino and ensure that it’s properly set up to run queries.</p>
+
+<p style="text-align: justify;"><strong>2. Configure the PostgreSQL Connector</strong></p>
+<p style="text-align: justify;">Add the following configuration to Trino for the PostgreSQL connector:</p>
 {{< prism lang="text" line-numbers="true">}}
-   connector.name=postgresql
-   connection-url=jdbc:postgresql://<postgresql-host>:5432/database
-   connection-user=username
-   connection-password=password
-   
+connector.name=postgresql
+connection-url=jdbc:postgresql://<postgresql-host>:5432/database
+connection-user=username
+connection-password=password
 {{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Configure the SurrealDB Connector<strong></strong> (assuming a custom connector or using the REST API):</p>
+
+<p style="text-align: justify;"><strong>3. Configure the SurrealDB Connector</strong></p>
+<p style="text-align: justify;">If SurrealDB does not have a dedicated Trino connector, consider using a custom connector or interacting with SurrealDB through the REST API. Ensure network access and permissions are configured to allow Trino to query SurrealDB data as needed.</p>
 {{< prism lang="text" line-numbers="true">}}
    connector.name=rest
    connection-url=http://<surrealdb-host>:8000
@@ -433,12 +437,12 @@ trino-cli --execute "SHOW PROCESSLIST"
 This command shows all running queries, providing insight into the performance of each cross-database query. If necessary, adjust the configuration to improve performance, such as increasing the number of worker nodes or adjusting connection pooling settings.
 </p>
 
-### **15.4 Virtual Database Techniques**
+# **15.4 Virtual Database Techniques**
 <p style="text-align: justify;">
 In multi-database architectures, managing queries across multiple databases can be complex, especially when combining different types of databases like SQL and NoSQL. Virtual databases provide a solution to this complexity by abstracting multiple underlying databases into a single unified data model. This abstraction allows developers to query disparate databases using a common interface without needing to worry about the specific query languages or data models of each system. In this section, we will explore the concept of virtual databases, discuss how they simplify query processes, and provide practical steps to build a virtual database that spans across systems like PostgreSQL and SurrealDB.
 </p>
 
-#### **15.4.1 Concept of Virtual Databases**
+## **15.4.1 Concept of Virtual Databases**
 <p style="text-align: justify;">
 A <strong>virtual database</strong> is a logical abstraction that unifies multiple databases into a single interface, allowing users to query them as if they were querying a single database. Unlike traditional databases, virtual databases do not store data themselves; instead, they fetch data from the underlying databases in real time. This abstraction layer manages the complexity of different database types (e.g., SQL vs. NoSQL), query languages, and data models, making it easier to integrate data from multiple sources.
 </p>
@@ -455,7 +459,7 @@ A <strong>virtual database</strong> is a logical abstraction that unifies multip
 Virtual databases are especially useful in environments where data is distributed across multiple databases or data stores, such as in multi-model or hybrid architectures. By abstracting the differences between databases, virtual databases simplify data access and reduce the complexity of managing multiple systems.
 </p>
 
-#### **15.4.2 Implementing Virtual Databases for Unified Queries**
+## **15.4.2 Implementing Virtual Databases for Unified Queries**
 <p style="text-align: justify;">
 Virtual databases provide a unified querying experience across multiple databases, simplifying data access and integration. Implementing a virtual database involves several steps, including selecting the appropriate software, configuring connectors for each underlying database, and optimizing the virtual database for performance.
 </p>
@@ -471,7 +475,7 @@ Virtual databases provide a unified querying experience across multiple database
 Virtual databases also simplify the handling of data stored in different formats. For example, a relational database like PostgreSQL may store structured data in tables, while a NoSQL system like SurrealDB may store unstructured or semi-structured data in documents. The virtual database abstracts these differences, allowing developers to query both systems in a consistent manner.
 </p>
 
-#### **15.4.3 Building a Virtual Database**
+## **15.4.3 Building a Virtual Database**
 <p style="text-align: justify;">
 To create a virtual database that spans systems like PostgreSQL and SurrealDB, you need to configure a virtual database platform and set up the necessary connectors to each database. Below is a step-by-step guide on how to build a virtual database using popular software and tools.
 </p>
@@ -491,43 +495,64 @@ For this example, we will use <strong>Dremio</strong> to build a virtual databas
 <strong>Step 2: Install and Configure Dremio</strong>
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Install Dremio<strong></strong>: Download and install Dremio on your server or local machine.</p>
+<p style="text-align: justify;"><strong>1. Install Dremio</strong></p>
+<p style="text-align: justify;">Download and install Dremio on your server or local machine.</p>
 {{< prism lang="shell" line-numbers="true">}}
-   # Example command to install Dremio
-   wget https://download.dremio.com/community-server/dremio-community-latest.tar.gz
-   tar -xvzf dremio-community-latest.tar.gz
-   cd dremio
-   ./bin/dremio start
-   
+# Example command to install Dremio
+wget https://download.dremio.com/community-server/dremio-community-latest.tar.gz
+tar -xvzf dremio-community-latest.tar.gz
+cd dremio
+./bin/dremio start
 {{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Access the Dremio UI<strong></strong>: Once Dremio is installed and running, access the Dremio web interface via <code>http://localhost:9047</code> to configure your virtual database.</p>
-<p style="text-align: justify;">
-<strong>Step 3: Connect to PostgreSQL and SurrealDB</strong>
-</p>
 
-1. <p style="text-align: justify;"><strong></strong>Add a PostgreSQL Data Source<strong></strong>: In the Dremio UI, add PostgreSQL as a data source by providing the necessary connection details (e.g., hostname, database name, username, and password).</p>
-- <p style="text-align: justify;">Navigate to the <strong>Sources</strong> tab and click <strong>New Source</strong>.</p>
-- <p style="text-align: justify;">Select <strong>PostgreSQL</strong> and fill in the required connection information.</p>
-2. <p style="text-align: justify;"><strong></strong>Add a SurrealDB Data Source<strong></strong>: To connect to SurrealDB, you may need to configure a custom connector if Dremio does not have a built-in connector for SurrealDB. You can use the REST API to interact with SurrealDB from Dremio.</p>
-- <p style="text-align: justify;">Navigate to the <strong>Sources</strong> tab and click <strong>New Source</strong>.</p>
-- <p style="text-align: justify;">Select <strong>HTTP</strong> as the source type and configure it to point to SurrealDB’s REST API endpoint.</p>
-3. <p style="text-align: justify;"><strong></strong>Test the Connections<strong></strong>: Once both PostgreSQL and SurrealDB are connected, you can test the connections by running a simple query against each database. This ensures that the virtual database can access both systems.</p>
-<p style="text-align: justify;">
-<strong>Step 4: Create Virtual Datasets</strong> In Dremio, you can create virtual datasets by combining data from different data sources. These datasets are treated as virtual tables that can be queried using SQL.
-</p>
+<p style="text-align: justify;"><strong>2. Access the Dremio UI</strong></p>
+<p style="text-align: justify;">Once Dremio is installed and running, access the Dremio web interface via <code>http://localhost:9047</code> to configure your virtual database.</p>
 
-1. <p style="text-align: justify;"><strong></strong>Create a Virtual Dataset<strong></strong>: Create a virtual dataset by writing a query that pulls data from both PostgreSQL and SurrealDB.</p>
+<p style="text-align: justify;"><strong>3. Connect to PostgreSQL and SurrealDB</strong></p>
+<p style="text-align: justify;">In the Dremio UI, configure connections to both PostgreSQL and SurrealDB. Add each as a data source to allow queries across both databases.</p>
+
+
+<p style="text-align: justify;"><strong>1. Add a PostgreSQL Data Source</strong></p>
+<p style="text-align: justify;">In the Dremio UI, add PostgreSQL as a data source by providing the necessary connection details (e.g., hostname, database name, username, and password).</p>
+<ul>
+    <li style="text-align: justify;">Navigate to the <strong>Sources</strong> tab and click <strong>New Source</strong>.</li>
+    <li style="text-align: justify;">Select <strong>PostgreSQL</strong> and fill in the required connection information.</li>
+</ul>
+
+<p style="text-align: justify;"><strong>2. Add a SurrealDB Data Source</strong></p>
+<p style="text-align: justify;">To connect to SurrealDB, you may need to configure a custom connector if Dremio does not have a built-in connector for SurrealDB. You can use the REST API to interact with SurrealDB from Dremio.</p>
+<ul>
+    <li style="text-align: justify;">Navigate to the <strong>Sources</strong> tab and click <strong>New Source</strong>.</li>
+    <li style="text-align: justify;">Select <strong>HTTP</strong> as the source type and configure it to point to SurrealDB’s REST API endpoint.</li>
+</ul>
+
+<p style="text-align: justify;"><strong>3. Test the Connections</strong></p>
+<p style="text-align: justify;">Once both PostgreSQL and SurrealDB are connected, you can test the connections by running a simple query against each database. This ensures that the virtual database can access both systems.</p>
+
+<p style="text-align: justify;"><strong>4. Create Virtual Datasets</strong></p>
+<p style="text-align: justify;">In Dremio, you can create virtual datasets by combining data from different data sources. These datasets are treated as virtual tables that can be queried using SQL.</p>
+
+
+<p style="text-align: justify;"><strong>1. Create a Virtual Dataset</strong></p>
+<p style="text-align: justify;">Create a virtual dataset by writing a query that pulls data from both PostgreSQL and SurrealDB.</p>
 {{< prism lang="sql" line-numbers="true">}}
-   SELECT p.customer_name, o.order_id, o.order_total
-   FROM postgresql.customers p
-   JOIN surrealdb.orders o ON p.customer_id = o.customer_id
-   WHERE p.region = 'North America';
-   
+SELECT p.customer_name, o.order_id, o.order_total
+FROM postgresql.customers p
+JOIN surrealdb.orders o ON p.customer_id = o.customer_id
+WHERE p.region = 'North America';
 {{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Save the Virtual Dataset<strong></strong>: Once the query is executed successfully, save the dataset as a virtual table within Dremio. This dataset can now be queried like any other table.</p>
-<p style="text-align: justify;">
-<strong>Step 5: Optimize Query Performance</strong> To ensure that the virtual database performs efficiently, apply the following optimization techniques:
-</p>
+
+<p style="text-align: justify;"><strong>2. Save the Virtual Dataset</strong></p>
+<p style="text-align: justify;">Once the query is executed successfully, save the dataset as a virtual table within Dremio. This dataset can now be queried like any other table.</p>
+
+<p style="text-align: justify;"><strong>3. Optimize Query Performance</strong></p>
+<p style="text-align: justify;">To ensure that the virtual database performs efficiently, apply the following optimization techniques:</p>
+<ul>
+    <li style="text-align: justify;">Use indexing on frequently queried columns in both PostgreSQL and SurrealDB to improve join performance.</li>
+    <li style="text-align: justify;">Limit the data returned by filtering on specific regions or timeframes to reduce query load.</li>
+    <li style="text-align: justify;">Use Dremio’s query profiling tools to identify bottlenecks and adjust the query structure as needed.</li>
+</ul>
+
 
 - <p style="text-align: justify;"><strong>Indexing</strong>: Ensure that the underlying databases (PostgreSQL and SurrealDB) have appropriate indexes on the fields used in the queries, particularly join conditions.</p>
 - <p style="text-align: justify;"><strong>Data Partitioning</strong>: If querying large datasets, consider partitioning the data across multiple nodes to improve query performance.</p>
@@ -550,12 +575,12 @@ WHERE c.customer_status = 'Active';
 Dremio will handle the underlying data retrieval and query translation, presenting a unified result to the user.
 </p>
 
-### **15.5 Case Studies and Real-World Applications**
+# **15.5 Case Studies and Real-World Applications**
 <p style="text-align: justify;">
 Advanced query techniques in cross-database systems have transformed how modern applications access and integrate data across multiple databases. Real-world implementations of these techniques showcase how enterprises have successfully overcome the challenges of data integration, scalability, and performance optimization. This section explores case studies that highlight the successful implementation of cross-database querying in real-world scenarios, the lessons learned from these implementations, and the impact on application performance and data retrieval.
 </p>
 
-#### **15.5.1 Successful Implementations of Cross-Database Query Techniques**
+## **15.5.1 Successful Implementations of Cross-Database Query Techniques**
 <p style="text-align: justify;">
 Several organizations have successfully implemented advanced cross-database querying techniques to improve data accessibility and operational efficiency. These case studies demonstrate how hybrid data architectures and multi-model databases, such as PostgreSQL and SurrealDB, have been leveraged to address specific business needs.
 </p>
@@ -572,7 +597,7 @@ Several organizations have successfully implemented advanced cross-database quer
 
 - <p style="text-align: justify;"><strong>Key Strategy</strong>: The healthcare provider implemented a middleware solution that enabled them to query patient records from PostgreSQL while simultaneously accessing medical imaging metadata stored in a NoSQL database. This allowed medical professionals to query both patient records and imaging data in one unified query.</p>
 - <p style="text-align: justify;"><strong>Outcome</strong>: The healthcare provider significantly reduced the time required to retrieve patient data, improving clinical decision-making and enabling faster diagnostics. Query execution times were reduced by 40%, leading to more efficient hospital workflows.</p>
-#### **15.5.2 Lessons Learned from Industry**
+## **15.5.2 Lessons Learned from Industry**
 <p style="text-align: justify;">
 From these real-world implementations, several important lessons and best practices have emerged for successfully implementing cross-database querying in large-scale systems:
 </p>
@@ -582,7 +607,7 @@ From these real-world implementations, several important lessons and best practi
 - <p style="text-align: justify;"><strong>Lesson 3: Real-Time Data Integration</strong>: For applications requiring real-time data access, such as e-commerce analytics and healthcare systems, cross-database queries must be optimized for low-latency performance. Middleware solutions that provide real-time query translation and aggregation can enable real-time data access without compromising on performance. In the e-commerce case study, the virtual database's ability to aggregate real-time transactional and behavioral data was a key factor in delivering timely insights.</p>
 - <p style="text-align: justify;"><strong>Lesson 4: Balancing Data Consistency with Performance</strong>: When integrating databases with different consistency models (e.g., PostgreSQL’s strong consistency vs. SurrealDB’s eventual consistency), it is important to carefully balance consistency requirements with performance goals. In both case studies, organizations opted for eventual consistency in certain parts of the system to achieve better performance while maintaining strict consistency where necessary (e.g., in transactional data).</p>
 - <p style="text-align: justify;"><strong>Lesson 5: Scalability through Distributed Queries</strong>: In scenarios where data is distributed across multiple systems, the ability to scale queries horizontally across databases is critical for maintaining performance under load. Middleware solutions, such as Dremio or Apache Drill, enabled distributed query execution across PostgreSQL and NoSQL databases, allowing both companies to scale their data retrieval processes as the volume of data increased.</p>
-#### **15.5.3 Analyzing Case Studies: Detailed Lessons and Insights**
+## **15.5.3 Analyzing Case Studies: Detailed Lessons and Insights**
 <p style="text-align: justify;">
 By analyzing these case studies in greater depth, we can extract valuable insights and identify the specific technical decisions that led to success. Each case study provided unique solutions to the challenges of cross-database querying, data integration, and performance optimization.
 </p>

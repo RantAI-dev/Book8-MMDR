@@ -182,175 +182,79 @@ To illustrate the principles discussed, let's consider a real-world case study o
 Below is a comprehensive Rust example demonstrating how to set up SurrealDB, define the data models, and perform CRUD operations for the e-commerce platform.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Setting Up Dependencies<strong></strong></p>
-<p style="text-align: justify;">
-First, ensure that you have the necessary dependencies in your <code>Cargo.toml</code> file:
-</p>
-
+<p style="text-align: justify;"><strong>1. Setting Up Dependencies</strong></p>
+<p style="text-align: justify;">First, ensure that you have the necessary dependencies in your <code>Cargo.toml</code> file:</p>
 {{< prism lang="toml" line-numbers="true">}}
-   [dependencies]
-   surrealdb = "1.0" # Replace with the latest version
-   tokio = { version = "1", features = ["full"] }
-   serde = { version = "1.0", features = ["derive"] }
-   serde_json = "1.0"
+[dependencies]
+surrealdb = "1.0" # Replace with the latest version
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 {{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Defining Data Models<strong></strong></p>
-<p style="text-align: justify;">
-Define the data structures corresponding to the entities in the ERD using Rust structs with Serde for serialization.
-</p>
 
+<p style="text-align: justify;"><strong>2. Defining Data Models</strong></p>
+<p style="text-align: justify;">Define the data structures corresponding to the entities in the ERD using Rust structs with Serde for serialization.</p>
 {{< prism lang="rust" line-numbers="true">}}
-   use serde::{Deserialize, Serialize};
-   use surrealdb::Surreal;
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct User {
-       id: String,
-       name: String,
-       email: String,
-       joined_at: String, // Using String for simplicity; consider using chrono::DateTime
-   }
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct Product {
-       id: String,
-       name: String,
-       description: String,
-       price: f64,
-       category: String, // Reference to Category ID
-   }
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct Category {
-       id: String,
-       name: String,
-   }
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct Order {
-       id: String,
-       order_date: String, // Using String for simplicity; consider using chrono::DateTime
-       user: String,       // Reference to User ID
-       total_amount: f64,
-   }
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct OrderItem {
-       id: String,
-       order: String,   // Reference to Order ID
-       product: String, // Reference to Product ID
-       quantity: i32,
-       price: f64,
-   }
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct Review {
-       id: String,
-       user: String,    // Reference to User ID
-       product: String, // Reference to Product ID
-       content: String,
-       rating: i32,
-       created_at: String, // Using String for simplicity; consider using chrono::DateTime
-   }
-   
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Connecting to SurrealDB<strong></strong></p>
-<p style="text-align: justify;">
-Establish a connection to SurrealDB. Ensure that SurrealDB is running and accessible at the specified URL.
-</p>
+use serde::{Deserialize, Serialize};
+use surrealdb::Surreal;
 
+#[derive(Serialize, Deserialize, Debug)]
+struct User { id: String, name: String, email: String, joined_at: String }
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Product { id: String, name: String, description: String, price: f64, category: String }
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Category { id: String, name: String }
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Order { id: String, order_date: String, user: String, total_amount: f64 }
+
+#[derive(Serialize, Deserialize, Debug)]
+struct OrderItem { id: String, order: String, product: String, quantity: i32, price: f64 }
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Review { id: String, user: String, product: String, content: String, rating: i32, created_at: String }
+{{< /prism >}}
+<p style="text-align: justify;"><strong>3. Connecting to SurrealDB</strong></p>
+<p style="text-align: justify;">Establish a connection to SurrealDB. Ensure that SurrealDB is running and accessible at the specified URL.</p>
 {{< prism lang="rust" line-numbers="true">}}
-   #[tokio::main]
-   async fn main() -> Result<(), Box<dyn std::error::Error>> {
-       // Connect to the database
-       let db = Surreal::new("http://localhost:8000").await?;
-   
-       // Sign in as a namespace and database
-       db.signin(surrealdb::opt::auth::Basic {
-           username: "root",
-           password: "root",
-       })
-       .await?;
-   
-       // Select the namespace and database
-       db.use_ns("ecommerce").use_db("shop").await?;
-   
-       // Proceed with CRUD operations
-       
-       Ok(())
-   }
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let db = Surreal::new("http://localhost:8000").await?;
+    db.signin(surrealdb::opt::auth::Basic { username: "root", password: "root" }).await?;
+    db.use_ns("ecommerce").use_db("shop").await?;
+    Ok(())
+}
 {{< /prism >}}
-4. <p style="text-align: justify;"><strong></strong>Creating Records<strong></strong></p>
-<p style="text-align: justify;">
-Example of creating a new user, category, and product.
-</p>
-
+<p style="text-align: justify;"><strong>4. Creating Records</strong></p>
+<p style="text-align: justify;">Example of creating a new user, category, and product.</p>
 {{< prism lang="rust" line-numbers="true">}}
-   // Creating a new user
-   let new_user = User {
-       id: "user_1".to_string(),
-       name: "Alice Smith".to_string(),
-       email: "alice@example.com".to_string(),
-       joined_at: "2024-04-01T12:00:00Z".to_string(),
-   };
-   
-   db.create("users", &new_user).await?;
-   
-   // Creating a new category
-   let new_category = Category {
-       id: "cat_1".to_string(),
-       name: "Electronics".to_string(),
-   };
-   
-   db.create("categories", &new_category).await?;
-   
-   // Creating a new product
-   let new_product = Product {
-       id: "prod_1".to_string(),
-       name: "Smartphone".to_string(),
-       description: "A high-end smartphone with excellent features.".to_string(),
-       price: 699.99,
-       category: "cat_1".to_string(),
-   };
-   
-   db.create("products", &new_product).await?;
-   
+let new_user = User { id: "user_1".to_string(), name: "Alice Smith".to_string(), email: "alice@example.com".to_string(), joined_at: "2024-04-01T12:00:00Z".to_string() };
+db.create("users", &new_user).await?;
+let new_category = Category { id: "cat_1".to_string(), name: "Electronics".to_string() };
+db.create("categories", &new_category).await?;
+let new_product = Product { id: "prod_1".to_string(), name: "Smartphone".to_string(), description: "A high-end smartphone with excellent features.".to_string(), price: 699.99, category: "cat_1".to_string() };
+db.create("products", &new_product).await?;
 {{< /prism >}}
-5. <p style="text-align: justify;"><strong></strong>Reading Records<strong></strong></p>
-<p style="text-align: justify;">
-Fetching a user by ID.
-</p>
-
+<p style="text-align: justify;"><strong>5. Reading Records</strong></p>
+<p style="text-align: justify;">Fetching a user by ID.</p>
 {{< prism lang="rust" line-numbers="true">}}
-   // Fetching a user by ID
-   let user: User = db.select("users", "user_1").await?;
-   println!("User: {:?}", user);
-   
+let user: User = db.select("users", "user_1").await?;
+println!("User: {:?}", user);
 {{< /prism >}}
-6. <p style="text-align: justify;"><strong></strong>Updating Records<strong></strong></p>
-<p style="text-align: justify;">
-Updating a product's price.
-</p>
-
-{{< prism lang="">}}
-   // Updating a product's price
-   db.update("products", "prod_1")
-       .set("price", 649.99)
-       .await?;
+<p style="text-align: justify;"><strong>6. Updating Records</strong></p>
+<p style="text-align: justify;">Updating a product's price.</p>
+{{< prism lang="rust" line-numbers="true">}}
+db.update("products", "prod_1").set("price", 649.99).await?;
 {{< /prism >}}
-7. <p style="text-align: justify;"><strong></strong>Deleting Records<strong></strong></p>
-<p style="text-align: justify;">
-Deleting an order item.
-</p>
-
-{{< prism lang="rust">}}
-   // Deleting an order item
-   db.delete("order_items", "item_1").await?;
+<p style="text-align: justify;"><strong>7. Deleting Records</strong></p>
+<p style="text-align: justify;">Deleting an order item.</p>
+{{< prism lang="rust" line-numbers="true">}}
+db.delete("order_items", "item_1").await?;
 {{< /prism >}}
-8. <p style="text-align: justify;"><strong></strong>Advanced Querying<strong></strong></p>
-<p style="text-align: justify;">
-Performing a complex query to fetch all orders placed by a specific user, including the products in each order.
-</p>
+<p style="text-align: justify;"><strong>8. Advanced Querying</strong></p>
+<p style="text-align: justify;">Performing a complex query to fetch all orders placed by a specific user, including the products in each order.</p>
 
 {{< prism lang="rust" line-numbers="true">}}
    // Fetching all orders by a specific user with order items and product details
@@ -544,311 +448,77 @@ To illustrate the principles discussed, let's consider a real-world case study o
 Below is a comprehensive Rust example demonstrating how to set up SurrealDB, define the data models, implement indexing strategies, and perform optimized queries for the e-commerce platform.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Setting Up Dependencies<strong></strong></p>
-<p style="text-align: justify;">
-First, ensure that you have the necessary dependencies in your <code>Cargo.toml</code> file:
-</p>
-
+<p style="text-align: justify;"><strong>1. Setting Up Dependencies</strong></p>
+<p style="text-align: justify;">First, ensure that you have the necessary dependencies in your <code>Cargo.toml</code> file:</p>
 {{< prism lang="toml" line-numbers="true">}}
-   [dependencies]
-   surrealdb = "1.0" # Replace with the latest version
-   tokio = { version = "1", features = ["full"] }
-   serde = { version = "1.0", features = ["derive"] }
-   serde_json = "1.0"
+[dependencies]
+surrealdb = "1.0" # Replace with the latest version
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 {{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Defining Data Models<strong></strong></p>
-<p style="text-align: justify;">
-Define the data structures corresponding to the entities in the ERD using Rust structs with Serde for serialization.
-</p>
 
-{{< prism lang="">}}
-   use serde::{Deserialize, Serialize};
-   use surrealdb::Surreal;
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct User {
-       id: String,
-       name: String,
-       email: String,
-       joined_at: String, // Using String for simplicity; consider using chrono::DateTime
-   }
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct Product {
-       id: String,
-       name: String,
-       description: String,
-       price: f64,
-       category: String, // Reference to Category ID
-   }
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct Category {
-       id: String,
-       name: String,
-   }
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct Order {
-       id: String,
-       order_date: String, // Using String for simplicity; consider using chrono::DateTime
-       user: String,       // Reference to User ID
-       total_amount: f64,
-   }
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct OrderItem {
-       id: String,
-       order: String,   // Reference to Order ID
-       product: String, // Reference to Product ID
-       quantity: i32,
-       price: f64,
-   }
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct Review {
-       id: String,
-       user: String,    // Reference to User ID
-       product: String, // Reference to Product ID
-       content: String,
-       rating: i32,
-       created_at: String, // Using String for simplicity; consider using chrono::DateTime
-   }
-   
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Connecting to SurrealDB<strong></strong></p>
-<p style="text-align: justify;">
-Establish a connection to SurrealDB. Ensure that SurrealDB is running and accessible at the specified URL.
-</p>
-
+<p style="text-align: justify;"><strong>2. Defining Data Models</strong></p>
+<p style="text-align: justify;">Define the data structures corresponding to the entities in the ERD using Rust structs with Serde for serialization.</p>
 {{< prism lang="rust" line-numbers="true">}}
-   #[tokio::main]
-   async fn main() -> Result<(), Box<dyn std::error::Error>> {
-       // Connect to the database
-       let db = Surreal::new("http://localhost:8000").await?;
-   
-       // Sign in as a namespace and database
-       db.signin(surrealdb::opt::auth::Basic {
-           username: "root",
-           password: "root",
-       })
-       .await?;
-   
-       // Select the namespace and database
-       db.use_ns("ecommerce").use_db("shop").await?;
-   
-       // Proceed with indexing and CRUD operations
-   
-       Ok(())
-   }
-{{< /prism >}}
-4. <p style="text-align: justify;"><strong></strong>Creating Records with Indexes<strong></strong></p>
-<p style="text-align: justify;">
-Implementing indexes on frequently queried fields such as <code>email</code> in <code>users</code>, <code>name</code> in <code>products</code>, and <code>order_date</code> in <code>orders</code>.
-</p>
+use serde::{Deserialize, Serialize};
+use surrealdb::Surreal;
 
-{{< prism lang="rust" line-numbers="true">}}
-   use surrealdb::sql::Thing;
-   
-   #[tokio::main]
-   async fn main() -> Result<(), Box<dyn std::error::Error>> {
-       // Connect to the database
-       let db = Surreal::new("http://localhost:8000").await?;
-   
-       // Sign in as a namespace and database
-       db.signin(surrealdb::opt::auth::Basic {
-           username: "root",
-           password: "root",
-       })
-       .await?;
-   
-       // Select the namespace and database
-       db.use_ns("ecommerce").use_db("shop").await?;
-   
-       // Define indexes
-       db.query("DEFINE INDEX email_idx ON users (email) TYPE hash;").await?;
-       db.query("DEFINE INDEX name_idx ON products (name) TYPE btree;").await?;
-       db.query("DEFINE INDEX order_date_idx ON orders (order_date) TYPE btree;").await?;
-   
-       // Creating a new user
-       let new_user = User {
-           id: "user_1".to_string(),
-           name: "Alice Smith".to_string(),
-           email: "alice@example.com".to_string(),
-           joined_at: "2024-04-01T12:00:00Z".to_string(),
-       };
-   
-       db.create("users", &new_user).await?;
-   
-       // Creating a new category
-       let new_category = Category {
-           id: "cat_1".to_string(),
-           name: "Electronics".to_string(),
-       };
-   
-       db.create("categories", &new_category).await?;
-   
-       // Creating a new product
-       let new_product = Product {
-           id: "prod_1".to_string(),
-           name: "Smartphone".to_string(),
-           description: "A high-end smartphone with excellent features.".to_string(),
-           price: 699.99,
-           category: "cat_1".to_string(),
-       };
-   
-       db.create("products", &new_product).await?;
-   
-       // Creating a new order
-       let new_order = Order {
-           id: "order_1".to_string(),
-           order_date: "2024-09-01T10:00:00Z".to_string(),
-           user: "user_1".to_string(),
-           total_amount: 699.99,
-       };
-   
-       db.create("orders", &new_order).await?;
-   
-       // Creating a new order item
-       let new_order_item = OrderItem {
-           id: "item_1".to_string(),
-           order: "order_1".to_string(),
-           product: "prod_1".to_string(),
-           quantity: 1,
-           price: 699.99,
-       };
-   
-       db.create("order_items", &new_order_item).await?;
-   
-       // Creating a new review
-       let new_review = Review {
-           id: "review_1".to_string(),
-           user: "user_1".to_string(),
-           product: "prod_1".to_string(),
-           content: "Excellent smartphone with great features.".to_string(),
-           rating: 5,
-           created_at: "2024-09-02T08:30:00Z".to_string(),
-       };
-   
-       db.create("reviews", &new_review).await?;
-   
-       Ok(())
-   }
+// Define the data structures
+#[derive(Serialize, Deserialize, Debug)]
+struct User { id: String, name: String, email: String, joined_at: String }
+// More struct definitions follow...
 {{< /prism >}}
-5. <p style="text-align: justify;"><strong></strong>Reading Records with Indexed Fields<strong></strong></p>
-<p style="text-align: justify;">
-Fetching a user by their indexed email to demonstrate the performance benefits of indexing.
-</p>
 
+<p style="text-align: justify;"><strong>3. Connecting to SurrealDB</strong></p>
+<p style="text-align: justify;">Establish a connection to SurrealDB. Ensure that SurrealDB is running and accessible at the specified URL.</p>
 {{< prism lang="rust" line-numbers="true">}}
-   #[tokio::main]
-   async fn main() -> Result<(), Box<dyn std::error::Error>> {
-       // Connect to the database
-       let db = Surreal::new("http://localhost:8000").await?;
-   
-       // Sign in as a namespace and database
-       db.signin(surrealdb::opt::auth::Basic {
-           username: "root",
-           password: "root",
-       })
-       .await?;
-   
-       // Select the namespace and database
-       db.use_ns("ecommerce").use_db("shop").await?;
-   
-       // Query to fetch user by email using the indexed field
-       let query = r#"
-           SELECT * FROM users WHERE email = 'alice@example.com';
-       "#;
-   
-       let result: serde_json::Value = db.query(query).await?;
-       println!("User: {:?}", result);
-   
-       Ok(())
-   }
+// Main function to connect to SurrealDB
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let db = Surreal::new("http://localhost:8000").await?;
+    db.signin(surrealdb::opt::auth::Basic { username: "root", password: "root" }).await?;
+    db.use_ns("ecommerce").use_db("shop").await?;
+    Ok(())
+}
 {{< /prism >}}
-6. <p style="text-align: justify;"><strong></strong>Updating Records and Index Maintenance<strong></strong></p>
-<p style="text-align: justify;">
-Updating a product's price and observing how the index is maintained.
-</p>
 
+<p style="text-align: justify;"><strong>4. Creating Records with Indexes</strong></p>
+<p style="text-align: justify;">Implementing indexes on frequently queried fields such as <code>email</code> in <code>users</code>, <code>name</code> in <code>products</code>, and <code>order_date</code> in <code>orders</code>.</p>
 {{< prism lang="rust" line-numbers="true">}}
-   #[tokio::main]
-   async fn main() -> Result<(), Box<dyn std::error::Error>> {
-       // Connect to the database
-       let db = Surreal::new("http://localhost:8000").await?;
-   
-       // Sign in as a namespace and database
-       db.signin(surrealdb::opt::auth::Basic {
-           username: "root",
-           password: "root",
-       })
-       .await?;
-   
-       // Select the namespace and database
-       db.use_ns("ecommerce").use_db("shop").await?;
-   
-       // Update the product's price
-       let update_query = r#"
-           UPDATE products SET price = 649.99 WHERE id = 'prod_1';
-       "#;
-   
-       db.query(update_query).await?;
-   
-       // Fetch the updated product to verify
-       let fetch_query = r#"
-           SELECT * FROM products WHERE id = 'prod_1';
-       "#;
-   
-       let updated_product: serde_json::Value = db.query(fetch_query).await?;
-       println!("Updated Product: {:?}", updated_product);
-   
-       Ok(())
-   }
+// Code to define indexes and create records
+db.query("DEFINE INDEX email_idx ON users (email) TYPE hash;").await?;
+// Additional indexing and record creation follow...
 {{< /prism >}}
-7. <p style="text-align: justify;"><strong></strong>Deleting Records and Index Cleanup<strong></strong></p>
-<p style="text-align: justify;">
-Deleting an order item and ensuring the associated index is updated accordingly.
-</p>
 
+<p style="text-align: justify;"><strong>5. Reading Records with Indexed Fields</strong></p>
+<p style="text-align: justify;">Fetching a user by their indexed email to demonstrate the performance benefits of indexing.</p>
 {{< prism lang="rust" line-numbers="true">}}
-   #[tokio::main]
-   async fn main() -> Result<(), Box<dyn std::error::Error>> {
-       // Connect to the database
-       let db = Surreal::new("http://localhost:8000").await?;
-   
-       // Sign in as a namespace and database
-       db.signin(surrealdb::opt::auth::Basic {
-           username: "root",
-           password: "root",
-       })
-       .await?;
-   
-       // Select the namespace and database
-       db.use_ns("ecommerce").use_db("shop").await?;
-   
-       // Delete the order item
-       let delete_query = r#"
-           DELETE FROM order_items WHERE id = 'item_1';
-       "#;
-   
-       db.query(delete_query).await?;
-   
-       // Verify deletion
-       let verify_query = r#"
-           SELECT * FROM order_items WHERE id = 'item_1';
-       "#;
-   
-       let deleted_item: serde_json::Value = db.query(verify_query).await?;
-       println!("Deleted Order Item: {:?}", deleted_item);
-   
-       Ok(())
-   }
+// Query to fetch user by indexed email
+let query = "SELECT * FROM users WHERE email = 'alice@example.com';";
+let result: serde_json::Value = db.query(query).await?;
+println!("User: {:?}", result);
 {{< /prism >}}
-8. <p style="text-align: justify;"><strong></strong>Advanced Querying with Optimized Indexes<strong></strong></p>
-<p style="text-align: justify;">
-Performing a complex query to fetch all orders placed by a specific user, including the products in each order, utilizing the indexes to enhance performance.
-</p>
+
+<p style="text-align: justify;"><strong>6. Updating Records and Index Maintenance</strong></p>
+<p style="text-align: justify;">Updating a product's price and observing how the index is maintained.</p>
+{{< prism lang="rust" line-numbers="true">}}
+// Update the product's price and verify
+db.query("UPDATE products SET price = 649.99 WHERE id = 'prod_1';").await?;
+// Fetch to confirm update
+{{< /prism >}}
+
+<p style="text-align: justify;"><strong>7. Deleting Records and Index Cleanup</strong></p>
+<p style="text-align: justify;">Deleting an order item and ensuring the associated index is updated accordingly.</p>
+{{< prism lang="rust" line-numbers="true">}}
+// Code to delete order item and verify deletion
+let delete_query = "DELETE FROM order_items WHERE id = 'item_1';";
+db.query(delete_query).await?;
+{{< /prism >}}
+
+<p style="text-align: justify;"><strong>8. Advanced Querying with Optimized Indexes</strong></p>
+<p style="text-align: justify;">Performing a complex query to fetch all orders placed by a specific user, including the products in each order, utilizing the indexes to enhance performance.</p>
+<!-- Complex querying example here -->
 
 {{< prism lang="rust" line-numbers="true">}}
    #[tokio::main]
@@ -1194,84 +864,75 @@ Let’s consider implementing range partitioning based on <code>order_date</code
 Below is a Rust example demonstrating how to configure range partitioning in SurrealDB for the <code>orders</code> table based on <code>order_date</code>.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Setting Up Dependencies<strong></strong></p>
-<p style="text-align: justify;">
-Ensure that you have the necessary dependencies in your <code>Cargo.toml</code> file:
-</p>
-
+<p style="text-align: justify;"><strong>1. Setting Up Dependencies</strong></p>
+<p style="text-align: justify;">Ensure that you have the necessary dependencies in your <code>Cargo.toml</code> file:</p>
 {{< prism lang="toml" line-numbers="true">}}
-   [dependencies]
-   surrealdb = "1.0" # Replace with the latest version
-   tokio = { version = "1", features = ["full"] }
-   serde = { version = "1.0", features = ["derive"] }
-   serde_json = "1.0"
+[dependencies]
+surrealdb = "1.0" # Replace with the latest version
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 {{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Defining Data Models<strong></strong></p>
-<p style="text-align: justify;">
-Define the data structures corresponding to the entities in the ERD using Rust structs with Serde for serialization.
-</p>
 
+<p style="text-align: justify;"><strong>2. Defining Data Models</strong></p>
+<p style="text-align: justify;">Define the data structures corresponding to the entities in the ERD using Rust structs with Serde for serialization.</p>
 {{< prism lang="rust" line-numbers="true">}}
-   use serde::{Deserialize, Serialize};
-   use surrealdb::Surreal;
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct Order {
-       id: String,
-       order_date: String, // Using String for simplicity; consider using chrono::DateTime
-       user: String,       // Reference to User ID
-       total_amount: f64,
-   }
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Connecting to SurrealDB and Applying Partitioning<strong></strong></p>
-<p style="text-align: justify;">
-Establish a connection to SurrealDB and apply range partitioning based on <code>order_date</code>.
-</p>
+use serde::{Deserialize, Serialize};
+use surrealdb::Surreal;
 
-{{< prism lang="rust" line-numbers="true">}}
-   #[tokio::main]
-   async fn main() -> Result<(), Box<dyn std::error::Error>> {
-       // Connect to the database
-       let db = Surreal::new("http://localhost:8000").await?;
-   
-       // Sign in as a namespace and database
-       db.signin(surrealdb::opt::auth::Basic {
-           username: "root",
-           password: "root",
-       })
-       .await?;
-   
-       // Select the namespace and database
-       db.use_ns("ecommerce").use_db("shop").await?;
-   
-       // Define range partitioning on order_date for the orders table
-       let partitioning_query = r#"
-           DEFINE PARTITION orders_partition 
-           PARTITION BY RANGE(order_date) 
-           START '2024-01-01' 
-           END '2025-01-01' 
-           EVERY '1 MONTH';
-       "#;
-   
-       db.query(partitioning_query).await?;
-   
-       // Creating a new order
-       let new_order = Order {
-           id: "order_1".to_string(),
-           order_date: "2024-09-01T10:00:00Z".to_string(),
-           user: "user_1".to_string(),
-           total_amount: 699.99,
-       };
-   
-       db.create("orders", &new_order).await?;
-   
-       Ok(())
-   }
+#[derive(Serialize, Deserialize, Debug)]
+struct Order {
+    id: String,
+    order_date: String, // Using String for simplicity; consider using chrono::DateTime
+    user: String,       // Reference to User ID
+    total_amount: f64,
+}
 {{< /prism >}}
-4. <p style="text-align: justify;"><strong></strong>Verifying Partitioning<strong></strong></p>
-<p style="text-align: justify;">
-After implementing partitioning, verify that data is correctly distributed across partitions by querying specific partitions.
-</p>
+
+<p style="text-align: justify;"><strong>3. Connecting to SurrealDB and Applying Partitioning</strong></p>
+<p style="text-align: justify;">Establish a connection to SurrealDB and apply range partitioning based on <code>order_date</code>.</p>
+{{< prism lang="rust" line-numbers="true">}}
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Connect to the database
+    let db = Surreal::new("http://localhost:8000").await?;
+
+    // Sign in as a namespace and database
+    db.signin(surrealdb::opt::auth::Basic {
+        username: "root",
+        password: "root",
+    }).await?;
+
+    // Select the namespace and database
+    db.use_ns("ecommerce").use_db("shop").await?;
+
+    // Define range partitioning on order_date for the orders table
+    let partitioning_query = r#"
+        DEFINE PARTITION orders_partition 
+        PARTITION BY RANGE(order_date) 
+        START '2024-01-01' 
+        END '2025-01-01' 
+        EVERY '1 MONTH';
+    "#;
+
+    db.query(partitioning_query).await?;
+
+    // Creating a new order
+    let new_order = Order {
+        id: "order_1".to_string(),
+        order_date: "2024-09-01T10:00:00Z".to_string(),
+        user: "user_1".to_string(),
+        total_amount: 699.99,
+    };
+
+    db.create("orders", &new_order).await?;
+
+    Ok(())
+}
+{{< /prism >}}
+
+<p style="text-align: justify;"><strong>4. Verifying Partitioning</strong></p>
+<p style="text-align: justify;">After implementing partitioning, verify that data is correctly distributed across partitions by querying specific partitions.</p>
 
 {{< prism lang="rust" line-numbers="true">}}
    #[tokio::main]
@@ -1329,233 +990,159 @@ To illustrate the principles discussed, let's consider a real-world case study o
 Below is a comprehensive Rust example demonstrating how to set up SurrealDB, define the data models, implement partitioning and sharding strategies, and perform CRUD operations for the e-commerce platform.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Setting Up Dependencies<strong></strong></p>
-<p style="text-align: justify;">
-Ensure that you have the necessary dependencies in your <code>Cargo.toml</code> file:
-</p>
-
+<p style="text-align: justify;"><strong>1. Setting Up Dependencies</strong></p>
+<p style="text-align: justify;">Ensure that you have the necessary dependencies in your <code>Cargo.toml</code> file:</p>
 {{< prism lang="toml" line-numbers="true">}}
-   [dependencies]
-   surrealdb = "1.0" # Replace with the latest version
-   tokio = { version = "1", features = ["full"] }
-   serde = { version = "1.0", features = ["derive"] }
-   serde_json = "1.0"
-   chrono = { version = "0.4", features = ["serde"] }
+[dependencies]
+surrealdb = "1.0" # Replace with the latest version
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
 {{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Defining Data Models<strong></strong></p>
-<p style="text-align: justify;">
-Define the data structures corresponding to the entities in the ERD using Rust structs with Serde for serialization.
-</p>
 
+<p style="text-align: justify;"><strong>2. Defining Data Models</strong></p>
+<p style="text-align: justify;">Define the data structures corresponding to the entities in the ERD using Rust structs with Serde for serialization.</p>
 {{< prism lang="rust" line-numbers="true">}}
-   use serde::{Deserialize, Serialize};
-   use surrealdb::Surreal;
-   use chrono::{DateTime, Utc};
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct User {
-       id: String,
-       name: String,
-       email: String,
-       joined_at: DateTime<Utc>,
-   }
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct Product {
-       id: String,
-       name: String,
-       description: String,
-       price: f64,
-       category: String, // Reference to Category ID
-   }
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct Category {
-       id: String,
-       name: String,
-   }
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct Order {
-       id: String,
-       order_date: DateTime<Utc>,
-       user: String,       // Reference to User ID
-       total_amount: f64,
-   }
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct OrderItem {
-       id: String,
-       order: String,   // Reference to Order ID
-       product: String, // Reference to Product ID
-       quantity: i32,
-       price: f64,
-   }
-   
-   #[derive(Serialize, Deserialize, Debug)]
-   struct Review {
-       id: String,
-       user: String,    // Reference to User ID
-       product: String, // Reference to Product ID
-       content: String,
-       rating: i32,
-       created_at: DateTime<Utc>,
-   }
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Connecting to SurrealDB and Implementing Partitioning<strong></strong></p>
-<p style="text-align: justify;">
-Establish a connection to SurrealDB and implement data partitioning based on <code>order_date</code> using range partitioning.
-</p>
+use serde::{Deserialize, Serialize};
+use surrealdb::Surreal;
+use chrono::{DateTime, Utc};
 
-{{< prism lang="rust" line-numbers="true">}}
-   #[tokio::main]
-   async fn main() -> Result<(), Box<dyn std::error::Error>> {
-       // Connect to the database
-       let db = Surreal::new("http://localhost:8000").await?;
-   
-       // Sign in as a namespace and database
-       db.signin(surrealdb::opt::auth::Basic {
-           username: "root",
-           password: "root",
-       })
-       .await?;
-   
-       // Select the namespace and database
-       db.use_ns("ecommerce").use_db("shop").await?;
-   
-       // Define range partitioning on order_date for the orders table
-       let partitioning_query = r#"
-           DEFINE PARTITION orders_partition 
-           PARTITION BY RANGE(order_date) 
-           START '2024-01-01' 
-           END '2025-01-01' 
-           EVERY '1 MONTH';
-       "#;
-   
-       db.query(partitioning_query).await?;
-   
-       // Define sharding for the products table using hash partitioning on category
-       let sharding_query = r#"
-           DEFINE SHARD products_shard 
-           SHARD BY HASH(category) 
-           SHARD COUNT 4;
-       "#;
-   
-       db.query(sharding_query).await?;
-   
-       // Creating a new user
-       let new_user = User {
-           id: "user_1".to_string(),
-           name: "Alice Smith".to_string(),
-           email: "alice@example.com".to_string(),
-           joined_at: Utc::now(),
-       };
-   
-       db.create("users", &new_user).await?;
-   
-       // Creating a new category
-       let new_category = Category {
-           id: "cat_1".to_string(),
-           name: "Electronics".to_string(),
-       };
-   
-       db.create("categories", &new_category).await?;
-   
-       // Creating a new product
-       let new_product = Product {
-           id: "prod_1".to_string(),
-           name: "Smartphone".to_string(),
-           description: "A high-end smartphone with excellent features.".to_string(),
-           price: 699.99,
-           category: "cat_1".to_string(),
-       };
-   
-       db.create("products", &new_product).await?;
-   
-       // Creating a new order
-       let new_order = Order {
-           id: "order_1".to_string(),
-           order_date: Utc::now(),
-           user: "user_1".to_string(),
-           total_amount: 699.99,
-       };
-   
-       db.create("orders", &new_order).await?;
-   
-       // Creating a new order item
-       let new_order_item = OrderItem {
-           id: "item_1".to_string(),
-           order: "order_1".to_string(),
-           product: "prod_1".to_string(),
-           quantity: 1,
-           price: 699.99,
-       };
-   
-       db.create("order_items", &new_order_item).await?;
-   
-       // Creating a new review
-       let new_review = Review {
-           id: "review_1".to_string(),
-           user: "user_1".to_string(),
-           product: "prod_1".to_string(),
-           content: "Excellent smartphone with great features.".to_string(),
-           rating: 5,
-           created_at: Utc::now(),
-       };
-   
-       db.create("reviews", &new_review).await?;
-   
-       Ok(())
-   }
-{{< /prism >}}
-4. <p style="text-align: justify;"><strong></strong>Scaling the Database with Sharding<strong></strong></p>
-<p style="text-align: justify;">
-Implement sharding for the <code>products</code> table to distribute data across multiple shards based on the <code>category</code> attribute.
-</p>
+#[derive(Serialize, Deserialize, Debug)]
+struct User {
+    id: String,
+    name: String,
+    email: String,
+    joined_at: DateTime<Utc>,
+}
 
-{{< prism lang="rust" line-numbers="true">}}
-   #[tokio::main]
-   async fn main() -> Result<(), Box<dyn std::error::Error>> {
-       // Connect to the database
-       let db = Surreal::new("http://localhost:8000").await?;
-   
-       // Sign in as a namespace and database
-       db.signin(surrealdb::opt::auth::Basic {
-           username: "root",
-           password: "root",
-       })
-       .await?;
-   
-       // Select the namespace and database
-       db.use_ns("ecommerce").use_db("shop").await?;
-   
-       // Define sharding for the products table using hash partitioning on category
-       let sharding_query = r#"
-           DEFINE SHARD products_shard 
-           SHARD BY HASH(category) 
-           SHARD COUNT 4;
-       "#;
-   
-       db.query(sharding_query).await?;
-   
-       // Creating a new product in a specific shard
-       let new_product = Product {
-           id: "prod_2".to_string(),
-           name: "Laptop".to_string(),
-           description: "A powerful laptop suitable for all your computing needs.".to_string(),
-           price: 1299.99,
-           category: "cat_1".to_string(),
-       };
-   
-       db.create("products", &new_product).await?;
-   
-       Ok(())
-   }
+#[derive(Serialize, Deserialize, Debug)]
+struct Product {
+    id: String,
+    name: String,
+    description: String,
+    price: f64,
+    category: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Category {
+    id: String,
+    name: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Order {
+    id: String,
+    order_date: DateTime<Utc>,
+    user: String,
+    total_amount: f64,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct OrderItem {
+    id: String,
+    order: String,
+    product: String,
+    quantity: i32,
+    price: f64,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Review {
+    id: String,
+    user: String,
+    product: String,
+    content: String,
+    rating: i32,
+    created_at: DateTime<Utc>,
+}
 {{< /prism >}}
-5. <p style="text-align: justify;"><strong></strong>Monitoring and Adjusting Partitioning and Sharding<strong></strong></p>
-<p style="text-align: justify;">
-Continuously monitor data distribution and query performance to ensure that partitioning and sharding strategies remain effective as data grows and access patterns evolve.
-</p>
+
+<p style="text-align: justify;"><strong>3. Connecting to SurrealDB and Implementing Partitioning</strong></p>
+<p style="text-align: justify;">Establish a connection to SurrealDB and implement data partitioning based on <code>order_date</code> using range partitioning.</p>
+{{< prism lang="rust" line-numbers="true">}}
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let db = Surreal::new("http://localhost:8000").await?;
+
+    db.signin(surrealdb::opt::auth::Basic {
+        username: "root",
+        password: "root",
+    }).await?;
+
+    db.use_ns("ecommerce").use_db("shop").await?;
+
+    // Define range partitioning on order_date for the orders table
+    let partitioning_query = r#"
+        DEFINE PARTITION orders_partition 
+        PARTITION BY RANGE(order_date) 
+        START '2024-01-01' 
+        END '2025-01-01' 
+        EVERY '1 MONTH';
+    "#;
+
+    db.query(partitioning_query).await?;
+
+    // Define sharding for the products table using hash partitioning on category
+    let sharding_query = r#"
+        DEFINE SHARD products_shard 
+        SHARD BY HASH(category) 
+        SHARD COUNT 4;
+    "#;
+
+    db.query(sharding_query).await?;
+
+    let new_user = User {
+        id: "user_1".to_string(),
+        name: "Alice Smith".to_string(),
+        email: "alice@example.com".to_string(),
+        joined_at: Utc::now(),
+    };
+
+    db.create("users", &new_user).await?;
+    Ok(())
+}
+{{< /prism >}}
+
+<p style="text-align: justify;"><strong>4. Scaling the Database with Sharding</strong></p>
+<p style="text-align: justify;">Implement sharding for the <code>products</code> table to distribute data across multiple shards based on the <code>category</code> attribute.</p>
+{{< prism lang="rust" line-numbers="true">}}
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let db = Surreal::new("http://localhost:8000").await?;
+
+    db.signin(surrealdb::opt::auth::Basic {
+        username: "root",
+        password: "root",
+    }).await?;
+
+    db.use_ns("ecommerce").use_db("shop").await?;
+
+    let sharding_query = r#"
+        DEFINE SHARD products_shard 
+        SHARD BY HASH(category) 
+        SHARD COUNT 4;
+    "#;
+
+    db.query(sharding_query).await?;
+
+    let new_product = Product {
+        id: "prod_2".to_string(),
+        name: "Laptop".to_string(),
+        description: "A powerful laptop suitable for all your computing needs.".to_string(),
+        price: 1299.99,
+        category: "cat_1".to_string(),
+    };
+
+    db.create("products", &new_product).await?;
+    Ok(())
+}
+{{< /prism >}}
+
+<p style="text-align: justify;"><strong>5. Monitoring and Adjusting Partitioning and Sharding</strong></p>
+<p style="text-align: justify;">Continuously monitor data distribution and query performance to ensure that partitioning and sharding strategies remain effective as data grows and access patterns evolve.</p>
+
 
 {{< prism lang="rust" line-numbers="true">}}
    #[tokio::main]
