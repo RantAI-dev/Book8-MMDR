@@ -139,7 +139,7 @@ RantAI, a dynamic tech startup from Indonesia, is driven by a vision to tackle s
 
 <center>
 
-## 👥 MLVR Authors
+## 👥 MMDR Authors
 
 </center>
 
