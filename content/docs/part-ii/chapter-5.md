@@ -864,37 +864,36 @@ Indexes are special database structures that speed up data retrieval operations.
 <strong>Best Practices:</strong>
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Identify Frequently Queried Columns:<strong></strong> Columns used in <code>WHERE</code>, <code>JOIN</code>, and <code>ORDER BY</code> clauses are prime candidates for indexing.</p>
-2. <p style="text-align: justify;"><strong></strong>Create Indexes During Migrations:<strong></strong></p>
-{{< prism lang="sql" line-numbers="true">}}
-   // In your migration file (e.g., 20230918_add_indexes.up.sql)
-   CREATE INDEX idx_users_name ON users(name);
-   CREATE INDEX idx_posts_user_id ON posts(user_id);
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Analyze Query Plans:<strong></strong> Use PostgreSQL's <code>EXPLAIN</code> command to understand how your queries are executed and ensure indexes are being utilized.</p>
-<p style="text-align: justify;">
-<strong>Example: Creating an Index on the</strong> <code>age</code> Column
-</p>
+<ol>
+    <li style="text-align: justify;"><strong>Identify Frequently Queried Columns:</strong>
+        <p style="text-align: justify;">Columns used in <code>WHERE</code>, <code>JOIN</code>, and <code>ORDER BY</code> clauses are prime candidates for indexing.</p>
+    </li>
+    <li style="text-align: justify;"><strong>Create Indexes During Migrations:</strong>
+        {{< prism lang="sql" line-numbers="true">}}
+        -- In your migration file (e.g., 20230918_add_indexes.up.sql)
+        CREATE INDEX idx_users_name ON users(name);
+        CREATE INDEX idx_posts_user_id ON posts(user_id);
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Analyze Query Plans:</strong>
+        <p style="text-align: justify;">Use PostgreSQL's <code>EXPLAIN</code> command to understand how your queries are executed and ensure indexes are being utilized.</p>
+        <p style="text-align: justify;"><strong>Example: Creating an Index on the</strong> <code>age</code> <strong>Column</strong></p>
+        {{< prism lang="sql" line-numbers="true">}}
+        CREATE INDEX idx_users_age ON users(age);
+        {{< /prism >}}
+        <p style="text-align: justify;"><strong>Usage Example in Rust:</strong></p>
+        <p style="text-align: justify;">No changes are needed in your Rust code once the index is created. Diesel will automatically leverage the index when executing queries that filter on the <code>age</code> column.</p>
+        {{< prism lang="rust" line-numbers="true">}}
+        fn fetch_users_by_age(conn: &PgConnection, min_age: i32) -> QueryResult<Vec<User>> {
+            use crate::schema::users::dsl::*;
+            users.filter(age.ge(min_age)).load::<User>(conn)
+        }
+        {{< /prism >}}
+    </li>
+</ol>
 
-{{< prism lang="python">}}
-CREATE INDEX idx_users_age ON users(age);
-{{< /prism >}}
-<p style="text-align: justify;">
-<strong>Usage Example in Rust:</strong>
-</p>
-
-<p style="text-align: justify;">
-No changes are needed in your Rust code once the index is created. Diesel will automatically leverage the index when executing queries that filter on the <code>age</code> column.
-</p>
-
-{{< prism lang="rust" line-numbers="true">}}
-fn fetch_users_by_age(conn: &PgConnection, min_age: i32) -> QueryResult<Vec<User>> {
-    use crate::schema::users::dsl::*;
-
-    users.filter(age.ge(min_age)).load::<User>(conn)
-}
-{{< /prism >}}
 ### **Select Specific Fields**
+
 <p style="text-align: justify;">
 Retrieving only the necessary columns reduces the amount of data transferred and processed, leading to faster query execution.
 </p>
@@ -1283,7 +1282,7 @@ Transactions are a cornerstone of database systems, providing the mechanisms nec
 Diesel ORM in Rust offers a robust framework for transaction management, leveraging Rust’s strict type system and ownership model to provide compile-time safety guarantees. This ensures that common issues, such as forgetting to roll back or commit a transaction, are avoided before they can lead to runtime errors. In this section, we will delve into the importance of transaction management, how Diesel simplifies this process, and how to implement advanced transactional operations that maintain data integrity through robust error handling and rollback mechanisms.
 </p>
 
-## 5.4.1 Transactions and ACID Properties
+## **5.4.1 Transactions and ACID Properties**
 <p style="text-align: justify;">
 Transactions are vital for managing database operations in a way that ensures both data integrity and reliability, particularly in systems where multiple operations occur concurrently or where failures may happen unexpectedly. Understanding the ACID properties of transactions—Atomicity, Consistency, Isolation, and Durability—is essential to leveraging the full potential of transaction management in any database system. These properties ensure that transactions not only maintain the correctness of the data but also provide resilience against failures or system crashes.
 </p>
@@ -1331,9 +1330,8 @@ By relying on Rust's built-in error handling (using <code>Result</code> and <cod
 The following example demonstrates how to create a transaction using Diesel’s <code>transaction</code> method. The transaction scope ensures that all enclosed operations are executed as a single unit:
 </p>
 
-{{< prism lang="">}}
+{{< prism lang="rust" line-numbers="true">}}
 use diesel::prelude::*;
-
 let result = connection.transaction::<_, diesel::result::Error, _>(|| {
     // Perform your transactional operations here, such as inserts, updates, or deletes
     // If any of these operations fail, the entire transaction will be rolled back
@@ -1471,7 +1469,7 @@ A typical complex transaction involves multiple steps, where each step may succe
 Let’s walk through a practical example of handling a transaction that inserts a new user, performs some conditional logic, and inserts additional data. If any part of the transaction fails, the entire operation is rolled back.
 </p>
 
-{{< prism lang="">}}
+{{< prism lang="rust" line-numbers="true">}}
 fn main() {
     let connection = establish_connection();
 
@@ -1698,24 +1696,41 @@ In real-world applications, the performance of CRUD operations directly affects 
 2. <p style="text-align: justify;"><strong></strong>Critical CRUD Operations<strong></strong>: Begin by identifying the most frequently used or critical CRUD operations in your application. These could be operations related to user management, order processing, or any other core feature. By focusing on these key operations, you can prioritize the areas of the system that are most likely to experience performance bottlenecks as the application scales.</p>
 3. <p style="text-align: justify;"><strong></strong>Set Up Realistic Test Environments<strong></strong>: Ensure that the benchmarking environment closely mirrors your production setup. This includes matching the database configurations, server specifications, and network conditions to get an accurate representation of the application’s behavior under real-world conditions.</p>
 ### **Optimization Steps**
-1. <p style="text-align: justify;"><strong></strong>Review Query Efficiency<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Analyze SQL Queries</strong>: Diesel allows you to generate SQL queries from Rust code, but sometimes these queries can be less efficient than anticipated. It’s important to regularly analyze the SQL queries generated by Diesel and ensure they are optimized. Use PostgreSQL’s <code>EXPLAIN</code> or <code>EXPLAIN ANALYZE</code> commands to review query execution plans and spot inefficiencies like unnecessary full table scans, missing indexes, or inefficient joins.</p>
-- <p style="text-align: justify;"><strong>Optimize Joins and Filters</strong>: If your application frequently performs complex queries involving joins or filters, ensure that these queries are optimized. In Diesel, you can simplify and optimize joins by narrowing down the columns you need instead of fetching entire records, and ensuring that the necessary indexes are in place.</p>
-2. <p style="text-align: justify;"><strong></strong>Implement Caching<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Cache Frequently Accessed Data</strong>: Caching can significantly reduce the load on your database by storing frequently accessed data in memory. This is especially useful for read-heavy operations such as fetching user profiles or product listings. By using caching mechanisms like Redis or Memcached, you can serve cached data without needing to hit the database every time.</p>
-- <p style="text-align: justify;"><strong>Reduce Repeated Queries</strong>: Diesel’s query generation is efficient, but in scenarios where the same query is executed repeatedly, caching results for a short period can further enhance performance. This technique is particularly useful in scenarios with high traffic where the same data is requested frequently.</p>
-3. <p style="text-align: justify;"><strong></strong>Concurrency Management<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Connection Pooling</strong>: Efficiently manage database connections using connection pooling libraries such as <code>r2d2</code> or <code>tokio_postgres</code> for asynchronous applications. These libraries allow Diesel to reuse existing connections, reducing the overhead associated with establishing new connections for each request.</p>
-- <p style="text-align: justify;"><strong>Transaction Isolation Levels</strong>: Concurrency issues, such as deadlocks or race conditions, can arise if multiple transactions attempt to update the same data simultaneously. Diesel allows you to manage transaction isolation levels, which control how and when the changes made in one transaction are visible to other transactions. Adjusting these levels appropriately for your application's needs helps avoid locking issues or contention.</p>
-- <p style="text-align: justify;"><strong>Optimistic Locking</strong>: In high-concurrency environments, implementing optimistic locking can help prevent conflicts without impacting performance. Optimistic locking ensures that updates only occur if the data has not changed since it was last read, reducing the chances of transaction conflicts.</p>
-4. <p style="text-align: justify;"><strong></strong>Resource Allocation<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Database Settings</strong>: Adjusting the database configuration can have a significant impact on performance. For example, tweaking PostgreSQL settings such as <code>work_mem</code>, <code>maintenance_work_mem</code>, <code>shared_buffers</code>, and <code>max_connections</code> can help the database handle larger queries and concurrent operations more efficiently.</p>
-- <p style="text-align: justify;"><strong>Connection Pool Size</strong>: Adjusting the connection pool size to match your application's traffic can prevent overloading the database. Ensure that the pool size is large enough to handle expected concurrency levels, but not so large that it overwhelms the database with too many simultaneous connections.</p>
-- <p style="text-align: justify;"><strong>Memory and Disk I/O</strong>: As databases grow larger, memory and disk I/O become critical factors in performance. Monitoring these resources and adjusting allocation (such as increasing memory for caching or upgrading to faster storage solutions) can prevent bottlenecks, especially when dealing with large datasets or high traffic.</p>
-5. <p style="text-align: justify;"><strong></strong>Iterative Testing<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Benchmark After Each Optimization</strong>: After applying each optimization, conduct additional benchmarks to measure the impact on performance. Continuous testing allows you to validate that the changes have had the desired effect and helps avoid introducing regressions that could degrade performance in other areas of the application.</p>
-- <p style="text-align: justify;"><strong>Test Under Peak Load Conditions</strong>: It’s crucial to simulate peak load conditions during testing to ensure that your optimizations hold up when the system is under maximum stress. This may involve increasing the number of simulated users, increasing the size of the dataset, or performing concurrent reads and writes at a higher volume than the typical load.</p>
-- <p style="text-align: justify;"><strong>Monitor Resource Utilization</strong>: Alongside performance testing, monitor system metrics such as CPU, memory, and disk I/O usage to identify any potential bottlenecks outside of the database. In some cases, performance issues may arise from the application server or infrastructure rather than the database itself.</p>
+<ol>
+    <li style="text-align: justify;"><strong>Review Query Efficiency:</strong>
+        <ul>
+            <li style="text-align: justify;"><strong>Analyze SQL Queries:</strong> Diesel allows you to generate SQL queries from Rust code, but sometimes these queries can be less efficient than anticipated. It’s important to regularly analyze the SQL queries generated by Diesel and ensure they are optimized. Use PostgreSQL’s <code>EXPLAIN</code> or <code>EXPLAIN ANALYZE</code> commands to review query execution plans and spot inefficiencies like unnecessary full table scans, missing indexes, or inefficient joins.</li>
+            <li style="text-align: justify;"><strong>Optimize Joins and Filters:</strong> If your application frequently performs complex queries involving joins or filters, ensure that these queries are optimized. In Diesel, you can simplify and optimize joins by narrowing down the columns you need instead of fetching entire records, and ensuring that the necessary indexes are in place.</li>
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Implement Caching:</strong>
+        <ul>
+            <li style="text-align: justify;"><strong>Cache Frequently Accessed Data:</strong> Caching can significantly reduce the load on your database by storing frequently accessed data in memory. This is especially useful for read-heavy operations such as fetching user profiles or product listings. By using caching mechanisms like Redis or Memcached, you can serve cached data without needing to hit the database every time.</li>
+            <li style="text-align: justify;"><strong>Reduce Repeated Queries:</strong> Diesel’s query generation is efficient, but in scenarios where the same query is executed repeatedly, caching results for a short period can further enhance performance. This technique is particularly useful in scenarios with high traffic where the same data is requested frequently.</li>
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Concurrency Management:</strong>
+        <ul>
+            <li style="text-align: justify;"><strong>Connection Pooling:</strong> Efficiently manage database connections using connection pooling libraries such as <code>r2d2</code> or <code>tokio_postgres</code> for asynchronous applications. These libraries allow Diesel to reuse existing connections, reducing the overhead associated with establishing new connections for each request.</li>
+            <li style="text-align: justify;"><strong>Transaction Isolation Levels:</strong> Concurrency issues, such as deadlocks or race conditions, can arise if multiple transactions attempt to update the same data simultaneously. Diesel allows you to manage transaction isolation levels, which control how and when the changes made in one transaction are visible to other transactions. Adjusting these levels appropriately for your application's needs helps avoid locking issues or contention.</li>
+            <li style="text-align: justify;"><strong>Optimistic Locking:</strong> In high-concurrency environments, implementing optimistic locking can help prevent conflicts without impacting performance. Optimistic locking ensures that updates only occur if the data has not changed since it was last read, reducing the chances of transaction conflicts.</li>
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Resource Allocation:</strong>
+        <ul>
+            <li style="text-align: justify;"><strong>Database Settings:</strong> Adjusting the database configuration can have a significant impact on performance. For example, tweaking PostgreSQL settings such as <code>work_mem</code>, <code>maintenance_work_mem</code>, <code>shared_buffers</code>, and <code>max_connections</code> can help the database handle larger queries and concurrent operations more efficiently.</li>
+            <li style="text-align: justify;"><strong>Connection Pool Size:</strong> Adjusting the connection pool size to match your application's traffic can prevent overloading the database. Ensure that the pool size is large enough to handle expected concurrency levels, but not so large that it overwhelms the database with too many simultaneous connections.</li>
+            <li style="text-align: justify;"><strong>Memory and Disk I/O:</strong> As databases grow larger, memory and disk I/O become critical factors in performance. Monitoring these resources and adjusting allocation (such as increasing memory for caching or upgrading to faster storage solutions) can prevent bottlenecks, especially when dealing with large datasets or high traffic.</li>
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Iterative Testing:</strong>
+        <ul>
+            <li style="text-align: justify;"><strong>Benchmark After Each Optimization:</strong> After applying each optimization, conduct additional benchmarks to measure the impact on performance. Continuous testing allows you to validate that the changes have had the desired effect and helps avoid introducing regressions that could degrade performance in other areas of the application.</li>
+            <li style="text-align: justify;"><strong>Test Under Peak Load Conditions:</strong> It’s crucial to simulate peak load conditions during testing to ensure that your optimizations hold up when the system is under maximum stress. This may involve increasing the number of simulated users, increasing the size of the dataset, or performing concurrent reads and writes at a higher volume than the typical load.</li>
+            <li style="text-align: justify;"><strong>Monitor Resource Utilization:</strong> Alongside performance testing, monitor system metrics such as CPU, memory, and disk I/O usage to identify any potential bottlenecks outside of the database. In some cases, performance issues may arise from the application server or infrastructure rather than the database itself.</li>
+        </ul>
+    </li>
+</ol>
 <p style="text-align: justify;">
 Performance tuning is an iterative process that requires careful planning, benchmarking, and optimization to ensure that CRUD operations in a Diesel-powered Rust application can scale effectively. By focusing on key areas such as query efficiency, caching, concurrency management, and resource allocation, developers can significantly improve the performance of their applications. Regular benchmarking and testing are essential for maintaining optimal performance as the application grows in complexity and user demand increases.
 </p>

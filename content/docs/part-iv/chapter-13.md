@@ -457,37 +457,38 @@ Automation not only reduces manual workload but also ensures that critical tasks
 To enable data synchronization between PostgreSQL and SurrealDB, PostgreSQL must be configured to support replication. This involves modifying configuration files to allow replication connections and setting up necessary parameters.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Edit<strong></strong> <code>postgresql.conf</code></p>
-<p style="text-align: justify;">
-Locate the <code>postgresql.conf</code> file, typically found in the PostgreSQL data directory (e.g., <code>/etc/postgresql/14/main/postgresql.conf</code> on Linux systems or <code>C:\Program Files\PostgreSQL\14\data\postgresql.conf</code> on Windows). Open the file in a text editor and modify the following settings to enable logical replication:
-</p>
-
-{{< prism lang="">}}
-   listen_addresses = '*'
-   wal_level = logical
-   max_replication_slots = 4
-   max_wal_senders = 4
+<p style="text-align: justify;"><strong>1. Edit <code>postgresql.conf</code></strong></p>
+<p style="text-align: justify;">Locate the <code>postgresql.conf</code> file, typically found in the PostgreSQL data directory (e.g., <code>/etc/postgresql/14/main/postgresql.conf</code> on Linux systems or <code>C:\Program Files\PostgreSQL\14\data\postgresql.conf</code> on Windows). Open the file in a text editor and modify the following settings to enable logical replication:</p>
+{{< prism lang="text" line-numbers="true">}}
+listen_addresses = '*'
+wal_level = logical
+max_replication_slots = 4
+max_wal_senders = 4
 {{< /prism >}}
-- <p style="text-align: justify;"><code>listen_addresses = '*'</code>: Allows PostgreSQL to listen for connections on all available IP addresses.</p>
-- <p style="text-align: justify;"><code>wal_level = logical</code>: Sets the Write-Ahead Logging level to support logical replication.</p>
-- <p style="text-align: justify;"><code>max_replication_slots = 4</code>: Specifies the maximum number of replication slots.</p>
-- <p style="text-align: justify;"><code>max_wal_senders = 4</code>: Defines the maximum number of concurrent WAL sender processes.</p>
-2. <p style="text-align: justify;"><strong></strong>Edit<strong></strong> <code>pg_hba.conf</code></p>
-<p style="text-align: justify;">
-The <code>pg_hba.conf</code> file controls client authentication. Update this file to allow replication connections from SurrealDB. Add the following line, replacing <code><surrealdb_ip></code> with the actual IP address of the SurrealDB server:
-</p>
 
-{{< prism lang="">}}
-   host    replication     all             <surrealdb_ip>/32          md5
+<p style="text-align: justify;"><code>listen_addresses = '*'</code>: Allows PostgreSQL to listen for connections on all available IP addresses.</p>
+<p style="text-align: justify;"><code>wal_level = logical</code>: Sets the Write-Ahead Logging level to support logical replication.</p>
+<p style="text-align: justify;"><code>max_replication_slots = 4</code>: Specifies the maximum number of replication slots.</p>
+<p style="text-align: justify;"><code>max_wal_senders = 4</code>: Defines the maximum number of concurrent WAL sender processes.</p>
+
+<p style="text-align: justify;"><strong>2. Edit <code>pg_hba.conf</code></strong></p>
+<p style="text-align: justify;">The <code>pg_hba.conf</code> file controls client authentication. Update this file to allow replication connections from SurrealDB. Add the following line, replacing <code>&lt;surrealdb_ip&gt;</code> with the actual IP address of the SurrealDB server:</p>
+{{< prism lang="text" line-numbers="true">}}
+host    replication     all             <surrealdb_ip>/32          md5
 {{< /prism >}}
-<p style="text-align: justify;">
-This line permits replication connections from the specified IP address using MD5 password authentication.
-</p>
+<p style="text-align: justify;">This line permits replication connections from the specified IP address using MD5 password authentication.</p>
 
-3. <p style="text-align: justify;"><strong></strong>Restart PostgreSQL<strong></strong></p>
-<p style="text-align: justify;">
-After making these changes, apply them by restarting PostgreSQL. On Windows, you can use the following command in the Command Prompt:
-</p>
+<p style="text-align: justify;"><strong>3. Restart PostgreSQL</strong></p>
+<p style="text-align: justify;">After making these changes, apply them by restarting PostgreSQL. On Windows, you can use the following command in the Command Prompt:</p>
+{{< prism lang="shell" line-numbers="true">}}
+net stop postgresql-x64-14
+net start postgresql-x64-14
+{{< /prism >}}
+
+<p style="text-align: justify;">On Linux, use the following command:</p>
+{{< prism lang="shell" line-numbers="true">}}
+sudo systemctl restart postgresql
+{{< /prism >}}
 
 {{< prism lang="shell">}}
    net stop postgresql-x64-14
@@ -504,20 +505,14 @@ For Linux systems, use:
 SurrealDB must be prepared to accept replication data from PostgreSQL. This involves enabling replication features and configuring network and authentication settings.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Enable Replication Features<strong></strong></p>
-<p style="text-align: justify;">
-Depending on the SurrealDB version and deployment method, enable replication features by configuring the necessary settings. Refer to the SurrealDB documentation for specific instructions related to replication configuration.
-</p>
+<p style="text-align: justify;"><strong>1. Enable Replication Features</strong></p>
+<p style="text-align: justify;">Depending on the SurrealDB version and deployment method, enable replication features by configuring the necessary settings. Refer to the SurrealDB documentation for specific instructions related to replication configuration.</p>
 
-2. <p style="text-align: justify;"><strong></strong>Network Configuration<strong></strong></p>
-<p style="text-align: justify;">
-Ensure that SurrealDB is accessible over the network. Verify that the WebSocket port (default is <code>8000</code>) is open and not blocked by firewalls. Adjust firewall settings as needed to allow incoming connections on this port.
-</p>
+<p style="text-align: justify;"><strong>2. Network Configuration</strong></p>
+<p style="text-align: justify;">Ensure that SurrealDB is accessible over the network. Verify that the WebSocket port (default is <code>8000</code>) is open and not blocked by firewalls. Adjust firewall settings as needed to allow incoming connections on this port.</p>
 
-3. <p style="text-align: justify;"><strong></strong>Authentication Setup<strong></strong></p>
-<p style="text-align: justify;">
-Secure replication connections by configuring authentication credentials in SurrealDB. Typically, this involves setting up API keys or user credentials that PostgreSQL will use to authenticate when sending data. For example, use the following Rust code snippet to establish a secure connection:
-</p>
+<p style="text-align: justify;"><strong>3. Authentication Setup</strong></p>
+<p style="text-align: justify;">Secure replication connections by configuring authentication credentials in SurrealDB. Typically, this involves setting up API keys or user credentials that PostgreSQL will use to authenticate when sending data. For example, use the following Rust code snippet to establish a secure connection:</p>
 
 {{< prism lang="rust" line-numbers="true">}}
    use surrealdb::Surreal;
@@ -541,26 +536,23 @@ Replace <code>"root"</code> and <code>"root"</code> with secure credentials as a
 With both PostgreSQL and SurrealDB configured for replication, the next step is to initialize SurrealDB with existing data from PostgreSQL. This ensures that both databases start with consistent data sets, facilitating effective synchronization.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Export Data from PostgreSQL<strong></strong></p>
-<p style="text-align: justify;">
-Utilize the <code>pg_dump</code> utility to export the desired tables from PostgreSQL. For instance, to export the <code>orders</code> and <code>order_items</code> tables, execute the following command:
-</p>
-
-{{< prism lang="shell">}}
-   pg_dump -U postgres -h localhost -d ecommerce -t orders -t order_items -F c -b -v -f orders_backup.dump
+<p style="text-align: justify;"><strong>1. Export Data from PostgreSQL</strong></p>
+<p style="text-align: justify;">Utilize the <code>pg_dump</code> utility to export the desired tables from PostgreSQL. For instance, to export the <code>orders</code> and <code>order_items</code> tables, execute the following command:</p>
+{{< prism lang="shell" line-numbers="true">}}
+pg_dump -U postgres -h localhost -d ecommerce -t orders -t order_items -F c -b -v -f orders_backup.dump
 {{< /prism >}}
-- <p style="text-align: justify;"><code>-U postgres</code>: Specifies the PostgreSQL user.</p>
-- <p style="text-align: justify;"><code>-h localhost</code>: Indicates the host.</p>
-- <p style="text-align: justify;"><code>-d ecommerce</code>: Names the database to dump.</p>
-- <p style="text-align: justify;"><code>-t orders -t order_items</code>: Specifies the tables to export.</p>
-- <p style="text-align: justify;"><code>-F c</code>: Sets the output format to custom.</p>
-- <p style="text-align: justify;"><code>-b</code>: Includes large objects.</p>
-- <p style="text-align: justify;"><code>-v</code>: Enables verbose mode.</p>
-- <p style="text-align: justify;"><code>-f orders_backup.dump</code>: Names the output file.</p>
-2. <p style="text-align: justify;"><strong></strong>Import Data into SurrealDB<strong></strong></p>
-<p style="text-align: justify;">
-SurrealDB requires data to be in a compatible format for ingestion. Convert the exported data to JSON or another supported format and use SurrealDB's import tools or APIs to ingest the data. Below is an example Rust script to import data into SurrealDB:
-</p>
+
+<p style="text-align: justify;"><code>-U postgres</code>: Specifies the PostgreSQL user.</p>
+<p style="text-align: justify;"><code>-h localhost</code>: Indicates the host.</p>
+<p style="text-align: justify;"><code>-d ecommerce</code>: Names the database to dump.</p>
+<p style="text-align: justify;"><code>-t orders -t order_items</code>: Specifies the tables to export.</p>
+<p style="text-align: justify;"><code>-F c</code>: Sets the output format to custom.</p>
+<p style="text-align: justify;"><code>-b</code>: Includes large objects.</p>
+<p style="text-align: justify;"><code>-v</code>: Enables verbose mode.</p>
+<p style="text-align: justify;"><code>-f orders_backup.dump</code>: Names the output file.</p>
+
+<p style="text-align: justify;"><strong>2. Import Data into SurrealDB</strong></p>
+<p style="text-align: justify;">SurrealDB requires data to be in a compatible format for ingestion. Convert the exported data to JSON or another supported format and use SurrealDB's import tools or APIs to ingest the data. Below is an example Rust script to import data into SurrealDB:</p>
 
 {{< prism lang="rust" line-numbers="true">}}
    use surrealdb::Surreal;

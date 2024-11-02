@@ -52,17 +52,17 @@ Rust’s vibrant community has developed a diverse array of database crates cate
 SQL crates facilitate interactions with traditional relational databases that use Structured Query Language (SQL) for defining and manipulating data. These crates often provide both low-level drivers for direct database communication and higher-level ORMs that abstract SQL queries into more intuitive Rust code. Key features typically include connection pooling, transaction management, and query building.
 </p>
 
-- <p style="text-align: justify;"><strong>Diesel</strong>\</p>
+- <p style="text-align: justify;"><strong>Diesel</strong></p>
 <p style="text-align: justify;">
 Diesel is one of the most prominent ORM crates in the Rust ecosystem. It supports PostgreSQL, MySQL, and SQLite, offering a powerful and type-safe interface for database operations. Diesel’s emphasis on compile-time guarantees ensures that many potential errors are caught during the development phase, enhancing the reliability of applications. Its expressive query builder allows developers to construct complex SQL queries in a Rust-native syntax, promoting both safety and readability.
 </p>
 
-- <p style="text-align: justify;"><strong>rusqlite</strong>\</p>
+- <p style="text-align: justify;"><strong>rusqlite</strong></p>
 <p style="text-align: justify;">
 rusqlite is a lightweight crate that provides bindings to SQLite, enabling embedded SQL database interactions directly within Rust applications. Ideal for applications requiring an embedded database without the overhead of managing a separate database server, rusqlite offers a straightforward API for executing SQL commands, managing transactions, and handling database connections.
 </p>
 
-- <p style="text-align: justify;"><strong>SeaORM</strong>\</p>
+- <p style="text-align: justify;"><strong>SeaORM</strong></p>
 <p style="text-align: justify;">
 SeaORM is an asynchronous and dynamic ORM framework for Rust, designed to work seamlessly with multiple databases including PostgreSQL, MySQL, and SQLite. Unlike traditional ORMs, SeaORM emphasizes flexibility and extensibility, allowing developers to write both synchronous and asynchronous code. It provides a rich set of features such as entity modeling, query building, and relationship management, making it a versatile choice for a wide range of applications.
 </p>
@@ -75,17 +75,17 @@ SeaORM is an asynchronous and dynamic ORM framework for Rust, designed to work s
 NoSQL crates are designed for interacting with non-relational databases that store data in formats other than tabular relations. These databases often offer greater flexibility in terms of data models, scalability, and performance, making them suitable for applications dealing with large volumes of unstructured or semi-structured data.
 </p>
 
-- <p style="text-align: justify;"><strong>mongodb</strong>\</p>
+- <p style="text-align: justify;"><strong>mongodb</strong></p>
 <p style="text-align: justify;">
 The official MongoDB driver for Rust provides comprehensive support for MongoDB’s features, including asynchronous operations, aggregation pipelines, and gridFS for storing large files. The <code>mongodb</code> crate enables developers to perform CRUD (Create, Read, Update, Delete) operations, manage indexes, and handle complex queries with ease, leveraging MongoDB’s powerful document-based data model.
 </p>
 
-- <p style="text-align: justify;"><strong>redis-rs</strong>\</p>
+- <p style="text-align: justify;"><strong>redis-rs</strong></p>
 <p style="text-align: justify;">
 redis-rs is a Rust client for Redis, a high-performance in-memory data store commonly used for caching, session management, and real-time analytics. The crate offers full access to Redis’s functionality, including streams, pub/sub messaging, and scripting with Lua. Its efficient API allows developers to integrate Redis seamlessly into Rust applications, ensuring low-latency data access and high throughput.
 </p>
 
-- <p style="text-align: justify;"><strong>SurrealDB</strong>\</p>
+- <p style="text-align: justify;"><strong>SurrealDB</strong></p>
 <p style="text-align: justify;">
 SurrealDB is a modern multi-model database that supports both document and graph data structures. The <code>surrealdb</code> crate provides Rust developers with the tools to interact with SurrealDB’s versatile data models, offering capabilities such as real-time data synchronization, built-in authentication, and schema flexibility. Its integration with Rust enables developers to build complex data-driven applications that leverage the strengths of both document and graph databases.
 </p>
@@ -100,57 +100,57 @@ Selecting the appropriate database crate is a critical decision that can signifi
 </p>
 
 <p style="text-align: justify;">
-<strong>Project Requirements</strong>\
+<strong>Project Requirements</strong>
 The foremost consideration in selecting a database crate is the specific data storage and retrieval needs of the project. This encompasses the type of database being used (SQL vs. NoSQL), the complexity of the data transactions, and the scalability requirements.
 </p>
 
-- <p style="text-align: justify;"><strong>Type of Database</strong>\</p>
+- <p style="text-align: justify;"><strong>Type of Database</strong></p>
 <p style="text-align: justify;">
 If the project relies on a relational database system, an SQL crate or an ORM like Diesel would be appropriate. Conversely, for applications utilizing NoSQL databases such as MongoDB or Redis, corresponding NoSQL crates like <code>mongodb</code> or <code>redis-rs</code> should be considered.
 </p>
 
-- <p style="text-align: justify;"><strong>Complexity of Transactions</strong>\</p>
+- <p style="text-align: justify;"><strong>Complexity of Transactions</strong></p>
 <p style="text-align: justify;">
 Projects that require complex transactions, multi-step operations, or stringent data integrity constraints might benefit more from an ORM that offers robust transaction management and compile-time query verification. Diesel, for example, provides comprehensive support for complex transactions, ensuring that data integrity is maintained across multiple operations.
 </p>
 
-- <p style="text-align: justify;"><strong>Scalability and Performance</strong>\</p>
+- <p style="text-align: justify;"><strong>Scalability and Performance</strong></p>
 <p style="text-align: justify;">
 For applications that anticipate high concurrency, large data volumes, or require low-latency data access, choosing a crate that supports asynchronous operations and efficient connection pooling is essential. Crates like <code>mongodb</code> with built-in async support or <code>redis-rs</code> known for its high performance are well-suited for such scenarios.
 </p>
 
 <p style="text-align: justify;">
-<strong>Community Support and Documentation</strong>\
+<strong>Community Support and Documentation</strong>
 The strength of a crate’s community support and the quality of its documentation are vital for reducing development time and ensuring reliability. A well-supported crate with extensive documentation and active community engagement can provide valuable resources such as tutorials, examples, and prompt issue resolution.
 </p>
 
-- <p style="text-align: justify;"><strong>Active Community</strong>\</p>
+- <p style="text-align: justify;"><strong>Active Community</strong></p>
 <p style="text-align: justify;">
 Crates with active communities are more likely to receive regular updates, feature enhancements, and timely bug fixes. This ongoing support is crucial for maintaining compatibility with evolving Rust versions and database systems.
 </p>
 
-- <p style="text-align: justify;"><strong>Comprehensive Documentation</strong>\</p>
+- <p style="text-align: justify;"><strong>Comprehensive Documentation</strong></p>
 <p style="text-align: justify;">
 Detailed and well-organized documentation facilitates easier integration and troubleshooting. It should include comprehensive guides, API references, and practical examples that demonstrate common use cases and best practices.
 </p>
 
 <p style="text-align: justify;">
-<strong>Ongoing Maintenance</strong>\
+<strong>Ongoing Maintenance</strong>
 Opting for crates that are actively maintained ensures that the crate remains compatible with the latest Rust features and database versions. Regular maintenance also helps in addressing security vulnerabilities and performance optimizations.
 </p>
 
-- <p style="text-align: justify;"><strong>Release Frequency</strong>\</p>
+- <p style="text-align: justify;"><strong>Release Frequency</strong></p>
 <p style="text-align: justify;">
 Crates with frequent releases indicate active development and prompt resolution of issues. This is particularly important for applications that require up-to-date security patches and performance improvements.
 </p>
 
-- <p style="text-align: justify;"><strong>Compatibility</strong>\</p>
+- <p style="text-align: justify;"><strong>Compatibility</strong></p>
 <p style="text-align: justify;">
 Ensuring that the crate is compatible with the Rust version and the specific database version in use is essential. Compatibility issues can lead to integration challenges and hinder the development process.
 </p>
 
 <p style="text-align: justify;">
-<strong>Ease of Use and Learning Curve</strong>\
+<strong>Ease of Use and Learning Curve</strong>
 The complexity of integrating a crate should align with the development team’s expertise and the project’s timeline. Crates with intuitive APIs and extensive documentation tend to have a gentler learning curve, facilitating quicker adoption and integration.
 </p>
 
@@ -164,7 +164,7 @@ A comparative analysis of some of the most popular Rust database crates undersco
 </p>
 
 <p style="text-align: justify;">
-<strong>Diesel</strong>\
+<strong>Diesel</strong>
 Diesel is a highly regarded ORM in the Rust community, renowned for its strong emphasis on type safety and its expressive query builder. Supporting PostgreSQL, MySQL, and SQLite, Diesel allows developers to write database-agnostic code that is both safe and efficient. Its compile-time verification of queries ensures that many common errors are caught early in the development process, enhancing the reliability of database interactions. Diesel’s robust transaction support and comprehensive schema management tools make it an excellent choice for applications requiring complex data manipulations and stringent data integrity.
 </p>
 
@@ -178,12 +178,12 @@ Diesel is a highly regarded ORM in the Rust community, renowned for its strong e
 - <p style="text-align: justify;">Comprehensive transaction management</p>
 - <p style="text-align: justify;">Schema migrations and management</p>
 <p style="text-align: justify;">
-<em>Use Case Example:</em>\
+<em>Use Case Example:</em>
 An e-commerce platform requiring complex transactions for order processing, inventory management, and user account handling would benefit from Diesel’s robust ORM capabilities, ensuring data integrity and reliability across multiple database operations.
 </p>
 
 <p style="text-align: justify;">
-<strong>SeaORM</strong>\
+<strong>SeaORM</strong>
 SeaORM is a modern and flexible ORM for the Rust ecosystem, designed with a strong focus on asynchronous programming and usability. It supports a wide range of relational databases, including PostgreSQL, MySQL, and SQLite, making it versatile for different backend environments. SeaORM's straightforward API allows developers to write both dynamic and type-safe queries, blending ease of use with safety. Its async-first approach, built-in connection pooling, and modular design provide the right tools for building scalable applications that can handle high levels of concurrency efficiently.
 </p>
 
@@ -197,12 +197,12 @@ Key Features:
 - <p style="text-align: justify;">Flexible query execution, accommodating both active record and query builder patterns</p>
 - <p style="text-align: justify;">Built-in connection pooling for efficient database resource management</p>
 <p style="text-align: justify;">
-Use Case Example:\
+Use Case Example:
 A social media application with high user traffic, requiring efficient data access and concurrent handling of user posts, comments, and likes, can leverage SeaORM’s async capabilities and flexible query system to maintain high performance and responsiveness.
 </p>
 
 <p style="text-align: justify;">
-<strong>mongodb Crate</strong>\
+<strong>mongodb Crate</strong>
 The <code>mongodb</code> crate is the official MongoDB driver for Rust, offering extensive support for MongoDB’s asynchronous operations and advanced features. MongoDB’s document-oriented model, which stores data in flexible, JSON-like documents, allows for dynamic schemas and rapid iteration—attributes that are seamlessly supported by the <code>mongodb</code> crate. Its async support enables handling high-concurrency workloads efficiently, making it suitable for modern web applications and real-time data processing systems.
 </p>
 
@@ -216,12 +216,12 @@ The <code>mongodb</code> crate is the official MongoDB driver for Rust, offering
 - <p style="text-align: justify;">Aggregation pipelines and advanced querying</p>
 - <p style="text-align: justify;">Robust error handling and retry mechanisms</p>
 <p style="text-align: justify;">
-<em>Use Case Example:</em>\
+<em>Use Case Example:</em>
 A real-time analytics dashboard that requires handling large volumes of data with low latency would leverage the <code>mongodb</code> crate’s asynchronous capabilities and MongoDB’s scalable document storage to provide instantaneous insights and responsive user interactions.
 </p>
 
 <p style="text-align: justify;">
-<strong>redis-rs</strong>\
+<strong>redis-rs</strong>
 <code>redis-rs</code> is a versatile Rust client for Redis, a high-performance, in-memory key-value store. Redis’s support for various data structures, including strings, lists, sets, hashes, and more, makes it ideal for a wide range of applications such as caching, session management, real-time analytics, and message brokering. The <code>redis-rs</code> crate provides a comprehensive API that exposes Redis’s full functionality, including support for streams, pub/sub messaging, and Lua scripting, ensuring that Rust applications can fully exploit Redis’s capabilities.
 </p>
 
@@ -235,12 +235,12 @@ A real-time analytics dashboard that requires handling large volumes of data wit
 - <p style="text-align: justify;">Lua scripting integration</p>
 - <p style="text-align: justify;">Synchronous and asynchronous APIs</p>
 <p style="text-align: justify;">
-<em>Use Case Example:</em>\
+<em>Use Case Example:</em>
 A social media application requiring real-time notifications, session management, and rapid data caching would utilize <code>redis-rs</code> to leverage Redis’s in-memory speed and versatile data structures, ensuring a seamless and responsive user experience.
 </p>
 
 <p style="text-align: justify;">
-<strong>rusqlite</strong>\
+<strong>rusqlite</strong>
 rusqlite is a lightweight Rust crate that provides bindings to SQLite, a self-contained, serverless SQL database engine. Its simplicity and minimal overhead make it an excellent choice for applications that require a reliable embedded database solution without the complexity of managing a separate database server. rusqlite offers a straightforward API for executing SQL queries, managing transactions, and handling result sets, making it suitable for desktop applications, embedded systems, and small-scale web services.
 </p>
 
@@ -254,12 +254,12 @@ rusqlite is a lightweight Rust crate that provides bindings to SQLite, a self-co
 - <p style="text-align: justify;">Comprehensive error handling</p>
 - <p style="text-align: justify;">Compatibility with multiple platforms</p>
 <p style="text-align: justify;">
-<em>Use Case Example:</em>\
+<em>Use Case Example:</em>
 A desktop application for personal finance management that requires a reliable and lightweight embedded database to store user data locally would benefit from rusqlite’s simplicity and efficient integration with Rust’s concurrency model.
 </p>
 
 <p style="text-align: justify;">
-<strong>sqlx</strong>\
+<strong>sqlx</strong>
 sqlx is an asynchronous, pure Rust SQL crate that supports PostgreSQL, MySQL, and SQLite. Unlike Diesel, sqlx does not enforce a strict ORM approach, offering more flexibility by allowing developers to write raw SQL queries with compile-time verification. sqlx’s support for asynchronous operations makes it highly suitable for applications that require non-blocking database interactions, such as web servers and real-time applications.
 </p>
 
@@ -273,12 +273,12 @@ sqlx is an asynchronous, pure Rust SQL crate that supports PostgreSQL, MySQL, an
 - <p style="text-align: justify;">Flexible query execution without strict ORM constraints</p>
 - <p style="text-align: justify;">Built-in connection pooling</p>
 <p style="text-align: justify;">
-<em>Use Case Example:</em>\
+<em>Use Case Example:</em>
 A high-performance web server handling numerous simultaneous requests would utilize sqlx’s asynchronous capabilities to perform non-blocking database queries, ensuring high throughput and low latency in data access.
 </p>
 
 <p style="text-align: justify;">
-<strong>SurrealDB Crate</strong>\
+<strong>SurrealDB Crate</strong>
 SurrealDB is a modern, multi-model database that combines the features of both SQL and NoSQL databases, offering a flexible data model that supports documents, key-value pairs, and graph data structures. The <code>surrealdb</code> crate provides Rust developers with a seamless interface to interact with SurrealDB, leveraging its powerful querying capabilities and real-time features. This makes it an ideal choice for applications that require a versatile data model and real-time data synchronization.
 </p>
 
@@ -292,7 +292,7 @@ SurrealDB is a modern, multi-model database that combines the features of both S
 - <p style="text-align: justify;">Built-in authentication and access controls</p>
 - <p style="text-align: justify;">Asynchronous support for high concurrency</p>
 <p style="text-align: justify;">
-<em>Use Case Example:</em>\
+<em>Use Case Example:</em>
 A collaborative project management tool that requires flexible data representations, real-time updates, and complex querying capabilities would leverage the <code>surrealdb</code> crate to integrate SurrealDB’s multi-model features seamlessly, enhancing both functionality and user experience.
 </p>
 
@@ -1315,36 +1315,56 @@ async fn main() -> mongodb::error::Result<()> {
 <strong>Explanation:</strong>
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Establishing Connection:<strong></strong></p>
-- <p style="text-align: justify;">The <code>establish_connection</code> function connects to the MongoDB instance using the connection string specified in the <code>MONGODB_URI</code> environment variable or defaults to <code>mongodb://localhost:27017</code>.</p>
-- <p style="text-align: justify;">It parses the connection string into <code>ClientOptions</code> and initializes the MongoDB client.</p>
-2. <p style="text-align: justify;"><strong></strong>Creating a User:<strong></strong></p>
-- <p style="text-align: justify;">The <code>create_user</code> function constructs a new <code>User</code> instance with a unique <code>ObjectId</code>, name, email, and the current timestamp.</p>
-- <p style="text-align: justify;">It inserts the user into the <code>users</code> collection using the <code>insert_one</code> method and retrieves the inserted ID.</p>
-3. <p style="text-align: justify;"><strong></strong>Retrieving All Users:<strong></strong></p>
-- <p style="text-align: justify;">The <code>get_all_users</code> function fetches all documents from the <code>users</code> collection using the <code>find</code> method.</p>
-- <p style="text-align: justify;">It iterates over the cursor to collect all user documents into a vector.</p>
-4. <p style="text-align: justify;"><strong></strong>Retrieving a User by ID:<strong></strong></p>
-- <p style="text-align: justify;">The <code>get_user_by_id</code> function retrieves a single user document based on the provided <code>ObjectId</code> using the <code>find_one</code> method.</p>
-5. <p style="text-align: justify;"><strong></strong>Updating a User's Email:<strong></strong></p>
-- <p style="text-align: justify;">The <code>update_user_email</code> function updates the <code>email</code> field of a specific user identified by their <code>ObjectId</code> using the <code>update_one</code> method.</p>
-- <p style="text-align: justify;">It sets the new email address and returns the result of the update operation.</p>
-6. <p style="text-align: justify;"><strong></strong>Deleting a User:<strong></strong></p>
-- <p style="text-align: justify;">The <code>delete_user</code> function removes a user document from the <code>users</code> collection based on the provided <code>ObjectId</code> using the <code>delete_one</code> method.</p>
-- <p style="text-align: justify;">It returns the result of the delete operation.</p>
-7. <p style="text-align: justify;"><strong></strong>Example Usage in<strong></strong> <code>main</code>:</p>
-- <p style="text-align: justify;">The <code>main</code> function orchestrates the CRUD operations:</p>
-- <p style="text-align: justify;">Establishes a connection to MongoDB.</p>
-- <p style="text-align: justify;">Creates a new user named "Alice" with a specific email.</p>
-- <p style="text-align: justify;">Retrieves and prints all users.</p>
-- <p style="text-align: justify;">Retrieves the newly created user by their ID.</p>
-- <p style="text-align: justify;">Updates the user's email and prints the number of documents modified.</p>
-- <p style="text-align: justify;">Retrieves the updated user to confirm the change.</p>
-- <p style="text-align: justify;">Deletes the user and prints the number of documents deleted.</p>
-- <p style="text-align: justify;">Verifies the deletion by attempting to retrieve the user again.</p>
-<p style="text-align: justify;">
-<strong>Example Output:</strong>
-</p>
+<p style="text-align: justify;"><strong>1. Establishing Connection</strong></p>
+<ul>
+    <li style="text-align: justify;">The <code>establish_connection</code> function connects to the MongoDB instance using the connection string specified in the <code>MONGODB_URI</code> environment variable or defaults to <code>mongodb://localhost:27017</code>.</li>
+    <li style="text-align: justify;">It parses the connection string into <code>ClientOptions</code> and initializes the MongoDB client.</li>
+</ul>
+
+<p style="text-align: justify;"><strong>2. Creating a User</strong></p>
+<ul>
+    <li style="text-align: justify;">The <code>create_user</code> function constructs a new <code>User</code> instance with a unique <code>ObjectId</code>, name, email, and the current timestamp.</li>
+    <li style="text-align: justify;">It inserts the user into the <code>users</code> collection using the <code>insert_one</code> method and retrieves the inserted ID.</li>
+</ul>
+
+<p style="text-align: justify;"><strong>3. Retrieving All Users</strong></p>
+<ul>
+    <li style="text-align: justify;">The <code>get_all_users</code> function fetches all documents from the <code>users</code> collection using the <code>find</code> method.</li>
+    <li style="text-align: justify;">It iterates over the cursor to collect all user documents into a vector.</li>
+</ul>
+
+<p style="text-align: justify;"><strong>4. Retrieving a User by ID</strong></p>
+<ul>
+    <li style="text-align: justify;">The <code>get_user_by_id</code> function retrieves a single user document based on the provided <code>ObjectId</code> using the <code>find_one</code> method.</li>
+</ul>
+
+<p style="text-align: justify;"><strong>5. Updating a User's Email</strong></p>
+<ul>
+    <li style="text-align: justify;">The <code>update_user_email</code> function updates the <code>email</code> field of a specific user identified by their <code>ObjectId</code> using the <code>update_one</code> method.</li>
+    <li style="text-align: justify;">It sets the new email address and returns the result of the update operation.</li>
+</ul>
+
+<p style="text-align: justify;"><strong>6. Deleting a User</strong></p>
+<ul>
+    <li style="text-align: justify;">The <code>delete_user</code> function removes a user document from the <code>users</code> collection based on the provided <code>ObjectId</code> using the <code>delete_one</code> method.</li>
+    <li style="text-align: justify;">It returns the result of the delete operation.</li>
+</ul>
+
+<p style="text-align: justify;"><strong>7. Example Usage in <code>main</code></strong></p>
+<ul>
+    <li style="text-align: justify;">The <code>main</code> function orchestrates the CRUD operations:</li>
+    <li style="text-align: justify;">Establishes a connection to MongoDB.</li>
+    <li style="text-align: justify;">Creates a new user named "Alice" with a specific email.</li>
+    <li style="text-align: justify;">Retrieves and prints all users.</li>
+    <li style="text-align: justify;">Retrieves the newly created user by their ID.</li>
+    <li style="text-align: justify;">Updates the user's email and prints the number of documents modified.</li>
+    <li style="text-align: justify;">Retrieves the updated user to confirm the change.</li>
+    <li style="text-align: justify;">Deletes the user and prints the number of documents deleted.</li>
+    <li style="text-align: justify;">Verifies the deletion by attempting to retrieve the user again.</li>
+</ul>
+
+<p style="text-align: justify;"><strong>Example Output:</strong></p>
+
 
 {{< prism lang="">}}
 Created user with ID: 64f1c2b5f4d3c8a5e0a3e8b1

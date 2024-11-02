@@ -65,48 +65,52 @@ Implementing custom SQL in Diesel involves a few key steps. Diesel allows for ra
 </p>
 
 ### **Step-by-Step Guide:**
-1. <p style="text-align: justify;"><strong></strong>Using<strong></strong> <code>sql_query</code>: Diesel provides the <code>sql_query</code> function for executing raw SQL queries. Here’s a simple example:</p>
+<p style="text-align: justify;"><strong>1. Using <code>sql_query</code></strong></p>
+<p style="text-align: justify;">Diesel provides the <code>sql_query</code> function for executing raw SQL queries. Here’s a simple example:</p>
 {{< prism lang="rust" line-numbers="true">}}
-   use diesel::sql_query;
-   use diesel::prelude::*;
-   
-   let results = sql_query("SELECT * FROM employees WHERE salary > $1")
-       .bind::<diesel::sql_types::Integer, _>(50000)
-       .load::<Employee>(&connection)
-       .expect("Error loading employees");
-{{< /prism >}}
-<p style="text-align: justify;">
-In this example, a custom SQL query is executed to select all employees with a salary greater than $50,000. The <code>bind</code> function ensures that the query is parameterized and the correct types are passed, thus preventing SQL injection.
-</p>
+use diesel::sql_query;
+use diesel::prelude::*;
 
-2. <p style="text-align: justify;"><strong></strong>Defining Custom Queryable Types<strong></strong>: If the query returns data that doesn’t map directly to the predefined Diesel structs, you can define a custom struct to hold the result and implement Diesel’s <code>Queryable</code> trait for it:</p>
+let results = sql_query("SELECT * FROM employees WHERE salary > $1")
+    .bind::<diesel::sql_types::Integer, _>(50000)
+    .load::<Employee>(&connection)
+    .expect("Error loading employees");
+{{< /prism >}}
+
+<p style="text-align: justify;">In this example, a custom SQL query is executed to select all employees with a salary greater than $50,000. The <code>bind</code> function ensures that the query is parameterized and the correct types are passed, thus preventing SQL injection.</p>
+
+<p style="text-align: justify;"><strong>2. Defining Custom Queryable Types</strong></p>
+<p style="text-align: justify;">If the query returns data that doesn’t map directly to the predefined Diesel structs, you can define a custom struct to hold the result and implement Diesel’s <code>Queryable</code> trait for it:</p>
 {{< prism lang="rust" line-numbers="true">}}
-   #[derive(QueryableByName)]
-   struct EmployeeSalary {
-       #[sql_type = "diesel::sql_types::Integer"]
-       id: i32,
-       #[sql_type = "diesel::sql_types::Text"]
-       name: String,
-       #[sql_type = "diesel::sql_types::Integer"]
-       salary: i32,
-   }
+#[derive(QueryableByName)]
+struct EmployeeSalary {
+    #[sql_type = "diesel::sql_types::Integer"]
+    id: i32,
+    #[sql_type = "diesel::sql_types::Text"]
+    name: String,
+    #[sql_type = "diesel::sql_types::Integer"]
+    salary: i32,
+}
 {{< /prism >}}
-<p style="text-align: justify;">
-By implementing <code>QueryableByName</code>, Diesel knows how to deserialize the result set into this struct when using <code>sql_query</code>.
-</p>
 
-3. <p style="text-align: justify;"><strong></strong>Handling Complex Queries<strong></strong>: For more advanced SQL queries, such as those involving window functions or database-specific features (e.g., <code>JSONB</code> in PostgreSQL), you can still rely on <code>sql_query</code> but must ensure that you handle the type mapping appropriately. For example, querying a JSONB column in PostgreSQL:</p>
+<p style="text-align: justify;">By implementing <code>QueryableByName</code>, Diesel knows how to deserialize the result set into this struct when using <code>sql_query</code>.</p>
+
+<p style="text-align: justify;"><strong>3. Handling Complex Queries</strong></p>
+<p style="text-align: justify;">For more advanced SQL queries, such as those involving window functions or database-specific features (e.g., <code>JSONB</code> in PostgreSQL), you can still rely on <code>sql_query</code> but must ensure that you handle the type mapping appropriately. For example, querying a JSONB column in PostgreSQL:</p>
 {{< prism lang="rust" line-numbers="true">}}
-   let results = sql_query("SELECT data->>'name' as name FROM users WHERE data @> '{\"role\": \"admin\"}'")
-       .load::<(String,)>(&connection)
-       .expect("Error querying JSONB data");
+let results = sql_query("SELECT data->>'name' as name FROM users WHERE data @> '{\"role\": \"admin\"}'")
+    .load::<(String,)>(&connection)
+    .expect("Error querying JSONB data");
 {{< /prism >}}
-<p style="text-align: justify;">
-In this case, the query extracts the <code>name</code> field from the <code>JSONB</code> column, and Diesel maps it to a tuple containing a <code>String</code>.
-</p>
 
-4. <p style="text-align: justify;"><strong></strong>Error Handling and Debugging<strong></strong>: When using raw SQL, error handling becomes more critical. Since raw SQL bypasses some of Diesel’s compile-time checks, developers must pay extra attention to runtime errors. Using Rust’s <code>Result</code> types and appropriate logging can help catch and debug any issues that arise.</p>
-5. <p style="text-align: justify;"><strong></strong>Testing and Performance Considerations<strong></strong>: When using custom SQL, it’s important to test the performance of the queries, particularly if they involve large datasets or complex operations. Diesel’s query logging features can be useful for analyzing how queries perform in production environments.</p>
+<p style="text-align: justify;">In this case, the query extracts the <code>name</code> field from the <code>JSONB</code> column, and Diesel maps it to a tuple containing a <code>String</code>.</p>
+
+<p style="text-align: justify;"><strong>4. Error Handling and Debugging</strong></p>
+<p style="text-align: justify;">When using raw SQL, error handling becomes more critical. Since raw SQL bypasses some of Diesel’s compile-time checks, developers must pay extra attention to runtime errors. Using Rust’s <code>Result</code> types and appropriate logging can help catch and debug any issues that arise.</p>
+
+<p style="text-align: justify;"><strong>5. Testing and Performance Considerations</strong></p>
+<p style="text-align: justify;">When using custom SQL, it’s important to test the performance of the queries, particularly if they involve large datasets or complex operations. Diesel’s query logging features can be useful for analyzing how queries perform in production environments.</p>
+
 ### **Potential Challenges:**
 - <p style="text-align: justify;"><strong>Losing Type Safety</strong>: Although Diesel allows raw SQL, writing complex queries in this way can lead to loss of type safety. By using features like <code>QueryableByName</code> and parameterized queries, you can retain some type-checking at compile time.</p>
 - <p style="text-align: justify;"><strong>Database-Specific Features</strong>: Custom SQL often requires writing queries that are specific to the database being used. This reduces portability if the database back-end is switched in the future.</p>
@@ -199,63 +203,67 @@ When using lifecycle callbacks, error handling should be consistent and robust. 
 In this example, we will create an <code>AuditLog</code> model to automatically record changes to records in a <code>User</code> table whenever a user’s data is created or updated.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Define the Models<strong></strong>: First, define the <code>User</code> and <code>AuditLog</code> models. The <code>AuditLog</code> will store details such as the user ID, the action performed (create/update), and a timestamp.</p>
+<p style="text-align: justify;"><strong>1. Define the Models</strong></p>
+<p style="text-align: justify;">First, define the <code>User</code> and <code>AuditLog</code> models. The <code>AuditLog</code> will store details such as the user ID, the action performed (create/update), and a timestamp.</p>
 {{< prism lang="rust" line-numbers="true">}}
-   #[derive(Debug, Clone, PartialEq, DeriveModel, DeriveActiveModel)]
-   #[sea_orm(table_name = "users")]
-   pub struct User {
-       pub id: i32,
-       pub name: String,
-       pub email: String,
-       pub created_at: DateTime<Utc>,
-   }
-   
-   #[derive(Debug, Clone, PartialEq, DeriveModel, DeriveActiveModel)]
-   #[sea_orm(table_name = "audit_logs")]
-   pub struct AuditLog {
-       pub id: i32,
-       pub user_id: i32,
-       pub action: String,
-       pub timestamp: DateTime<Utc>,
-   }
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Create the Callback Logic<strong></strong>: Next, we will implement the lifecycle callback. In SeaORM, this can be done by defining a custom trait for the <code>before_save</code> or <code>after_save</code> callback.</p>
-{{< prism lang="rust" line-numbers="true">}}
-   impl ActiveModelBehavior for ActiveModel {
-       fn after_save(
-           model: Model,
-           insert: bool,
-           _: &DatabaseConnection
-       ) -> Result<Model, DbErr> {
-           let action = if insert { "create" } else { "update" };
-           let audit_log = AuditLog {
-               id: 0,  // Will be auto-incremented
-               user_id: model.id,
-               action: action.to_string(),
-               timestamp: Utc::now(),
-           };
-   
-           audit_log.save(&db).await?;
-   
-           Ok(model)
-       }
-   }
-{{< /prism >}}
-<p style="text-align: justify;">
-In this implementation, after every <code>User</code> record is saved (either created or updated), an entry is added to the <code>AuditLog</code> table. The action is logged as either <code>"create"</code> or <code>"update"</code> depending on whether it was a new insertion or an update to an existing record.
-</p>
+#[derive(Debug, Clone, PartialEq, DeriveModel, DeriveActiveModel)]
+#[sea_orm(table_name = "users")]
+pub struct User {
+    pub id: i32,
+    pub name: String,
+    pub email: String,
+    pub created_at: DateTime<Utc>,
+}
 
-3. <p style="text-align: justify;"><strong></strong>Testing the Callback<strong></strong>: To verify that the callback is functioning as expected, create or update a <code>User</code> record and observe the automatic logging in the <code>AuditLog</code> table.</p>
-{{< prism lang="rust" line-numbers="true">}}
-   let user = User {
-       id: 0,
-       name: "Alice".to_string(),
-       email: "alice@example.com".to_string(),
-       created_at: Utc::now(),
-   };
-   
-   let user = user.save(&db).await?;
+#[derive(Debug, Clone, PartialEq, DeriveModel, DeriveActiveModel)]
+#[sea_orm(table_name = "audit_logs")]
+pub struct AuditLog {
+    pub id: i32,
+    pub user_id: i32,
+    pub action: String,
+    pub timestamp: DateTime<Utc>,
+}
 {{< /prism >}}
+
+<p style="text-align: justify;"><strong>2. Create the Callback Logic</strong></p>
+<p style="text-align: justify;">Next, we will implement the lifecycle callback. In SeaORM, this can be done by defining a custom trait for the <code>before_save</code> or <code>after_save</code> callback.</p>
+{{< prism lang="rust" line-numbers="true">}}
+impl ActiveModelBehavior for ActiveModel {
+    fn after_save(
+        model: Model,
+        insert: bool,
+        _: &DatabaseConnection
+    ) -> Result<Model, DbErr> {
+        let action = if insert { "create" } else { "update" };
+        let audit_log = AuditLog {
+            id: 0,  // Will be auto-incremented
+            user_id: model.id,
+            action: action.to_string(),
+            timestamp: Utc::now(),
+        };
+
+        audit_log.save(&db).await?;
+
+        Ok(model)
+    }
+}
+{{< /prism >}}
+
+<p style="text-align: justify;">In this implementation, after every <code>User</code> record is saved (either created or updated), an entry is added to the <code>AuditLog</code> table. The action is logged as either <code>"create"</code> or <code>"update"</code> depending on whether it was a new insertion or an update to an existing record.</p>
+
+<p style="text-align: justify;"><strong>3. Testing the Callback</strong></p>
+<p style="text-align: justify;">To verify that the callback is functioning as expected, create or update a <code>User</code> record and observe the automatic logging in the <code>AuditLog</code> table.</p>
+{{< prism lang="rust" line-numbers="true">}}
+let user = User {
+    id: 0,
+    name: "Alice".to_string(),
+    email: "alice@example.com".to_string(),
+    created_at: Utc::now(),
+};
+
+let user = user.save(&db).await?;
+{{< /prism >}}
+
 <p style="text-align: justify;">
 In this setup, the <code>after_save</code> callback provides a simple yet effective way to log user activities, ensuring that the application can maintain an audit trail of key operations. The callback is both lightweight and asynchronous, preventing any performance bottlenecks in the core application logic.
 </p>
@@ -322,43 +330,51 @@ To implement complex transactions in Rust using SQLx, we can leverage Rust’s a
 In this example, we will demonstrate how to implement a multi-level transaction using SQLx, managing errors with nested transactions and savepoints.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Starting a Transaction<strong></strong>: Begin by creating a connection and initiating a transaction.</p>
-{{< prism lang="rust">}}
-   let pool = sqlx::PgPool::connect("postgres://user:password@localhost/database").await?;
-   let mut tx = pool.begin().await?;
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Creating a Savepoint<strong></strong>: Within the main transaction, you can set savepoints at critical stages. For example, consider an e-commerce system where you first debit a customer’s account and then update the inventory.</p>
+<p style="text-align: justify;"><strong>1. Starting a Transaction</strong></p>
+<p style="text-align: justify;">Begin by creating a connection and initiating a transaction.</p>
 {{< prism lang="rust" line-numbers="true">}}
-   sqlx::query("UPDATE accounts SET balance = balance - $1 WHERE id = $2")
-       .bind(amount)
-       .bind(account_id)
-       .execute(&mut tx)
-       .await?;
-   
-   // Create a savepoint before the next operation
-   tx.savepoint("sp1").await?;
+let pool = sqlx::PgPool::connect("postgres://user:password@localhost/database").await?;
+let mut tx = pool.begin().await?;
 {{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Nested Transaction Logic<strong></strong>: Next, attempt to update the inventory. If the update fails, you can rollback to the previous savepoint without affecting the account update.</p>
+
+<p style="text-align: justify;"><strong>2. Creating a Savepoint</strong></p>
+<p style="text-align: justify;">Within the main transaction, you can set savepoints at critical stages. For example, consider an e-commerce system where you first debit a customer’s account and then update the inventory.</p>
 {{< prism lang="rust" line-numbers="true">}}
-   let inventory_update = sqlx::query("UPDATE inventory SET stock = stock - $1 WHERE product_id = $2")
-       .bind(quantity)
-       .bind(product_id)
-       .execute(&mut tx)
-       .await;
-   
-   if let Err(e) = inventory_update {
-       // Rollback to savepoint if inventory update fails
-       tx.rollback_to_savepoint("sp1").await?;
-       println!("Transaction rolled back to savepoint due to error: {:?}", e);
-   } else {
-       // Continue if successful
-       println!("Inventory updated successfully");
-   }
+sqlx::query("UPDATE accounts SET balance = balance - $1 WHERE id = $2")
+    .bind(amount)
+    .bind(account_id)
+    .execute(&mut tx)
+    .await?;
+
+// Create a savepoint before the next operation
+tx.savepoint("sp1").await?;
 {{< /prism >}}
-4. <p style="text-align: justify;"><strong></strong>Committing the Transaction<strong></strong>: Once all operations are complete, you can commit the entire transaction. If any critical operation fails, you can rollback the entire transaction.</p>
-{{< prism lang="rust">}}
-   tx.commit().await?;
+
+<p style="text-align: justify;"><strong>3. Nested Transaction Logic</strong></p>
+<p style="text-align: justify;">Next, attempt to update the inventory. If the update fails, you can rollback to the previous savepoint without affecting the account update.</p>
+{{< prism lang="rust" line-numbers="true">}}
+let inventory_update = sqlx::query("UPDATE inventory SET stock = stock - $1 WHERE product_id = $2")
+    .bind(quantity)
+    .bind(product_id)
+    .execute(&mut tx)
+    .await;
+
+if let Err(e) = inventory_update {
+    // Rollback to savepoint if inventory update fails
+    tx.rollback_to_savepoint("sp1").await?;
+    println!("Transaction rolled back to savepoint due to error: {:?}", e);
+} else {
+    // Continue if successful
+    println!("Inventory updated successfully");
+}
 {{< /prism >}}
+
+<p style="text-align: justify;"><strong>4. Committing the Transaction</strong></p>
+<p style="text-align: justify;">Once all operations are complete, you can commit the entire transaction. If any critical operation fails, you can rollback the entire transaction.</p>
+{{< prism lang="rust" line-numbers="true">}}
+tx.commit().await?;
+{{< /prism >}}
+
 ### **Error Handling and Rollback Strategies**
 <p style="text-align: justify;">
 SQLx provides robust error handling mechanisms for managing failures within transactions. Using Rust’s <code>Result</code> and <code>?</code> operators, errors can be propagated and handled efficiently. In case of a failure, calling <code>tx.rollback().await</code> ensures that all changes made during the transaction are discarded.
