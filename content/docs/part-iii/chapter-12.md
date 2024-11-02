@@ -560,38 +560,42 @@ This configuration sets a maximum of 100 connections and maintains at least 10 i
 To maximize performance in SurrealDB, there are several tuning techniques you can apply:
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Query Profiling<strong></strong>: Profiling queries helps identify slow queries that could be optimized through indexing, query refactoring, or reducing the number of records being accessed.</p>
-- <p style="text-align: justify;">Use the built-in query profiler in SurrealDB to monitor query execution times and analyze which parts of a query are consuming the most resources.</p>
-<p style="text-align: justify;">
-Example:
-</p>
+<ol>
+    <li style="text-align: justify;"><strong>Query Profiling:</strong> Profiling queries helps identify slow queries that could be optimized through indexing, query refactoring, or reducing the number of records being accessed.</li>
+</ol>
 
+<ul>
+    <li style="text-align: justify;">Use the built-in query profiler in SurrealDB to monitor query execution times and analyze which parts of a query are consuming the most resources.</li>
+</ul>
+
+<p style="text-align: justify;"><strong>Example:</strong></p>
 {{< prism lang="sql">}}
-     EXPLAIN SELECT * FROM orders WHERE customer_id = 101;
-     
+EXPLAIN SELECT * FROM orders WHERE customer_id = 101;
 {{< /prism >}}
+
 <p style="text-align: justify;">
 The <code>EXPLAIN</code> command provides insight into how SurrealDB executes the query, helping you identify areas for improvement.
 </p>
 
-2. <p style="text-align: justify;"><strong></strong>Index Maintenance<strong></strong>: Regularly maintaining indexes ensures that they remain efficient over time. SurrealDB supports the automatic creation and management of indexes, but periodic analysis is recommended to ensure that indexes are being used effectively.</p>
-3. <p style="text-align: justify;"><strong></strong>Efficient Transaction Management<strong></strong>: Batch processing transactions can reduce the overhead of managing individual transactions and improve throughput.</p>
-<p style="text-align: justify;">
-Example of batching transactions:
-</p>
+<ol start="2">
+    <li style="text-align: justify;"><strong>Index Maintenance:</strong> Regularly maintaining indexes ensures that they remain efficient over time. SurrealDB supports the automatic creation and management of indexes, but periodic analysis is recommended to ensure that indexes are being used effectively.</li>
+    <li style="text-align: justify;"><strong>Efficient Transaction Management:</strong> Batch processing transactions can reduce the overhead of managing individual transactions and improve throughput.</li>
+</ol>
 
+<p style="text-align: justify;"><strong>Example of batching transactions:</strong></p>
 {{< prism lang="sql" line-numbers="true">}}
-   BEGIN TRANSACTION;
-   
-   -- Insert multiple rows in a single transaction
-   INSERT INTO orders (id, status) VALUES (1, 'shipped'), (2, 'pending'), (3, 'delivered');
-   
-   COMMIT TRANSACTION;
-   
+BEGIN TRANSACTION;
+
+-- Insert multiple rows in a single transaction
+INSERT INTO orders (id, status) VALUES (1, 'shipped'), (2, 'pending'), (3, 'delivered');
+
+COMMIT TRANSACTION;
 {{< /prism >}}
+
 <p style="text-align: justify;">
 By batching multiple operations into a single transaction, you can reduce the number of round trips to the database and improve performance.
 </p>
+
 
 #### **12.4.6 Monitoring and Adjusting Concurrency Settings**
 <p style="text-align: justify;">
@@ -614,43 +618,7 @@ This enables Prometheus monitoring, allowing you to collect performance data and
 </p>
 
 - <p style="text-align: justify;"><strong>Adjusting Concurrency Settings</strong>: Based on monitoring data, you may need to adjust concurrency settings to balance performance and resource usage. This can involve tuning the number of concurrent connections, adjusting transaction isolation levels, or reconfiguring hardware resources to handle the load.</p>
-#### Section 1: Fundamentals of Transactions in SurrealDB
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Understanding Transactions</strong>: Explore the basic principles of transactions, including atomicity, consistency, isolation, and durability (ACID properties).</p>
-- <p style="text-align: justify;"><strong>Transaction Isolation Levels</strong>: Overview of different isolation levels in SurrealDB and how they affect data consistency and concurrency.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Trade-offs in Isolation Levels</strong>: Analyze the trade-offs between strict isolation (e.g., Serializable) and performance-oriented levels (e.g., Read Committed).</p>
-- <p style="text-align: justify;"><strong>Ensuring Transactional Integrity</strong>: Discuss strategies to maintain transactional integrity in complex multi-model databases.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Implementing Transactions</strong>: Step-by-step examples of implementing transactions in SurrealDB, covering simple to complex scenarios.</p>
-#### Section 2: Concurrency Control Mechanisms
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Locks and Locking Mechanisms</strong>: Introduction to locking mechanisms in SurrealDB, including shared locks, exclusive locks, and their impact on concurrency.</p>
-- <p style="text-align: justify;"><strong>Optimistic vs. Pessimistic Concurrency</strong>: Understand the differences between optimistic and pessimistic concurrency control strategies.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Managing Deadlocks and Contention</strong>: Explore techniques to avoid deadlocks and minimize contention in high-concurrency environments.</p>
-- <p style="text-align: justify;"><strong>Concurrency in Multi-Model Databases</strong>: Discuss the unique challenges of managing concurrency in a multi-model context, where different data models might require different strategies.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Implementing Concurrency Controls</strong>: Practical examples of applying concurrency controls in SurrealDB, including lock management and handling concurrent transactions.</p>
-#### Section 3: Conflict Resolution Strategies
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Types of Conflicts in Databases</strong>: Overview of common conflicts in transactional systems, such as write-write conflicts, and how they can impact data consistency.</p>
-- <p style="text-align: justify;"><strong>Conflict Detection Mechanisms</strong>: Introduction to mechanisms used by SurrealDB to detect and manage conflicts during concurrent operations.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Choosing Conflict Resolution Strategies</strong>: Analyze different strategies for resolving conflicts, such as last-write-wins, first-write-wins, and custom resolution strategies.</p>
-- <p style="text-align: justify;"><strong>Implications of Conflict Resolution</strong>: Discuss the implications of chosen conflict resolution strategies on application behavior and data integrity.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Implementing Conflict Resolution</strong>: Step-by-step guide on how to implement conflict resolution in SurrealDB, with examples of resolving common types of conflicts.</p>
-#### Section 4: Performance Optimization in Concurrent Environments
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Understanding Performance Bottlenecks</strong>: Identify common performance bottlenecks in concurrent systems, particularly in the context of multi-model databases like SurrealDB.</p>
-- <p style="text-align: justify;"><strong>Scalability Considerations</strong>: Explore how concurrency affects scalability and how to design systems that scale effectively under concurrent loads.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Balancing Consistency and Performance</strong>: Discuss the balance between maintaining strict data consistency and achieving high performance in SurrealDB.</p>
-- <p style="text-align: justify;"><strong>Optimizing Resource Utilization</strong>: Analyze strategies to optimize CPU, memory, and disk I/O usage in high-concurrency environments.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Implementing Performance Tuning Techniques</strong>: Practical examples of performance tuning in SurrealDB, focusing on query optimization, indexing, and efficient transaction management.</p>
-- <p style="text-align: justify;"><strong>Monitoring and Adjusting Concurrency Settings</strong>: Guide to monitoring concurrency performance and adjusting settings in SurrealDB for optimal results.</p>
+
 # **12.5 Conclusion**
 <p style="text-align: justify;">
 Chapter 12 has equipped you with a comprehensive understanding of managing transactions and concurrency within SurrealDB, a crucial aspect of maintaining data integrity and performance in multi-user environments. By exploring transaction fundamentals, concurrency control mechanisms, conflict resolution strategies, and performance optimization techniques, you have gained the tools needed to build robust and scalable applications that can handle complex and simultaneous data operations. These insights will enable you to design systems that balance consistency and performance effectively, ensuring that your applications remain responsive and reliable even under heavy loads. As you continue to develop your expertise, mastering these concepts will be key to navigating the intricate challenges of concurrent data management in modern multi-model databases.

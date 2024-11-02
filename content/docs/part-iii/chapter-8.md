@@ -94,22 +94,36 @@ These facets of SurrealDB's design underscore its utility in modern application 
 Setting up SurrealDB is straightforward, facilitating quick start for development projects. Here’s how to install and run SurrealDB:
 </p>
 
-- <p style="text-align: justify;"><strong>Installation:</strong></p>
-1. <p style="text-align: justify;">Download the appropriate version of SurrealDB from the official website or use a package manager if available.</p>
-2. <p style="text-align: justify;">Depending on the operating system, you may need to extract the files and run an installer or execute a simple command-line instruction.</p>
-- <p style="text-align: justify;"><strong>Basic Setup:</strong></p>
-1. <p style="text-align: justify;">Start SurrealDB server:</p>
+<ul>
+    <li style="text-align: justify;"><strong>Installation:</strong></li>
+</ul>
+<ol>
+    <li style="text-align: justify;">Download the appropriate version of SurrealDB from the official website or use a package manager if available.</li>
+    <li style="text-align: justify;">Depending on the operating system, you may need to extract the files and run an installer or execute a simple command-line instruction.</li>
+</ol>
+
+<ul>
+    <li style="text-align: justify;"><strong>Basic Setup:</strong></li>
+</ul>
+<ol>
+    <li style="text-align: justify;">Start SurrealDB server:</li>
+</ol>
 {{< prism lang="shell">}}
-     surreal start --log debug
+surreal start --log debug
 {{< /prism >}}
-2. <p style="text-align: justify;">Connect to the server using the SurrealDB CLI or a compatible GUI client.</p>
-3. <p style="text-align: justify;">Create your first database and namespace to begin experimenting:</p>
+
+<ol start="2">
+    <li style="text-align: justify;">Connect to the server using the SurrealDB CLI or a compatible GUI client.</li>
+    <li style="text-align: justify;">Create your first database and namespace to begin experimenting:</li>
+</ol>
 {{< prism lang="sql">}}
-     CREATE DATABASE mydatabase SET SCHEMA 'public'; USE mydatabase;
+CREATE DATABASE mydatabase SET SCHEMA 'public'; USE mydatabase;
 {{< /prism >}}
+
 <p style="text-align: justify;">
 SurrealDB offers a robust, scalable solution for modern applications that require diverse data management strategies. Its unique multi-model capabilities, combined with real-time updates and a unified query language, make it an exceptional choice for developers looking to optimize their database architecture. The steps provided guide you through starting with SurrealDB, setting the stage for deeper exploration and utilization in varied application scenarios.
 </p>
+
 
 # **8.2 Multi-Model Capabilities**
 <p style="text-align: justify;">
@@ -382,36 +396,6 @@ Developing a scalable architecture using SurrealDB requires careful planning and
 By integrating these strategic elements—robust cluster configurations, focused performance tuning, and tailored replication strategies—developers can leverage SurrealDB to build scalable architectures that not only meet but exceed the operational requirements of contemporary applications. This approach ensures that applications remain responsive and stable, even as they scale and as user demands evolve, thereby establishing a solid foundation for future growth and innovation.
 </p>
 
-#### Section 1: Overview of SurrealDB
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>What is SurrealDB?</strong>: Introduction to SurrealDB as a multi-model database that supports document, graph, and relational data models.</p>
-- <p style="text-align: justify;"><strong>Core Features</strong>: Discuss the unique features of SurrealDB, such as its query language, support for real-time updates, and multi-model capabilities.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Database Flexibility</strong>: Explore how SurrealDB’s multi-model approach provides flexibility and advantages over traditional single-model databases.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Getting Started with SurrealDB</strong>: Step-by-step guide on installing SurrealDB and setting up a basic environment.</p>
-#### Section 2: Multi-Model Capabilities
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Understanding Multi-Model Data Management</strong>: Define what multi-model data management involves and how it integrates various database types into a single cohesive system.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Advantages of Multi-Model Systems</strong>: Analyze the benefits of using a multi-model database in terms of scalability, performance, and developer productivity.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Practical Usage Scenarios</strong>: Examples of scenarios where multi-model capabilities shine, such as in applications requiring both graph and document features.</p>
-#### Section 3: Querying in SurrealDB
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Query Language Overview</strong>: Introduction to the SQL-like query language used by SurrealDB and how it adapts to different data models.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Query Flexibility and Power</strong>: Discuss how SurrealDB’s querying capabilities extend beyond traditional SQL, offering more flexibility and power for complex data relationships.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Basic and Advanced Queries</strong>: Provide examples of basic and advanced queries, demonstrating how to interact with and manipulate various data types within SurrealDB.</p>
-#### Section 4: Real-Time Capabilities and Scalability
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Real-Time Data Handling</strong>: Describe SurrealDB’s support for real-time data handling and updates.</p>
-- <p style="text-align: justify;"><strong>Scalability Features</strong>: Outline how SurrealDB can be scaled horizontally and vertically to meet different application demands.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Designing for Real-Time and Scale</strong>: Explore the architectural considerations when designing applications for real-time performance and scalability using SurrealDB.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Implementing Scalable Architectures</strong>: Offer guidelines on implementing scalable architectures with SurrealDB, including practical tips on configuration and deployment.</p>
 # **8.5 Conclusion**
 <p style="text-align: justify;">
 Chapter 8 has provided a comprehensive introduction to SurrealDB, unveiling its revolutionary approach to database management that harmonizes document, graph, and relational data models within a single system. By exploring SurrealDB's core features and multi-model capabilities, you've gained a solid understanding of how this database can be leveraged to create flexible, robust applications that adapt to complex data needs. SurrealDB's unique query language and real-time update capabilities underscore its potential to drive innovation in applications requiring rich, interlinked data structures and real-time data interactions. Armed with this knowledge, you are now better equipped to explore further integrations of SurrealDB with Rust, pushing the boundaries of what's possible in modern application development.

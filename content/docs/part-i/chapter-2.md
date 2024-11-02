@@ -26,38 +26,57 @@ In the realm of modern software development, the choice of programming language 
 Installing Rust is straightforward across different operating systems using <code>rustup</code>, which is Rust's official installer and version manager. Below, we outline the steps for Windows, Linux, and macOS.
 </p>
 
-### **For Windows:**
-- <p style="text-align: justify;"><strong>Download and Install rustup:</strong></p>
-1. <p style="text-align: justify;">Visit the official Rust website at [rust-lang.org](https://rust-lang.org) and navigate to the installation page.</p>
-2. <p style="text-align: justify;">Click on the "Install Rust" link.</p>
-3. <p style="text-align: justify;">Download the <code>rustup-init.exe</code> for Windows.</p>
-4. <p style="text-align: justify;">Run the downloaded <code>rustup-init.exe</code> file and follow the instructions in the installer.</p>
-- <p style="text-align: justify;"><strong>Configure the PATH Environment Variable:</strong></p>
-- <p style="text-align: justify;">The installer typically configures the PATH environment variable automatically. Verify this by opening a new command prompt and typing <code>rustc --version</code>.</p>
-### **For Linux and macOS:**
-- <p style="text-align: justify;"><strong>Download and Install rustup:</strong></p>
-1. <p style="text-align: justify;">Open a terminal.</p>
-2. <p style="text-align: justify;">Install <code>rustup</code> by running:</p>
-{{< prism lang="shell">}}
-     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-{{< /prism >}}
-3. <p style="text-align: justify;">Follow the on-screen instructions to complete the installation.</p>
-- <p style="text-align: justify;"><strong>Configure the PATH Environment Variable:</strong></p>
-- <p style="text-align: justify;">Ensure that the <code>~/.cargo/bin</code> directory is included in your PATH environment variable. This is typically handled automatically by the rustup installation script.</p>
-- <p style="text-align: justify;"><strong>Verify Installation:</strong></p>
-- <p style="text-align: justify;">Open a new terminal window and type: <code>rustc --version</code> to check that Rust is installed correctly.</p>
-### Verifying the Installation Across All Platforms:
-<p style="text-align: justify;">
-After installation, open a new terminal or command prompt window and execute the following command to verify that Rust is installed properly:
-</p>
-
-{{< prism lang="shell">}}
-rustc --version
-{{< /prism >}}
+<ol>
+    <li style="text-align: justify;"><strong>For Windows:</strong>
+        <ul>
+            <li><strong>Download and Install rustup:</strong></li>
+            <ol>
+                <li>Visit the official Rust website at <a href="https://rust-lang.org">rust-lang.org</a> and navigate to the installation page.</li>
+                <li>Click on the "Install Rust" link.</li>
+                <li>Download the <code>rustup-init.exe</code> for Windows.</li>
+                <li>Run the downloaded <code>rustup-init.exe</code> file and follow the instructions in the installer.</li>
+            </ol>
+            <li><strong>Configure the PATH Environment Variable:</strong></li>
+            <ul>
+                <li>The installer typically configures the PATH environment variable automatically. Verify this by opening a new command prompt and typing <code>rustc --version</code>.</li>
+            </ul>
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>For Linux and macOS:</strong>
+        <ul>
+            <li><strong>Download and Install rustup:</strong></li>
+            <ol>
+                <li>Open a terminal.</li>
+                <li>Install <code>rustup</code> by running:</li>
+            </ol>
+            {{< prism lang="shell">}}
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+            {{< /prism >}}
+            <ol start="3">
+                <li>Follow the on-screen instructions to complete the installation.</li>
+            </ol>
+            <li><strong>Configure the PATH Environment Variable:</strong></li>
+            <ul>
+                <li>Ensure that the <code>~/.cargo/bin</code> directory is included in your PATH environment variable. This is typically handled automatically by the rustup installation script.</li>
+            </ul>
+            <li><strong>Verify Installation:</strong></li>
+            <ul>
+                <li>Open a new terminal window and type <code>rustc --version</code> to check that Rust is installed correctly.</li>
+            </ul>
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Verifying the Installation Across All Platforms:</strong>
+        <ul>
+            <li>After installation, open a new terminal or command prompt window and execute the following command to verify that Rust is installed properly:</li>
+        </ul>
+        {{< prism lang="shell">}}
+        rustc --version
+        {{< /prism >}}
+    </li>
+</ol>
 <p style="text-align: justify;">
 This command should return the current version of the Rust compiler, confirming that Rust is ready to use on your system.
 </p>
-
 <p style="text-align: justify;">
 By following these platform-specific steps, you can ensure that your development environment is properly set up to start building robust, efficient, and secure database applications with Rust.
 </p>
@@ -139,70 +158,89 @@ The process of setting up PostgreSQL varies slightly depending on your operating
 Integrating Rust with SQL databases leverages Rust's core strengths—type safety and thread safety—ensuring that applications are both robust and performant. Rust's ecosystem provides several libraries like <code>Diesel</code> and <code>SQLx</code> that offer safe abstractions over raw SQL, preventing common mistakes such as SQL injection attacks and runtime errors. Understanding how to harness these libraries effectively is crucial for developers looking to exploit Rust's performance and safety features in a database context.
 </p>
 
-## **2.2.3 Database Configuration for Rust**
-<p style="text-align: justify;">
-Configuring PostgreSQL to seamlessly integrate with Rust involves setting user roles, permissions, and possibly adjusting connection settings for optimal performance:
-</p>
+<ol>
+    <li style="text-align: justify;"><strong>Database Configuration for Rust:</strong>
+        <p>Configuring PostgreSQL to seamlessly integrate with Rust involves setting user roles, permissions, and possibly adjusting connection settings for optimal performance.</p>
+    </li>
+    <li style="text-align: justify;"><strong>Setting Up User Roles and Permissions:</strong>
+        <ul>
+            <li>The first step in configuring PostgreSQL is to set up user roles and permissions. This process ensures that your application interacts with the database with the appropriate level of access, enhancing security and operational efficiency.</li>
+            <li><strong>Accessing PostgreSQL:</strong></li>
+            <ul>
+                <li><strong>Linux:</strong></li>
+                {{< prism lang="shell">}}
+                sudo -u postgres psql
+                {{< /prism >}}
+                <li><strong>Windows:</strong> Open the SQL Shell (psql) from the Start Menu.</li>
+                <li><strong>macOS:</strong></li>
+                {{< prism lang="shell">}}
+                psql postgres
+                {{< /prism >}}
+            </ul>
+            <li><strong>Creating a Role:</strong></li>
+            <ul>
+                <li>Execute the following SQL command to create a new role named <code>rust_user</code> with login capabilities:</li>
+                {{< prism lang="sql">}}
+                CREATE ROLE rust_user WITH LOGIN PASSWORD 'securepassword';
+                {{< /prism >}}
+                <li>It’s crucial to replace <code>'securepassword'</code> with a strong, unique password for security reasons.</li>
+            </ul>
+            <li><strong>Creating a Database and Granting Permissions:</strong></li>
+            <ul>
+                <li>Create a new database dedicated to your Rust projects:</li>
+                {{< prism lang="sql">}}
+                CREATE DATABASE rust_db;
+                {{< /prism >}}
+                <li>Grant all privileges on this new database to the <code>rust_user</code>:</li>
+                {{< prism lang="sql">}}
+                GRANT ALL PRIVILEGES ON DATABASE rust_db TO rust_user;
+                {{< /prism >}}
+            </ul>
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Adjusting Connection Settings:</strong>
+        <ul>
+            <li>To optimize PostgreSQL for use with Rust, certain connection settings may need to be adjusted. This includes editing the <code>postgresql.conf</code> and <code>pg_hba.conf</code> files, which are accessible in different locations depending on your operating system.</li>
+        </ul>
+    </li>
+</ol>
+<p style="text-align: justify;">With the configuration complete, the next step is to test the connection and start implementing database interactions within your Rust application.</p>
 
-### **Setting Up User Roles and Permissions**
-<p style="text-align: justify;">
-The first step in configuring PostgreSQL is to set up user roles and permissions. This process ensures that your application interacts with the database with the appropriate level of access, enhancing security and operational efficiency.
-</p>
 
-1. <p style="text-align: justify;"><strong></strong>Accessing PostgreSQL<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Linux</strong>:</p>
-{{< prism lang="shell">}}
-     sudo -u postgres psql
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Windows</strong>:</p>
-- <p style="text-align: justify;">Open the SQL Shell (psql) from the Start Menu.</p>
-- <p style="text-align: justify;"><strong>macOS</strong>:</p>
-- <p style="text-align: justify;">Open Terminal and run:</p>
-{{< prism lang="shell">}}
-     psql postgres
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Creating a Role<strong></strong>:</p>
-- <p style="text-align: justify;">Execute the following SQL command to create a new role named <code>rust_user</code> with login capabilities:</p>
-{{< prism lang="sql">}}
-     CREATE ROLE rust_user WITH LOGIN PASSWORD 'securepassword';
-{{< /prism >}}
-- <p style="text-align: justify;">It’s crucial to replace <code>'securepassword'</code> with a strong, unique password for security reasons.</p>
-3. <p style="text-align: justify;"><strong></strong>Creating a Database and Granting Permissions<strong></strong>:</p>
-- <p style="text-align: justify;">Create a new database dedicated to your Rust projects:</p>
-{{< prism lang="sql">}}
-     CREATE DATABASE rust_db;
-{{< /prism >}}
-- <p style="text-align: justify;">Grant all privileges on this new database to the <code>rust_user</code>:</p>
-{{< prism lang="sql">}}
-     GRANT ALL PRIVILEGES ON DATABASE rust_db TO rust_user;
-{{< /prism >}}
-### **Adjusting Connection Settings**
-<p style="text-align: justify;">
-To optimize PostgreSQL for use with Rust, certain connection settings may need to be adjusted. This includes editing the <code>postgresql.conf</code> and <code>pg_hba.conf</code> files, which are accessible in different locations depending on your operating system.
-</p>
+<ol>
+    <li style="text-align: justify;"><strong>Locating Configuration Files:</strong>
+        <ul>
+            <li><strong>Linux:</strong> Typically found in <code>/etc/postgresql/&lt;version&gt;/main/</code>.</li>
+            <li><strong>Windows:</strong> Usually located in the installation directory under <code>data\</code>.</li>
+            <li><strong>macOS:</strong> Often located in <code>/usr/local/var/postgres/</code> or through Homebrew’s PostgreSQL installation.</li>
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Editing <code>postgresql.conf</code>:</strong>
+        <ul>
+            <li>You may want to adjust the following settings:</li>
+            <ul>
+                <li><code>max_connections</code>: Increase if you anticipate many concurrent connections.</li>
+                <li><code>shared_buffers</code>: Increase to allocate more memory to PostgreSQL.</li>
+            </ul>
+            <li>Use a text editor to make these changes, and ensure you restart the PostgreSQL service to apply them.</li>
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Configuring <code>pg_hba.conf</code>:</strong>
+        <ul>
+            <li>This file controls client authentication and can be configured to allow connections from your Rust application securely.</li>
+            <li>Ensure that the method is set to <code>md5</code> or <code>scram-sha-256</code> for better security, which looks like:</li>
+        </ul>
+        {{< prism lang="sql">}}
+        # TYPE  DATABASE        USER            ADDRESS                 METHOD
+        host    rust_db         rust_user       127.0.0.1/32            scram-sha-256
+        {{< /prism >}}
+    </li>
+</ol>
 
-1. <p style="text-align: justify;"><strong></strong>Locating Configuration Files<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Linux</strong>:</p>
-- <p style="text-align: justify;">Typically found in <code>/etc/postgresql/<version>/main/</code>.</p>
-- <p style="text-align: justify;"><strong>Windows</strong>:</p>
-- <p style="text-align: justify;">Usually located in the installation directory under <code>data\</code>.</p>
-- <p style="text-align: justify;"><strong>macOS</strong>:</p>
-- <p style="text-align: justify;">Often located in <code>/usr/local/var/postgres/</code> or through Homebrew’s PostgreSQL installation.</p>
-2. <p style="text-align: justify;"><strong></strong>Editing<strong></strong> <code>postgresql.conf</code>:</p>
-- <p style="text-align: justify;">You may want to adjust the following settings:</p>
-- <p style="text-align: justify;"><code>max_connections</code>: Increase if you anticipate many concurrent connections.</p>
-- <p style="text-align: justify;"><code>shared_buffers</code>: Increase to allocate more memory to PostgreSQL.</p>
-- <p style="text-align: justify;">Use a text editor to make these changes, and ensure you restart the PostgreSQL service to apply them.</p>
-3. <p style="text-align: justify;"><strong></strong>Configuring<strong></strong> <code>pg_hba.conf</code>:</p>
-- <p style="text-align: justify;">This file controls client authentication and can be configured to allow connections from your Rust application securely.</p>
-- <p style="text-align: justify;">Ensure that the method is set to <code>md5</code> or <code>scram-sha-256</code> for better security, which looks like:</p>
-{{< prism lang="sql">}}
-     # TYPE  DATABASE        USER            ADDRESS                 METHOD
-     host    rust_db         rust_user       127.0.0.1/32            scram-sha-256
-{{< /prism >}}
 <p style="text-align: justify;">
 By meticulously setting up user roles, permissions, and connection settings across various platforms, developers can harness the full potential of Rust coupled with PostgreSQL. This not only lays a strong foundation for building secure and efficient applications but also scales with the growing needs of complex database operations. Whether you’re working in a development environment or gearing up for production, these configurations are essential for leveraging the robust features of both Rust and PostgreSQL. This detailed setup ensures that your database system is optimized, secure, and ready to handle the demands of modern application development.
 </p>
+
 
 ### **2.3 Setting Up SurrealDB**
 <p style="text-align: justify;">
@@ -276,33 +314,53 @@ Setting up SurrealDB involves a straightforward installation process that varies
     	help       Print this message or the help of the given subcommand(s)
     
 {{< /prism >}}
-- <p style="text-align: justify;">This confirms that the SurrealDB command-line tool was installed successfully and is ready to be used.</p>
-### For Linux:
-- <p style="text-align: justify;"><strong>Using the Package Manager:</strong></p>
-1. <p style="text-align: justify;">Open a terminal.</p>
-2. <p style="text-align: justify;">Depending on your Linux distribution, use the appropriate package manager to install SurrealDB. For instance, on Ubuntu, you might use:</p>
-{{< prism lang="shell">}}
-     curl -sSf https://install.surrealdb.com | sh
-{{< /prism >}}
-3. <p style="text-align: justify;">Follow the terminal instructions to complete the installation.</p>
-### For macOS:
-- <p style="text-align: justify;"><strong>Using Homebrew:</strong></p>
-1. <p style="text-align: justify;">Open a terminal.</p>
-2. <p style="text-align: justify;">Install SurrealDB using Homebrew by running:</p>
-{{< prism lang="shell">}}
-     brew install surrealdb
-{{< /prism >}}
-3. <p style="text-align: justify;">Follow any on-screen instructions to complete the setup.</p>
-- <p style="text-align: justify;"><strong>Verify the Installation:</strong></p>
-- <p style="text-align: justify;">Regardless of the platform, once installation is complete, verify it by running:</p>
-{{< prism lang="shell">}}
-    surreal start
-{{< /prism >}}
-- <p style="text-align: justify;">This command starts a SurrealDB instance, indicating a successful installation if no errors occur.</p>
-## **2.3.2 Choosing Between PostgreSQL and SurrealDB**
-<p style="text-align: justify;">
-Understanding when to opt for SurrealDB over PostgreSQL involves evaluating your project’s specific requirements. SurrealDB shines in scenarios that benefit from its hybrid capabilities:
-</p>
+<ol>
+    <li style="text-align: justify;"><strong>Installation Confirmation:</strong>
+        <p>This confirms that the SurrealDB command-line tool was installed successfully and is ready to be used.</p>
+    </li>
+    <li style="text-align: justify;"><strong>Installation Steps:</strong>
+        <ul>
+            <li><strong>For Linux:</strong></li>
+            <ul>
+                <li><strong>Using the Package Manager:</strong></li>
+                <ol>
+                    <li>Open a terminal.</li>
+                    <li>Depending on your Linux distribution, use the appropriate package manager to install SurrealDB. For instance, on Ubuntu, you might use:</li>
+                    {{< prism lang="shell">}}
+                    curl -sSf https://install.surrealdb.com | sh
+                    {{< /prism >}}
+                    <li>Follow the terminal instructions to complete the installation.</li>
+                </ol>
+            </ul>
+            <li><strong>For macOS:</strong></li>
+            <ul>
+                <li><strong>Using Homebrew:</strong></li>
+                <ol>
+                    <li>Open a terminal.</li>
+                    <li>Install SurrealDB using Homebrew by running:</li>
+                    {{< prism lang="shell">}}
+                    brew install surrealdb
+                    {{< /prism >}}
+                    <li>Follow any on-screen instructions to complete the setup.</li>
+                </ol>
+            </ul>
+            <li><strong>Verify the Installation:</strong></li>
+            <ul>
+                <li>Regardless of the platform, once installation is complete, verify it by running:</li>
+                {{< prism lang="shell">}}
+                surreal start
+                {{< /prism >}}
+                <li>This command starts a SurrealDB instance, indicating a successful installation if no errors occur.</li>
+            </ul>
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Choosing Between PostgreSQL and SurrealDB:</strong>
+        <ul>
+            <li>Understanding when to opt for SurrealDB over PostgreSQL involves evaluating your project’s specific requirements. SurrealDB shines in scenarios that benefit from its hybrid capabilities:</li>
+        </ul>
+    </li>
+</ol>
+
 
 - <p style="text-align: justify;"><strong>Schema Flexibility:</strong> SurrealDB, being schema-less, is ideal for projects that require flexibility in data modeling.</p>
 - <p style="text-align: justify;"><strong>Real-time Capabilities:</strong> Its built-in real-time query functionality makes it suitable for applications that need instant data updates without additional complexity.</p>
@@ -359,93 +417,108 @@ The integration of Rust with database systems is a pivotal aspect of developing 
 Diesel is a robust ORM (Object-Relational Mapper) for Rust, providing a safe and efficient way to interact with databases like PostgreSQL. This section outlines how to integrate Diesel into your Rust projects, from setup to executing database operations.
 </p>
 
-### **Setting Up Diesel**
-<p style="text-align: justify;">
-To integrate Diesel with your Rust projects, you'll need to add it as a dependency and install the necessary tools for managing database interactions.
-</p>
+<ol><ol>
+    <li style="text-align: justify;"><strong>Setting Up Diesel:</strong>
+        <p>To integrate Diesel with your Rust projects, you'll need to add it as a dependency and install the necessary tools for managing database interactions.</p>
+    </li>
+    <li style="text-align: justify;"><strong>Adding Diesel to Your Project:</strong>
+        <ul>
+            <li>First, add Diesel and dotenv to your <code>Cargo.toml</code> to handle PostgreSQL and environment variables:</li>
+        </ul>
+        {{< prism lang="toml" line-numbers="true">}}
+        [dependencies]
+        diesel = { version = "1.4", features = ["postgres"] }
+        dotenv = "0.15"
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Setting Up Path for PostgreSQL:</strong>
+        <ul>
+            <li>Many users encounter errors related to the PATH setup. Here’s how to solve it:</li>
+            <li><strong>Windows Setup Using PowerShell:</strong></li>
+            <ul>
+                <li><strong>Set <code>PQ_LIB_DIR</code> Environment Variable:</strong> If PostgreSQL is installed in <code>C:\Program Files\PostgreSQL\16\lib</code>, adjust the path according to your PostgreSQL version:</li>
+                {{< prism lang="shell">}}
+                $env:PQ_LIB_DIR="C:\Program Files\PostgreSQL\16\lib"
+                {{< /prism >}}
+                <li><strong>Add PostgreSQL to System PATH:</strong></li>
+                {{< prism lang="shell">}}
+                $env:Path += ";C:\Program Files\PostgreSQL\16\bin"
+                {{< /prism >}}
+            </ul>
+            <li><strong>Linux/macOS Setup:</strong></li>
+            <ul>
+                <li>The process for setting environment variables and adjusting the PATH on Linux and macOS is quite similar.</li>
+                <li><strong>Set <code>PQ_LIB_DIR</code>:</strong> (Assuming PostgreSQL is installed in <code>/usr/local/pgsql/lib</code>):</li>
+                {{< prism lang="shell">}}
+                export PQ_LIB_DIR=/usr/local/pgsql/lib
+                {{< /prism >}}
+                <li><strong>Add PostgreSQL to the PATH:</strong> (if PostgreSQL is installed in <code>/usr/local/pgsql/bin</code>):</li>
+                {{< prism lang="shell">}}
+                export PATH=$PATH:/usr/local/pgsql/bin
+                {{< /prism >}}
+                <li><strong>Make these environment variables permanent</strong> by adding them to your shell configuration file (<code>~/.bashrc</code>, <code>~/.bash_profile</code>, or <code>~/.zshrc</code> depending on your shell):</li>
+                {{< prism lang="shell" line-numbers="true">}}
+                echo 'export DATABASE_URL=postgres://username:password@localhost/mydatabase' >> ~/.bashrc
+                echo 'export PQ_LIB_DIR=/usr/local/pgsql/lib' >> ~/.bashrc
+                echo 'export PATH=$PATH:/usr/local/pgsql/bin' >> ~/.bashrc
+                source ~/.bashrc
+                {{< /prism >}}
+            </ul>
+        </ul>
+        <p>By configuring these environment variables and paths appropriately, you ensure that Diesel can locate and interact with PostgreSQL regardless of your development environment. This setup aids in avoiding common pitfalls related to missing libraries or executable paths when working with Rust and Diesel.</p>
+    </li>
+    <li style="text-align: justify;"><strong>Installing the Diesel CLI:</strong>
+        <ul>
+            <li>The Diesel CLI simplifies managing database schemas and migrations. Installation varies by operating system:</li>
+            <ul>
+                <li><strong>Linux/MacOS:</strong></li>
+                {{< prism lang="shell">}}
+                curl --proto '=https' --tlsv1.2 -LsSf https://github.com/diesel-rs/diesel/releases/latest/download/diesel_cli-installer.sh | sh
+                {{< /prism >}}
+                <li><strong>Windows:</strong></li>
+                {{< prism lang="shell">}}
+                powershell -c "irm https://github.com/diesel-rs/diesel/releases/latest/download/diesel_cli-installer.ps1 | iex"
+                {{< /prism >}}
+            </ul>
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Configuring the Database URL:</strong>
+        <ul>
+            <li>Set up your database URL in an environment variable to securely access your PostgreSQL database:</li>
+            <ul>
+                <li><strong>Linux/MacOS:</strong></li>
+                {{< prism lang="shell">}}
+                export DATABASE_URL=postgres://rust_user:securepassword@localhost/rust_db
+                {{< /prism >}}
+                <li><strong>Windows:</strong> In PowerShell:</li>
+                {{< prism lang="shell">}}
+                $env:DATABASE_URL="postgres://rust_user:securepassword@localhost/rust_db"
+                {{< /prism >}}
+            </ul>
+        </ul>
+    </li>
+</ol>
 
-1. <p style="text-align: justify;"><strong></strong>Add Diesel to Your Project<strong></strong>:</p>
-- <p style="text-align: justify;">First, add Diesel and dotenv to your <code>Cargo.toml</code> to handle PostgreSQL and environment variables:</p>
-{{< prism lang="toml" line-numbers="true">}}
-   [dependencies]
-   diesel = { version = "1.4", features = ["postgres"] }
-   dotenv = "0.15"
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Add Path for PostgreSQL<strong></strong></p>
-- <p style="text-align: justify;">Many users encounters errors on Path, here’s how to solve it:</p>
-- <p style="text-align: justify;"><strong>Windows Setup Using PowerShell</strong></p>
-1. <p style="text-align: justify;"><strong></strong>Set<strong></strong> <code>PQ_LIB_DIR</code> Environment Variable: If PostgreSQL is installed in <code>C:\Program Files\PostgreSQL\16\lib</code>, adjust the path according to your PostgreSQL version:</p>
-{{< prism lang="">}}
-        $env:PQ_LIB_DIR="C:\Program Files\PostgreSQL\16\lib"
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Add PostgreSQL to System PATH<strong></strong>:</p>
-{{< prism lang="">}}
-        $env:Path += ";C:\Program Files\PostgreSQL\16\bin"
-{{< /prism >}}
-<p style="text-align: justify;">
-After setting these variables in your current PowerShell session, proceed with the Diesel CLI installation and other operations as described.
-</p>
+### Creating and Running Migrations:
 
-- <p style="text-align: justify;"><strong>Linux/macOS Setup</strong></p>
-<p style="text-align: justify;">
-The process for setting environment variables and adjusting the PATH on Linux and macOS is quite similar.
-</p>
+<p>Diesel uses migrations to manage and apply schema changes to your database in a version-controlled manner.</p>
 
-1. <p style="text-align: justify;"><strong></strong>Open your Terminal and run:<strong></strong></p>
-- <p style="text-align: justify;"><strong>Set</strong> <code>PQ_LIB_DIR</code> (Assuming PostgreSQL is installed in <code>/usr/local/pgsql/lib</code>):</p>
-{{< prism lang="shell">}}
-          export PQ_LIB_DIR=/usr/local/pgsql/lib
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Add PostgreSQL to the PATH</strong> (if PostgreSQL is installed in <code>/usr/local/pgsql/bin</code>):</p>
-{{< prism lang="shell">}}
-          export PATH=$PATH:/usr/local/pgsql/bin
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Make these environment variables permanent<strong></strong> by adding them to your shell configuration file (<code>~/.bashrc</code>, <code>~/.bash_profile</code>, or <code>~/.zshrc</code> depending on your shell):</p>
-{{< prism lang="shell" line-numbers="true">}}
-        echo 'export DATABASE_URL=postgres://username:password@localhost/mydatabase' >> ~/.bashrc
-        echo 'export PQ_LIB_DIR=/usr/local/pgsql/lib' >> ~/.bashrc
-        echo 'export PATH=$PATH:/usr/local/pgsql/bin' >> ~/.bashrc
-        source ~/.bashrc
-{{< /prism >}}
-<p style="text-align: justify;">
-By configuring these environment variables and paths appropriately, you ensure that Diesel can locate and interact with PostgreSQL regardless of your development environment. This setup aids in avoiding common pitfalls related to missing libraries or executable paths when working with Rust and Diesel.
-</p>
-
-3. <p style="text-align: justify;"><strong></strong>Install the Diesel CLI<strong></strong>:</p>
-- <p style="text-align: justify;">The Diesel CLI simplifies managing database schemas and migrations. Installation varies by operating system:</p>
-- <p style="text-align: justify;"><strong>Linux/MacOS</strong>:</p>
-{{< prism lang="">}}
-     curl --proto '=https' --tlsv1.2 -LsSf https://github.com/diesel-rs/diesel/releases/latest/download/diesel_cli-installer.sh | sh
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Windows</strong>:</p>
-{{< prism lang="shell">}}
-     powershell -c "irm https://github.com/diesel-rs/diesel/releases/latest/download/diesel_cli-installer.ps1 | iex"
-{{< /prism >}}
-4. <p style="text-align: justify;"><strong></strong>Configure the Database URL<strong></strong>:</p>
-- <p style="text-align: justify;">Set up your database URL in an environment variable to securely access your PostgreSQL database:</p>
-- <p style="text-align: justify;"><strong>Linux/MacOS</strong>:</p>
-{{< prism lang="shell">}}
-     export DATABASE_URL=postgres://rust_user:securepassword@localhost/rust_db
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Windows</strong>: In PowerShell:</p>
-{{< prism lang="shell">}}
-     $env:DATABASE_URL="postgres://rust_user:securepassword@localhost/rust_db"
-{{< /prism >}}
-### **Creating and Running Migrations**
-<p style="text-align: justify;">
-Diesel uses migrations to manage and apply schema changes to your database in a version-controlled manner.
-</p>
-
-1. <p style="text-align: justify;"><strong></strong>Generate a New Migration<strong></strong>:</p>
-- <p style="text-align: justify;">Create a new migration to define your table schema:</p>
-{{< prism lang="shell">}}
-   diesel setup
-   diesel migration generate create_users_table
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Edit Migration Files<strong></strong>:</p>
-- <p style="text-align: justify;">Navigate to your <code>migrations/<timestamp>_create_users_table</code> directory. Here, you will modify the <code>up.sql</code> and <code>down.sql</code> files.</p>
-1. <p style="text-align: justify;"><strong></strong>Edit<strong></strong> <code>up.sql</code>: In the <code>up.sql</code> file, define the schema for a <code>users</code> table. For instance:</p>
-{{< prism lang="sql" line-numbers="true">}}
+<ol>
+    <li style="text-align: justify;"><strong>Generate a New Migration:</strong>
+        <ul>
+            <li>Create a new migration to define your table schema:</li>
+        </ul>
+        {{< prism lang="shell">}}
+        diesel setup
+        diesel migration generate create_users_table
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Edit Migration Files:</strong>
+        <ul>
+            <li>Navigate to your <code>migrations/&lt;timestamp&gt;_create_users_table</code> directory. Here, you will modify the <code>up.sql</code> and <code>down.sql</code> files.</li>
+            <li><strong>Edit <code>up.sql</code>:</strong> In the <code>up.sql</code> file, define the schema for a <code>users</code> table. For instance:</li>
+        </ul>
+        {{< prism lang="sql" line-numbers="true">}}
         CREATE TABLE users (
             id SERIAL PRIMARY KEY,
             name VARCHAR(255) NOT NULL,
@@ -454,188 +527,187 @@ Diesel uses migrations to manage and apply schema changes to your database in a 
         INSERT INTO users (name, email) VALUES 
         ('Alice Smith', 'alice.smith@example.com'),
         ('Bob Johnson', 'bob.johnson@example.com');
-        
-{{< /prism >}}
-<p style="text-align: justify;">
-This SQL script creates a <code>users</code> table with an auto-incrementing <code>id</code>, a <code>name</code>, and a unique <code>email</code>.
-</p>
-
-2. <p style="text-align: justify;"><strong></strong>Edit<strong></strong> <code>down.sql</code>: In the <code>down.sql</code> file, define the rollback script which typically involves dropping the table:</p>
-{{< prism lang="sql">}}
+        {{< /prism >}}
+        <p>This SQL script creates a <code>users</code> table with an auto-incrementing <code>id</code>, a <code>name</code>, and a unique <code>email</code>.</p>
+        <ul>
+            <li><strong>Edit <code>down.sql</code>:</strong> In the <code>down.sql</code> file, define the rollback script which typically involves dropping the table:</li>
+        </ul>
+        {{< prism lang="sql">}}
         DROP TABLE users;
-{{< /prism >}}
-<p style="text-align: justify;">
-This SQL script will remove the <code>users</code> table when the migration is rolled back.
-</p>
+        {{< /prism >}}
+        <p>This SQL script will remove the <code>users</code> table when the migration is rolled back.</p>
+    </li>
+    <li style="text-align: justify;"><strong>Apply the Migration:</strong>
+        <ul>
+            <li>Update your database schema by running the migration:</li>
+        </ul>
+        {{< prism lang="shell">}}
+        diesel migration run
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Performing Database Operations:</strong>
+        <p>Diesel's API facilitates safe and efficient CRUD operations, minimizing the risk of SQL injection attacks through its type-safe query builder.</p>
+        <ul>
+            <li><strong>Example Usage:</strong> Here's a simple example to demonstrate querying using Diesel:</li>
+        </ul>
+        {{< prism lang="rust" line-numbers="true">}}
+        use diesel::prelude::*;
+        use diesel::pg::PgConnection;
+        use dotenv::dotenv;
+        use std::env;
+        #[macro_use]
+        extern crate diesel;
+        mod schema {
+            table! {
+                users (id) {
+                    id -> Int4,
+                    name -> Varchar,
+                    email -> Varchar,
+                }
+            }
+        }
+        #[derive(Queryable)]
+        struct User {
+            pub id: i32,
+            pub name: String,
+            pub email: String,
+        }
+        fn main() {
+            dotenv().ok(); // Load environment variables from .env file
+            let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+            let conn = PgConnection::establish(&database_url).expect("Error connecting to database");
+            match fetch_users(&conn) {
+                Ok(users) => {
+                    println!("Displaying {} users", users.len());
+                    for user in users {
+                        println!("{}: {} - {}", user.id, user.name, user.email);
+                    }
+                },
+                Err(err) => println!("Error: {}", err),
+            }
+        }
+        fn fetch_users(conn: &PgConnection) -> QueryResult<Vec<User>> {
+            use self::schema::users::dsl::*;
+            users.load::<User>(conn)
+        }
+        {{< /prism >}}
+        <p>This function <code>fetch_users</code> fetches all users from the database using Diesel's query builder, ensuring type safety and efficient query execution.</p>
+    </li>
+</ol>
 
-3. <p style="text-align: justify;"><strong></strong>Apply the Migration<strong></strong>:</p>
-- <p style="text-align: justify;">Update your database schema by running the migration:</p>
-{{< prism lang="shell">}}
-   diesel migration run
-{{< /prism >}}
-### **Performing Database Operations**
-<p style="text-align: justify;">
-Diesel's API facilitates safe and efficient CRUD operations, minimizing the risk of SQL injection attacks through its type-safe query builder.
-</p>
-
-- <p style="text-align: justify;"><strong>Example Usage</strong>: Here's a simple example to demonstrate querying using Diesel:</p>
-{{< prism lang="rust" line-numbers="true">}}
-  use diesel::prelude::*;
-  use diesel::pg::PgConnection;
-  use dotenv::dotenv;
-  use std::env;
-  
-  #[macro_use]
-  extern crate diesel;
-  
-  mod schema {
-      table! {
-          users (id) {
-              id -> Int4,
-              name -> Varchar,
-              email -> Varchar,
-          }
-      }
-  }
-  
-  #[derive(Queryable)]
-  struct User {
-      pub id: i32,
-      pub name: String,
-      pub email: String,
-  }
-  
-  fn main() {
-      dotenv().ok(); // Load environment variables from .env file
-      let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-      let conn = PgConnection::establish(&database_url).expect("Error connecting to database");
-  
-      match fetch_users(&conn) {
-          Ok(users) => {
-              println!("Displaying {} users", users.len());
-              for user in users {
-                  println!("{}: {} - {}", user.id, user.name, user.email);
-              }
-          },
-          Err(err) => println!("Error: {}", err),
-      }
-  }
-  
-  fn fetch_users(conn: &PgConnection) -> QueryResult<Vec<User>> {
-      use self::schema::users::dsl::*;
-      users.load::<User>(conn)
-  }
-{{< /prism >}}
-- <p style="text-align: justify;">This function <code>fetch_users</code> fetches all users from the database using Diesel's query builder, ensuring type safety and efficient query execution.</p>
 <p style="text-align: justify;">
 Integrating Diesel with PostgreSQL in Rust applications provides a powerful toolset for managing database interactions securely and efficiently. By following the steps outlined above, you can set up Diesel, manage database schemas with migrations, and perform safe database operations, paving the way for robust application development with Rust.
 </p>
+
 
 ## **2.4.2 Using SQLx for Asynchronous Operations**
 <p style="text-align: justify;">
 SQLx shines by enabling asynchronous database operations, essential for high-performance web services. It offers compile-time checked SQL queries and comprehensive support for different databases with an emphasis on type safety.
 </p>
 
-#### Setting Up SQLx:
-1. <p style="text-align: justify;"><strong></strong>Add SQLx to Your Project<strong></strong>: Edit your <code>Cargo.toml</code> to include SQLx with PostgreSQL support and the necessary runtime:</p>
-{{< prism lang="toml" line-numbers="true">}}
-   [dependencies]
-   dotenv = "0.15.0"
-   sqlx = { version = "0.8.0", features = ["postgres", "runtime-tokio-native-tls"] }
-   tokio = { version = "1", features = ["full"] }
-{{< /prism >}}
-### **Connecting to the Database Asynchronously:**
-2. <p style="text-align: justify;"><strong></strong>Configure the Database Connection<strong></strong>: Utilize SQLx to establish an asynchronous connection pool to PostgreSQL. This example uses <code>tokio</code> as the async runtime.</p>
-{{< prism lang="rust" line-numbers="true">}}
-   use sqlx::postgres::PgPoolOptions;
-   use std::env;
-   
-   #[tokio::main]
-   async fn main() {
-       // Environment variable for the database URL
-       let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-   
-       let pool = PgPoolOptions::new()
-           .max_connections(5)
-           .connect(&database_url).await.expect("Failed to connect to the database");
-   
-       println!("Successfully connected to the database");
-   
-       // Use `pool` for querying hereafter
-   }
-{{< /prism >}}
-<p style="text-align: justify;">
-Ensure that your <code>DATABASE_URL</code> environment variable is set correctly, pointing to your PostgreSQL instance:
-</p>
+<ol>
+    <li style="text-align: justify;"><strong>Setting Up SQLx:</strong>
+        <ul>
+            <li>Add SQLx to your project by editing your <code>Cargo.toml</code> to include SQLx with PostgreSQL support and the necessary runtime:</li>
+        </ul>
+        {{< prism lang="toml" line-numbers="true">}}
+        [dependencies]
+        dotenv = "0.15.0"
+        sqlx = { version = "0.8.0", features = ["postgres", "runtime-tokio-native-tls"] }
+        tokio = { version = "1", features = ["full"] }
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Connecting to the Database Asynchronously:</strong>
+        <ul>
+            <li>Configure the database connection by utilizing SQLx to establish an asynchronous connection pool to PostgreSQL. This example uses <code>tokio</code> as the async runtime:</li>
+        </ul>
+        {{< prism lang="rust" line-numbers="true">}}
+        use sqlx::postgres::PgPoolOptions;
+        use std::env;
+        #[tokio::main]
+        async fn main() {
+            // Environment variable for the database URL
+            let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+            let pool = PgPoolOptions::new()
+                .max_connections(5)
+                .connect(&database_url).await.expect("Failed to connect to the database");
+            println!("Successfully connected to the database");
+            // Use `pool` for querying hereafter
+        }
+        {{< /prism >}}
+        <p style="text-align: justify;">
+        Ensure that your <code>DATABASE_URL</code> environment variable is set correctly, pointing to your PostgreSQL instance:
+        </p>
+        <ul>
+            <li style="text-align: justify;"><strong>Linux/MacOS:</strong></li>
+        </ul>
+        {{< prism lang="shell">}}
+        export DATABASE_URL=postgres://rust_user:securepassword@localhost/rust_db
+        {{< /prism >}}
+        <ul>
+            <li style="text-align: justify;"><strong>Windows:</strong> In PowerShell:</li>
+        </ul>
+        {{< prism lang="shell">}}
+        $env:DATABASE_URL="postgres://rust_user:securepassword@localhost/rust_db"
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Executing Asynchronous Queries:</strong>
+        <ul>
+            <li>Perform CRUD operations using SQLx’s API, which supports asynchronous queries with Rust's async/await syntax. Here’s an example of performing a basic query to fetch data:</li>
+        </ul>
+        {{< prism lang="rust" line-numbers="true">}}
+        use sqlx::postgres::PgPoolOptions;
+        use sqlx::Row;  // For fetching rows from queries
+        use dotenv::dotenv;
+        use std::env;
+        #[tokio::main]
+        async fn main() -> Result<(), sqlx::Error> {
+            // Load environment variables from .env file
+            dotenv().ok();
+            // Get the DATABASE_URL from environment variables
+            let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+            // Create a connection pool
+            let pool = PgPoolOptions::new()
+                .max_connections(5)
+                .connect(&database_url)
+                .await?;
+            // Create a simple table
+            sqlx::query(
+                "CREATE TABLE IF NOT EXISTS users (
+                    id SERIAL PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    email TEXT NOT NULL
+                )"
+            )
+            .execute(&pool)
+            .await?;
+            // Insert data into the table
+            sqlx::query("INSERT INTO users (name, email) VALUES ($1, $2)")
+                .bind("John Doe")
+                .bind("johndoe@example.com")
+                .execute(&pool)
+                .await?;
+            // Fetch data from the table
+            let rows = sqlx::query("SELECT id, name, email FROM users")
+                .fetch_all(&pool)
+                .await?;
+            // Print the results
+            for row in rows {
+                let id: i32 = row.get("id");
+                let name: &str = row.get("name");
+                let email: &str = row.get("email");
+                println!("ID: {}, Name: {}, Email: {}", id, name, email);
+            }
+            Ok(())
+        }
+        {{< /prism >}}
+    </li>
+</ol>
 
-- <p style="text-align: justify;"><strong>Linux/MacOS</strong>:</p>
-{{< prism lang="shell">}}
-     export DATABASE_URL=postgres://rust_user:securepassword@localhost/rust_db
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Windows</strong>: In PowerShell:</p>
-{{< prism lang="shell">}}
-     $env:DATABASE_URL="postgres://rust_user:securepassword@localhost/rust_db"
-{{< /prism >}}
-#### Executing Asynchronous Queries:
-3. <p style="text-align: justify;"><strong></strong>Perform CRUD Operations<strong></strong>: SQLx provides a robust API that supports asynchronous queries using Rust's async/await syntax. Here's an example of how to perform a basic query to fetch data:</p>
-{{< prism lang="">}}
-   use sqlx::postgres::PgPoolOptions;
-   use sqlx::Row;  // For fetching rows from queries
-   use dotenv::dotenv;
-   use std::env;
-   
-   #[tokio::main]
-   async fn main() -> Result<(), sqlx::Error> {
-       // Load environment variables from .env file
-       dotenv().ok();
-   
-       // Get the DATABASE_URL from environment variables
-       let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-   
-       // Create a connection pool
-       let pool = PgPoolOptions::new()
-           .max_connections(5)
-           .connect(&database_url)
-           .await?;
-   
-       // Create a simple table
-       sqlx::query(
-           "CREATE TABLE IF NOT EXISTS users (
-               id SERIAL PRIMARY KEY,
-               name TEXT NOT NULL,
-               email TEXT NOT NULL
-           )"
-       )
-       .execute(&pool)
-       .await?;
-   
-       // Insert data into the table
-       sqlx::query("INSERT INTO users (name, email) VALUES ($1, $2)")
-           .bind("John Doe")
-           .bind("johndoe@example.com")
-           .execute(&pool)
-           .await?;
-   
-       // Fetch data from the table
-       let rows = sqlx::query("SELECT id, name, email FROM users")
-           .fetch_all(&pool)
-           .await?;
-   
-       // Print the results
-       for row in rows {
-           let id: i32 = row.get("id");
-           let name: &str = row.get("name");
-           let email: &str = row.get("email");
-   
-           println!("ID: {}, Name: {}, Email: {}", id, name, email);
-       }
-   
-       Ok(())
-   }
-{{< /prism >}}
 <p style="text-align: justify;">
 This setup exemplifies how to integrate SQLx into your Rust applications for effective asynchronous database management. It ensures that your applications can perform database operations without blocking, leveraging modern async programming paradigms. This approach is particularly beneficial for web services where efficient resource utilization and non-blocking I/O are crucial.
 </p>
+
 
 ## **2.4.3 Architectural Best Practices**
 <p style="text-align: justify;">

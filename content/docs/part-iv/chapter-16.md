@@ -83,45 +83,63 @@ To ensure secure connections, both PostgreSQL and SurrealDB support TLS/SSL encr
 </p>
 
 ### Implementing TLS/SSL in PostgreSQL:
-1. <p style="text-align: justify;"><strong></strong>Generate SSL Certificates<strong></strong>: Before enabling SSL in PostgreSQL, you need to generate a self-signed certificate or obtain one from a trusted certificate authority (CA).</p>
-- <p style="text-align: justify;">Use <code>openssl</code> to generate the server certificate and private key:</p>
-{{< prism lang="shell" line-numbers="true">}}
-     openssl req -new -text -out server.req 
-     openssl rsa -in privkey.pem -out server.key 
-     openssl req -x509 -in server.req -text -key server.key -out server.crt
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Configure PostgreSQL for SSL<strong></strong>:</p>
-- <p style="text-align: justify;">Place the generated certificate and key files in the PostgreSQL data directory (<code>/var/lib/postgresql/data</code>).</p>
-- <p style="text-align: justify;">Edit the <code>postgresql.conf</code> file and set the following:</p>
-{{< prism lang="shell">}}
-     ssl = on ssl_cert_file = 'server.crt' ssl_key_file = 'server.key'
-{{< /prism >}}
-- <p style="text-align: justify;">Ensure the correct permissions are set for the key file:</p>
-{{< prism lang="shell">}}
-     chmod 600 server.key
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Restart PostgreSQL<strong></strong> to apply the changes:</p>
-{{< prism lang="shell">}}
-   sudo systemctl restart postgresql
-{{< /prism >}}
-4. <p style="text-align: justify;"><strong></strong>Client Configuration<strong></strong>: Ensure that the client also connects using SSL. You can do this by setting the <code>sslmode</code> parameter in the connection string:</p>
-{{< prism lang="shell">}}
-   psql "sslmode=require host=yourserver port=5432 dbname=yourdb user=youruser"
-{{< /prism >}}
+<ol>
+    <li style="text-align: justify;"><strong>Generate SSL Certificates:</strong> Before enabling SSL in PostgreSQL, you need to generate a self-signed certificate or obtain one from a trusted certificate authority (CA).
+        <ul>
+            <li>Use <code>openssl</code> to generate the server certificate and private key:</li>
+            {{< prism lang="shell" line-numbers="true">}}
+            openssl req -new -text -out server.req 
+            openssl rsa -in privkey.pem -out server.key 
+            openssl req -x509 -in server.req -text -key server.key -out server.crt
+            {{< /prism >}}
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Configure PostgreSQL for SSL:</strong>
+        <ul>
+            <li>Place the generated certificate and key files in the PostgreSQL data directory (<code>/var/lib/postgresql/data</code>).</li>
+            <li>Edit the <code>postgresql.conf</code> file and set the following:</li>
+            {{< prism lang="shell">}}
+            ssl = on
+            ssl_cert_file = 'server.crt'
+            ssl_key_file = 'server.key'
+            {{< /prism >}}
+            <li>Ensure the correct permissions are set for the key file:</li>
+            {{< prism lang="shell">}}
+            chmod 600 server.key
+            {{< /prism >}}
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Restart PostgreSQL</strong> to apply the changes:</li>
+    {{< prism lang="shell">}}
+    sudo systemctl restart postgresql
+    {{< /prism >}}
+    <li style="text-align: justify;"><strong>Client Configuration:</strong> Ensure that the client also connects using SSL. You can do this by setting the <code>sslmode</code> parameter in the connection string:</li>
+    {{< prism lang="shell">}}
+    psql "sslmode=require host=yourserver port=5432 dbname=yourdb user=youruser"
+    {{< /prism >}}
+</ol>
+
 ### Implementing TLS/SSL in SurrealDB:
-1. <p style="text-align: justify;"><strong></strong>Generate SSL Certificates<strong></strong>: Similar to PostgreSQL, start by generating an SSL certificate and key for SurrealDB using <code>openssl</code> or another certificate authority.</p>
-2. <p style="text-align: justify;"><strong></strong>Enable TLS in SurrealDB<strong></strong>:</p>
-- <p style="text-align: justify;">In SurrealDB’s configuration file or when starting the server, specify the path to the SSL certificate and key:</p>
-{{< prism lang="shell">}}
-     surreal start --tls-cert /path/to/server.crt --tls-key /path/to/server.key
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Client Configuration<strong></strong>: Ensure that the SurrealDB client is configured to connect using TLS. When initializing the client connection, pass the <code>--tls</code> flag to enable encrypted communication:</p>
-{{< prism lang="shell">}}
-   surreal connect --tls "https://yourserver:port"
-{{< /prism >}}
+<ol>
+    <li style="text-align: justify;"><strong>Generate SSL Certificates:</strong> Similar to PostgreSQL, start by generating an SSL certificate and key for SurrealDB using <code>openssl</code> or another certificate authority.</li>
+    <li style="text-align: justify;"><strong>Enable TLS in SurrealDB:</strong>
+        <ul>
+            <li>In SurrealDB’s configuration file or when starting the server, specify the path to the SSL certificate and key:</li>
+            {{< prism lang="shell">}}
+            surreal start --tls-cert /path/to/server.crt --tls-key /path/to/server.key
+            {{< /prism >}}
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Client Configuration:</strong> Ensure that the SurrealDB client is configured to connect using TLS. When initializing the client connection, pass the <code>--tls</code> flag to enable encrypted communication:</li>
+    {{< prism lang="shell">}}
+    surreal connect --tls "https://yourserver:port"
+    {{< /prism >}}
+</ol>
+
 <p style="text-align: justify;">
 By configuring TLS/SSL in both PostgreSQL and SurrealDB, you ensure that all data transmitted between the client and server is encrypted, protecting it from potential security threats.
 </p>
+
 
 # 16.2 Role-Based Access Control (RBAC)
 <p style="text-align: justify;">
@@ -172,49 +190,52 @@ Once an effective RBAC system is designed, the next step is to implement it in b
 PostgreSQL provides a robust system for defining roles and granting permissions. Roles in PostgreSQL can be <strong>users</strong> or <strong>groups</strong>, and permissions (privileges) are granted at the level of tables, schemas, functions, and other objects.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Creating Roles<strong></strong>: To create a new role in PostgreSQL, you can use the <code>CREATE ROLE</code> command:</p>
-{{< prism lang="sql">}}
-   CREATE ROLE analyst WITH LOGIN PASSWORD 'securepassword';
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Assigning Permissions<strong></strong>: Once the role is created, specific permissions can be assigned to the role. For example, to grant read-only access to a specific table:</p>
-{{< prism lang="sql">}}
-   GRANT SELECT ON employees TO analyst;
-{{< /prism >}}
-<p style="text-align: justify;">
-For roles that need broader access, such as a database administrator role:
-</p>
+<ol>
+    <li style="text-align: justify;"><strong>Creating Roles:</strong> To create a new role in PostgreSQL, you can use the <code>CREATE ROLE</code> command:</li>
+    {{< prism lang="sql">}}
+    CREATE ROLE analyst WITH LOGIN PASSWORD 'securepassword';
+    {{< /prism >}}
+    <li style="text-align: justify;"><strong>Assigning Permissions:</strong> Once the role is created, specific permissions can be assigned to the role. For example, to grant read-only access to a specific table:</li>
+    {{< prism lang="sql">}}
+    GRANT SELECT ON employees TO analyst;
+    {{< /prism >}}
+    <p style="text-align: justify;">
+    For roles that need broader access, such as a database administrator role:
+    </p>
+    {{< prism lang="sql">}}
+    GRANT ALL PRIVILEGES ON DATABASE company TO admin_role;
+    {{< /prism >}}
+    <li style="text-align: justify;"><strong>Role Hierarchies:</strong> PostgreSQL allows roles to inherit permissions from other roles. This is useful for creating hierarchical access structures:</li>
+    {{< prism lang="sql">}}
+    GRANT admin_role TO senior_admin;
+    {{< /prism >}}
+    <p style="text-align: justify;">
+    In this example, the <code>senior_admin</code> role will inherit all the privileges assigned to <code>admin_role</code>, allowing for more streamlined permission management.
+    </p>
+</ol>
 
-{{< prism lang="sql">}}
-   GRANT ALL PRIVILEGES ON DATABASE company TO admin_role;
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Role Hierarchies<strong></strong>: PostgreSQL allows roles to inherit permissions from other roles. This is useful for creating hierarchical access structures:</p>
-{{< prism lang="sql">}}
-   GRANT admin_role TO senior_admin;
-{{< /prism >}}
-<p style="text-align: justify;">
-In this example, the <code>senior_admin</code> role will inherit all the privileges assigned to <code>admin_role</code>, allowing for more streamlined permission management.
-</p>
-
-### **RBAC in SurrealDB**
+### RBAC in SurrealDB
 <p style="text-align: justify;">
 SurrealDB supports role-based access control through the use of <strong>access policies</strong> and <strong>permission sets</strong> that can be applied to different collections or data types. These roles control how users can interact with documents, graphs, and other multi-model data structures.
 </p>
+<ol>
+    <li style="text-align: justify;"><strong>Defining Roles:</strong> Similar to PostgreSQL, SurrealDB allows for the creation of user roles with specific permissions. In SurrealDB, you can create a role for data analysts who need read-only access to certain documents:</li>
+    {{< prism lang="sql" line-numbers="true">}}
+    DEFINE ANALYST_ROLE ON documents PERMISSIONS { 
+        select : true, 
+        insert : false, 
+        update : false, 
+        delete : false 
+    };
+    {{< /prism >}}
+    <li style="text-align: justify;"><strong>Assigning Permissions:</strong> Permissions in SurrealDB can be applied at the document or graph level. For example, to grant the <code>analyst_role</code> access to read certain documents, you would configure the role’s permissions accordingly.</li>
+    <li style="text-align: justify;"><strong>Advanced Permission Policies:</strong> SurrealDB allows for more granular permissions, enabling roles to access specific attributes within documents or execute specific types of graph queries. These advanced policies can be tailored to the specific needs of the organization, ensuring that sensitive fields within a document remain protected even when broader document access is granted.</li>
+</ol>
 
-1. <p style="text-align: justify;"><strong></strong>Defining Roles<strong></strong>: Similar to PostgreSQL, SurrealDB allows for the creation of user roles with specific permissions. In SurrealDB, you can create a role for data analysts who need read-only access to certain documents:</p>
-{{< prism lang="sql" line-numbers="true">}}
-   DEFINE ANALYST_ROLE ON documents PERMISSIONS { 
-   select 
-     : true, 
-     insert : false, 
-   update 
-     : false, 
-     delete : false };
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Assigning Permissions<strong></strong>: Permissions in SurrealDB can be applied at the document or graph level. For example, to grant the <code>analyst_role</code> access to read certain documents, you would configure the role’s permissions accordingly.</p>
-3. <p style="text-align: justify;"><strong></strong>Advanced Permission Policies<strong></strong>: SurrealDB allows for more granular permissions, enabling roles to access specific attributes within documents or execute specific types of graph queries. These advanced policies can be tailored to the specific needs of the organization, ensuring that sensitive fields within a document remain protected even when broader document access is granted.</p>
 <p style="text-align: justify;">
 By defining roles and assigning permissions in both PostgreSQL and SurrealDB, organizations can implement a robust RBAC system that ensures data security while allowing users to perform their required functions without unnecessary access.
 </p>
+
 
 # 16.3 Data Encryption
 <p style="text-align: justify;">
@@ -287,50 +308,59 @@ Implementing encryption in a database system involves configuring both encryptio
 PostgreSQL does not natively support encryption of the database itself, but encryption at rest can be implemented using external tools and techniques such as <strong>filesystem-level encryption</strong> or <strong>transparent data encryption (TDE)</strong>.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Filesystem-Level Encryption<strong></strong>: One of the simplest ways to encrypt data at rest in PostgreSQL is by encrypting the filesystem where the database is stored. This can be done using tools like <strong></strong>LUKS<strong></strong> (Linux Unified Key Setup) or <strong></strong>BitLocker<strong></strong> on Windows. Filesystem encryption ensures that all files, including the PostgreSQL data directory, are encrypted.</p>
-2. <p style="text-align: justify;"><strong></strong>pgcrypto Module<strong></strong>: For encrypting specific columns or pieces of data within PostgreSQL, the <code>pgcrypto</code> module can be used. This allows you to encrypt sensitive data fields at the application level:</p>
-{{< prism lang="sql">}}
-   UPDATE employees SET ssn = pgp_sym_encrypt('123-45-6789', 'encryption_key') WHERE employee_id = 1;
-{{< /prism >}}
-<p style="text-align: justify;">
-The encrypted data can then be decrypted using the decryption function when needed:
-</p>
+<ol>
+    <li style="text-align: justify;"><strong>Filesystem-Level Encryption:</strong> One of the simplest ways to encrypt data at rest in PostgreSQL is by encrypting the filesystem where the database is stored. This can be done using tools like <strong>LUKS</strong> (Linux Unified Key Setup) or <strong>BitLocker</strong> on Windows. Filesystem encryption ensures that all files, including the PostgreSQL data directory, are encrypted.</li>
+    <li style="text-align: justify;"><strong>pgcrypto Module:</strong> For encrypting specific columns or pieces of data within PostgreSQL, the <code>pgcrypto</code> module can be used. This allows you to encrypt sensitive data fields at the application level:</li>
+    {{< prism lang="sql">}}
+    UPDATE employees SET ssn = pgp_sym_encrypt('123-45-6789', 'encryption_key') WHERE employee_id = 1;
+    {{< /prism >}}
+    <p style="text-align: justify;">The encrypted data can then be decrypted using the decryption function when needed:</p>
+    {{< prism lang="sql">}}
+    SELECT pgp_sym_decrypt(ssn, 'encryption_key') FROM employees WHERE employee_id = 1;
+    {{< /prism >}}
+    <li style="text-align: justify;"><strong>Transparent Data Encryption (TDE):</strong> For more advanced use cases, third-party tools that support TDE can be used to encrypt the database files themselves, ensuring that all data at rest is encrypted without needing to modify the application or database schema.</li>
+</ol>
 
-{{< prism lang="sql">}}
-   SELECT pgp_sym_decrypt(ssn, 'encryption_key') FROM employees WHERE employee_id = 1;
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Transparent Data Encryption (TDE)<strong></strong>: For more advanced use cases, third-party tools that support TDE can be used to encrypt the database files themselves, ensuring that all data at rest is encrypted without needing to modify the application or database schema.</p>
 ### Encryption in Transit in PostgreSQL
 <p style="text-align: justify;">
 PostgreSQL supports <strong>TLS (Transport Layer Security)</strong> to encrypt data in transit between the client and the server. To enable TLS, follow these steps:
 </p>
+<ol>
+    <li style="text-align: justify;"><strong>Generate Certificates:</strong> Use OpenSSL to create server certificates.</li>
+    {{< prism lang="shell">}}
+    openssl req -new -text -out server.req
+    openssl rsa -in privkey.pem -out server.key
+    openssl req -x509 -in server.req -text -key server.key -out server.crt
+    {{< /prism >}}
+    <li style="text-align: justify;"><strong>Enable SSL in PostgreSQL:</strong> Modify the <code>postgresql.conf</code> file to enable SSL.</li>
+    {{< prism lang="shell">}}
+    ssl = on
+    ssl_cert_file = 'server.crt'
+    ssl_key_file = 'server.key'
+    {{< /prism >}}
+    <li style="text-align: justify;"><strong>Client-Side Configuration:</strong> Ensure clients connect with SSL by setting <code>sslmode=require</code> in the connection string:</li>
+    {{< prism lang="shell">}}
+    psql "sslmode=require host=yourserver port=5432 dbname=yourdb user=youruser"
+    {{< /prism >}}
+</ol>
 
-1. <p style="text-align: justify;"><strong></strong>Generate Certificates<strong></strong>: Use OpenSSL to create server certificates.</p>
-{{< prism lang="shell">}}
-   openssl req - new - text - out server.req openssl rsa - in privkey.pem - out server.key 
-   openssl req - x509 - in server.req - text - key server.key - out server.crt
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Enable SSL in PostgreSQL<strong></strong>: Modify the <code>postgresql.conf</code> file to enable SSL.</p>
-{{< prism lang="shell">}}
-   ssl = on ssl_cert_file = 'server.crt' ssl_key_file = 'server.key'
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Client-Side Configuration<strong></strong>: Ensure clients connect with SSL by setting <code>sslmode=require</code> in the connection string:</p>
-{{< prism lang="shell">}}
-   psql "sslmode=require host=yourserver port=5432 dbname=yourdb user=youruser"
-{{< /prism >}}
 ### Encryption in SurrealDB
 <p style="text-align: justify;">
 SurrealDB, as a multi-model database, supports both encryption at rest and in transit. Implementing encryption in SurrealDB involves similar approaches as PostgreSQL.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Encryption at Rest<strong></strong>: SurrealDB supports full encryption of its storage layer. To enable encryption at rest, configure the storage engine to use an encrypted format, specifying an encryption key during the database initialization process.</p>
-2. <p style="text-align: justify;"><strong></strong>Encryption in Transit<strong></strong>: Like PostgreSQL, SurrealDB also supports TLS to secure communication between the client and server. The configuration involves generating TLS certificates and enabling secure communication with the database:</p>
-{{< prism lang="shell">}}
-   surreal start --tls-cert /path/to/cert.crt --tls-key /path/to/key.key
-{{< /prism >}}
+<ol>
+    <li style="text-align: justify;"><strong>Encryption at Rest:</strong> SurrealDB supports full encryption of its storage layer. To enable encryption at rest, configure the storage engine to use an encrypted format, specifying an encryption key during the database initialization process.</li>
+    <li style="text-align: justify;"><strong>Encryption in Transit:</strong> Like PostgreSQL, SurrealDB also supports TLS to secure communication between the client and server. The configuration involves generating TLS certificates and enabling secure communication with the database:</li>
+    {{< prism lang="shell">}}
+    surreal start --tls-cert /path/to/cert.crt --tls-key /path/to/key.key
+    {{< /prism >}}
+</ol>
+
 <p style="text-align: justify;">
 By following these steps, encryption can be effectively implemented in both PostgreSQL and SurrealDB, ensuring that data is protected at every stage—whether it is at rest or in transit. This comprehensive approach to encryption safeguards sensitive information from common threats and ensures compliance with data protection regulations.
 </p>
+
 
 # 16.4 Advanced Security Measures
 <p style="text-align: justify;">
@@ -395,46 +425,64 @@ By combining anomaly detection, penetration testing, and SIEM, organizations can
 An essential part of advanced security measures is setting up comprehensive audit trails in both PostgreSQL and SurrealDB. These trails ensure that all relevant database activities are recorded, providing a detailed history of interactions with the database.
 </p>
 
-### **PostgreSQL Audit Logging**
+### PostgreSQL Audit Logging
 <p style="text-align: justify;">
 PostgreSQL supports extensive audit logging through its <strong>logging configuration</strong> and <strong>pgAudit</strong> extension.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Enable Logging in PostgreSQL<strong></strong>:</p>
-- <p style="text-align: justify;">In the <code>postgresql.conf</code> file, configure PostgreSQL to log connections, disconnections, and queries:</p>
-{{< prism lang="shell">}}
-     log_connections = on log_disconnections = on log_statement = 'all'
-{{< /prism >}}
-- <p style="text-align: justify;">This configuration logs all SQL statements, connections, and disconnections. For more granular control, you can specify which types of queries to log (e.g., <code>DDL</code> or <code>DML</code>).</p>
-2. <p style="text-align: justify;"><strong></strong>Install and Configure pgAudit<strong></strong>:</p>
-- <p style="text-align: justify;">Install the <code>pgAudit</code> extension to enable more detailed logging of security-relevant events, such as role changes, permission grants, and data access:</p>
-{{< prism lang="sql">}}
-     CREATE EXTENSION pgaudit;
-{{< /prism >}}
-- <p style="text-align: justify;">After installation, configure <code>pgAudit</code> in the <code>postgresql.conf</code> file:</p>
-{{< prism lang="shell">}}
-     pgaudit.log = 'read, write'
-{{< /prism >}}
-- <p style="text-align: justify;">This configuration ensures that any read or write access to the database is logged, along with any changes to the database structure.</p>
-3. <p style="text-align: justify;"><strong></strong>Analyze PostgreSQL Logs<strong></strong>: Once logging is enabled, logs can be reviewed regularly to detect unauthorized access, suspicious query patterns, or other security issues. Logs should be exported to a centralized logging server or SIEM system for long-term storage and analysis.</p>
-### **SurrealDB Audit Logging**
+<ol>
+    <li style="text-align: justify;"><strong>Enable Logging in PostgreSQL:</strong>
+        <ul>
+            <li>In the <code>postgresql.conf</code> file, configure PostgreSQL to log connections, disconnections, and queries:</li>
+            {{< prism lang="shell">}}
+            log_connections = on
+            log_disconnections = on
+            log_statement = 'all'
+            {{< /prism >}}
+            <li>This configuration logs all SQL statements, connections, and disconnections. For more granular control, you can specify which types of queries to log (e.g., <code>DDL</code> or <code>DML</code>).</li>
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Install and Configure pgAudit:</strong>
+        <ul>
+            <li>Install the <code>pgAudit</code> extension to enable more detailed logging of security-relevant events, such as role changes, permission grants, and data access:</li>
+            {{< prism lang="sql">}}
+            CREATE EXTENSION pgaudit;
+            {{< /prism >}}
+            <li>After installation, configure <code>pgAudit</code> in the <code>postgresql.conf</code> file:</li>
+            {{< prism lang="shell">}}
+            pgaudit.log = 'read, write'
+            {{< /prism >}}
+            <li>This configuration ensures that any read or write access to the database is logged, along with any changes to the database structure.</li>
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Analyze PostgreSQL Logs:</strong> Once logging is enabled, logs can be reviewed regularly to detect unauthorized access, suspicious query patterns, or other security issues. Logs should be exported to a centralized logging server or SIEM system for long-term storage and analysis.</li>
+</ol>
+
+### SurrealDB Audit Logging
 <p style="text-align: justify;">
 SurrealDB, being a multi-model database, also supports audit logging, but its approach differs slightly from relational systems like PostgreSQL.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Enable Event Logging<strong></strong>: In SurrealDB, you can configure logging for various database events, including reads, writes, and schema modifications. This can be done by enabling logging in the database configuration:</p>
-{{< prism lang="shell">}}
-   surreal start --log-events
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Customizable Logging Rules<strong></strong>: SurrealDB allows fine-grained control over which events to log. For example, you can configure the system to log only read events on certain collections or to capture every modification to graph data. This can be specified in the database configuration or through administrative commands.</p>
-3. <p style="text-align: justify;"><strong></strong>Log Analysis<strong></strong>: Like PostgreSQL, SurrealDB logs should be regularly reviewed to detect patterns that may indicate a security breach. These logs can be integrated into SIEM systems for deeper analysis and correlation with other security events across the organization.</p>
-### **Best Practices for Analyzing Logs**
-- <p style="text-align: justify;"><strong>Log Rotation</strong>: Ensure that log files are rotated regularly to prevent them from consuming excessive disk space.</p>
-- <p style="text-align: justify;"><strong>Log Retention</strong>: Retain logs for a sufficient period (often dictated by regulatory requirements) to support incident investigations and compliance audits.</p>
-- <p style="text-align: justify;"><strong>Automated Log Review</strong>: Use automated tools to parse and review logs for security events. Setting up alerts for unusual activities (such as multiple failed login attempts) can help detect security issues in real time.</p>
+<ol>
+    <li style="text-align: justify;"><strong>Enable Event Logging:</strong> In SurrealDB, you can configure logging for various database events, including reads, writes, and schema modifications. This can be done by enabling logging in the database configuration:</li>
+    {{< prism lang="shell">}}
+    surreal start --log-events
+    {{< /prism >}}
+    <li style="text-align: justify;"><strong>Customizable Logging Rules:</strong> SurrealDB allows fine-grained control over which events to log. For example, you can configure the system to log only read events on certain collections or to capture every modification to graph data. This can be specified in the database configuration or through administrative commands.</li>
+    <li style="text-align: justify;"><strong>Log Analysis:</strong> Like PostgreSQL, SurrealDB logs should be regularly reviewed to detect patterns that may indicate a security breach. These logs can be integrated into SIEM systems for deeper analysis and correlation with other security events across the organization.</li>
+</ol>
+
+### Best Practices for Analyzing Logs
+<ul>
+    <li style="text-align: justify;"><strong>Log Rotation:</strong> Ensure that log files are rotated regularly to prevent them from consuming excessive disk space.</li>
+    <li style="text-align: justify;"><strong>Log Retention:</strong> Retain logs for a sufficient period (often dictated by regulatory requirements) to support incident investigations and compliance audits.</li>
+    <li style="text-align: justify;"><strong>Automated Log Review:</strong> Use automated tools to parse and review logs for security events. Setting up alerts for unusual activities (such as multiple failed login attempts) can help detect security issues in real time.</li>
+</ul>
+
 <p style="text-align: justify;">
 By establishing robust audit trails in PostgreSQL and SurrealDB, database administrators can maintain comprehensive visibility into all interactions with the database, enabling quick detection of security incidents and the ability to trace unauthorized actions back to their source.
 </p>
+
 
 # **16.5 Conclusion**
 <p style="text-align: justify;">

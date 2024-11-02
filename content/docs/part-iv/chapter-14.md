@@ -272,28 +272,38 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 The provided Rust code establishes a synchronization process between PostgreSQL and SurrealDB for the <code>orders</code> and <code>order_items</code> tables. Here's a breakdown of the key components and their functionalities:
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Dependencies and Imports<strong></strong>\</p>
-<p style="text-align: justify;">
-The code utilizes the <code>tokio-postgres</code> crate for interacting with PostgreSQL and the <code>surrealdb</code> crate for SurrealDB operations. Additionally, <code>serde</code> is used for serializing and deserializing data structures.
-</p>
+<ol>
+    <li style="text-align: justify;"><strong>Dependencies and Imports:</strong>
+        <p style="text-align: justify;">
+        The code utilizes the <code>tokio-postgres</code> crate for interacting with PostgreSQL and the <code>surrealdb</code> crate for SurrealDB operations. Additionally, <code>serde</code> is used for serializing and deserializing data structures.
+        </p>
+    </li>
+    <li style="text-align: justify;"><strong>Data Structures:</strong>
+        <p style="text-align: justify;">
+        Two structs, <code>Order</code> and <code>OrderItem</code>, represent the corresponding tables in PostgreSQL. These structs derive <code>Serialize</code> and <code>Deserialize</code> traits to facilitate seamless data transfer between the databases.
+        </p>
+    </li>
+    <li style="text-align: justify;"><strong>Synchronization Functions:</strong>
+        <ul>
+            <li style="text-align: justify;"><code>sync_orders</code>: Queries all records from the <code>orders</code> table in PostgreSQL and inserts them into SurrealDB. Each order is uniquely identified by its <code>id</code>.</li>
+            <li style="text-align: justify;"><code>sync_order_items</code>: Similar to <code>sync_orders</code>, this function handles the synchronization of the <code>order_items</code> table.</li>
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Main Function:</strong>
+        <ul>
+            <li style="text-align: justify;"><strong>Environment Variables:</strong> The PostgreSQL connection parameters are retrieved from environment variables, providing flexibility and security.</li>
+            <li style="text-align: justify;"><strong>PostgreSQL Connection:</strong> Establishes a connection to PostgreSQL using the provided credentials and spawns a background task to manage the connection lifecycle.</li>
+            <li style="text-align: justify;"><strong>SurrealDB Connection:</strong> Connects to SurrealDB via WebSocket, authenticates using the provided credentials, and selects the appropriate namespace and database.</li>
+            <li style="text-align: justify;"><strong>Data Synchronization:</strong> Invokes the synchronization functions for <code>orders</code> and <code>order_items</code>, ensuring that all relevant data is replicated in SurrealDB.</li>
+            <li style="text-align: justify;"><strong>Error Handling:</strong> Comprehensive error handling ensures that any issues during the synchronization process are logged and managed appropriately.</li>
+        </ul>
+    </li>
+</ol>
 
-2. <p style="text-align: justify;"><strong></strong>Data Structures<strong></strong>\</p>
-<p style="text-align: justify;">
-Two structs, <code>Order</code> and <code>OrderItem</code>, represent the corresponding tables in PostgreSQL. These structs derive <code>Serialize</code> and <code>Deserialize</code> traits to facilitate seamless data transfer between the databases.
-</p>
-
-3. <p style="text-align: justify;"><strong></strong>Synchronization Functions<strong></strong></p>
-- <p style="text-align: justify;"><code>sync_orders</code>: Queries all records from the <code>orders</code> table in PostgreSQL and inserts them into SurrealDB. Each order is uniquely identified by its <code>id</code>.</p>
-- <p style="text-align: justify;"><code>sync_order_items</code>: Similar to <code>sync_orders</code>, this function handles the synchronization of the <code>order_items</code> table.</p>
-4. <p style="text-align: justify;"><strong></strong>Main Function<strong></strong></p>
-- <p style="text-align: justify;"><strong>Environment Variables</strong>: The PostgreSQL connection parameters are retrieved from environment variables, providing flexibility and security.</p>
-- <p style="text-align: justify;"><strong>PostgreSQL Connection</strong>: Establishes a connection to PostgreSQL using the provided credentials and spawns a background task to manage the connection lifecycle.</p>
-- <p style="text-align: justify;"><strong>SurrealDB Connection</strong>: Connects to SurrealDB via WebSocket, authenticates using the provided credentials, and selects the appropriate namespace and database.</p>
-- <p style="text-align: justify;"><strong>Data Synchronization</strong>: Invokes the synchronization functions for <code>orders</code> and <code>order_items</code>, ensuring that all relevant data is replicated in SurrealDB.</p>
-- <p style="text-align: justify;"><strong>Error Handling</strong>: Comprehensive error handling ensures that any issues during the synchronization process are logged and managed appropriately.</p>
 <p style="text-align: justify;">
 This Rust-based synchronization setup provides a robust framework for maintaining consistent data across PostgreSQL and SurrealDB, leveraging the strengths of both database systems to support a scalable and reliable e-commerce platform.
 </p>
+
 
 # **14.2 Conflict Resolution Mechanisms**
 <p style="text-align: justify;">
@@ -924,34 +934,40 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 <strong>Explanation of the Implementation</strong>
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Data Structures<strong></strong>\</p>
-<p style="text-align: justify;">
-The <code>Order</code> struct represents the <code>orders</code> table in both PostgreSQL and SurrealDB. It includes a <code>version</code> field to track updates, facilitating conflict detection and resolution.
-</p>
+<ol>
+    <li style="text-align: justify;"><strong>Data Structures:</strong>
+        <p style="text-align: justify;">
+        The <code>Order</code> struct represents the <code>orders</code> table in both PostgreSQL and SurrealDB. It includes a <code>version</code> field to track updates, facilitating conflict detection and resolution.
+        </p>
+    </li>
+    <li style="text-align: justify;"><strong>Conflict Detection:</strong>
+        <p style="text-align: justify;">
+        The <code>detect_conflicts</code> function checks whether the incoming order from PostgreSQL has a version number less than or equal to the existing order in SurrealDB. If so, it indicates a potential update-update conflict.
+        </p>
+    </li>
+    <li style="text-align: justify;"><strong>Conflict Resolution:</strong>
+        <p style="text-align: justify;">
+        The <code>resolve_conflict</code> function implements the Last Write Wins strategy, choosing the order with the higher version number as the final version to be stored in SurrealDB.
+        </p>
+    </li>
+    <li style="text-align: justify;"><strong>Synchronization Process:</strong>
+        <p style="text-align: justify;">
+        The <code>resolve_and_sync_order</code> function orchestrates the synchronization process:
+        </p>
+        <ul>
+            <li style="text-align: justify;">It retrieves the latest order from PostgreSQL.</li>
+            <li style="text-align: justify;">Detects if a conflict exists using the <code>detect_conflicts</code> function.</li>
+            <li style="text-align: justify;">If a conflict is detected, it resolves it using the <code>resolve_conflict</code> function and updates SurrealDB accordingly.</li>
+            <li style="text-align: justify;">If no conflict is detected, it simply inserts the new order into SurrealDB.</li>
+        </ul>
+    </li>
+    <li style="text-align: justify;"><strong>Main Function:</strong>
+        <p style="text-align: justify;">
+        The <code>main</code> function establishes connections to both PostgreSQL and SurrealDB, then invokes the synchronization function for a specific order ID. This ensures that the order data is consistently reflected across both databases, maintaining data integrity.
+        </p>
+    </li>
+</ol>
 
-2. <p style="text-align: justify;"><strong></strong>Conflict Detection<strong></strong>\</p>
-<p style="text-align: justify;">
-The <code>detect_conflicts</code> function checks whether the incoming order from PostgreSQL has a version number less than or equal to the existing order in SurrealDB. If so, it indicates a potential update-update conflict.
-</p>
-
-3. <p style="text-align: justify;"><strong></strong>Conflict Resolution<strong></strong>\</p>
-<p style="text-align: justify;">
-The <code>resolve_conflict</code> function implements the Last Write Wins strategy, choosing the order with the higher version number as the final version to be stored in SurrealDB.
-</p>
-
-4. <p style="text-align: justify;"><strong></strong>Synchronization Process<strong></strong>\</p>
-<p style="text-align: justify;">
-The <code>resolve_and_sync_order</code> function orchestrates the synchronization process:
-</p>
-
-- <p style="text-align: justify;">It retrieves the latest order from PostgreSQL.</p>
-- <p style="text-align: justify;">Detects if a conflict exists using the <code>detect_conflicts</code> function.</p>
-- <p style="text-align: justify;">If a conflict is detected, it resolves it using the <code>resolve_conflict</code> function and updates SurrealDB accordingly.</p>
-- <p style="text-align: justify;">If no conflict is detected, it simply inserts the new order into SurrealDB.</p>
-5. <p style="text-align: justify;"><strong></strong>Main Function<strong></strong>\</p>
-<p style="text-align: justify;">
-The <code>main</code> function establishes connections to both PostgreSQL and SurrealDB, then invokes the synchronization function for a specific order ID. This ensures that the order data is consistently reflected across both databases, maintaining data integrity.
-</p>
 
 # **14.3 Achieving Data Consistency**
 <p style="text-align: justify;">
@@ -1263,42 +1279,6 @@ Securing the monitoring and auditing systems is paramount to prevent unauthorize
 By meticulously implementing these steps, organizations can establish a comprehensive monitoring and auditing framework that ensures data synchronization and consistency are maintained effectively across distributed database environments. This framework not only enhances the reliability and performance of data operations but also supports compliance and security objectives, making it an indispensable component of modern multi-database architectures.
 </p>
 
-#### Section 1: Fundamentals of Data Synchronization
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Understanding Data Synchronization</strong>: Define data synchronization and its importance in maintaining data integrity across multiple databases.</p>
-- <p style="text-align: justify;"><strong>Synchronization Techniques</strong>: Overview of various data synchronization techniques such as replication, event sourcing, and timestamp-based tracking.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Challenges in Synchronization</strong>: Discuss common challenges such as latency, conflict resolution, and maintaining order of operations.</p>
-- <p style="text-align: justify;"><strong>Consistency Models</strong>: Analyze different consistency models like eventual consistency, strong consistency, and causal consistency, and their applicability in different scenarios.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Setting Up Replication</strong>: Step-by-step guide to setting up basic replication between PostgreSQL and SurrealDB to ensure data synchronization.</p>
-#### Section 2: Conflict Resolution Mechanisms
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Types of Data Conflicts</strong>: Identify and categorize the different types of data conflicts that can occur during synchronization.</p>
-- <p style="text-align: justify;"><strong>Resolution Strategies</strong>: Overview of conflict resolution strategies such as "last write wins," version vectors, and merge functions.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Custom Conflict Resolution Logic</strong>: Explore the development of custom conflict resolution logic tailored to specific application needs and data types.</p>
-- <p style="text-align: justify;"><strong>Automated vs. Manual Resolution</strong>: Discuss the pros and cons of automated conflict resolution compared to manual intervention.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Implementing Conflict Resolution</strong>: Practical examples of implementing a conflict resolution mechanism in a multi-database setup.</p>
-#### Section 3: Achieving Data Consistency
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Data Consistency Principles</strong>: Discuss the principles of data consistency and why it is critical for multi-database environments.</p>
-- <p style="text-align: justify;"><strong>Transaction Management Across Databases</strong>: Introduction to techniques for managing transactions across multiple databases to maintain consistency.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Consistency Guarantees</strong>: Analyze the different levels of consistency guarantees and how they affect database performance and user experience.</p>
-- <p style="text-align: justify;"><strong>Balancing Consistency and Performance</strong>: Explore strategies to balance consistency with performance, particularly in distributed database systems.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Designing Consistent Systems</strong>: Step-by-step guidance on designing systems that ensure data consistency without compromising performance, including examples using PostgreSQL and SurrealDB.</p>
-#### Section 4: Monitoring and Auditing for Synchronization and Consistency
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Monitoring Tools and Metrics</strong>: Introduction to tools and metrics for monitoring data synchronization and consistency.</p>
-- <p style="text-align: justify;"><strong>Audit Trails</strong>: Discuss the importance of maintaining audit trails to verify data integrity and troubleshoot issues.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Proactive Monitoring Strategies</strong>: Explore strategies for proactive monitoring to detect synchronization issues before they affect the system.</p>
-- <p style="text-align: justify;"><strong>Data Drift Analysis</strong>: Analyze techniques for identifying and correcting data drift in distributed environments.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Implementing Monitoring and Auditing Systems</strong>: Practical guide on setting up monitoring and auditing systems that provide real-time insights into the health of data synchronization processes.</p>
 # **14.5 Conclusion**
 <p style="text-align: justify;">
 Chapter 14 has equipped you with a robust understanding of the crucial processes of data synchronization and consistency across multiple database systems. By navigating through the intricacies of various synchronization techniques, conflict resolution mechanisms, and data consistency strategies, you have gained the necessary tools to ensure that your database environments maintain integrity and remain in sync. This chapter highlighted the importance of these processes in modern database systems, where data integrity directly impacts application reliability and user trust. Mastering these techniques prepares you to tackle the challenges of managing data across distributed environments, ensuring that data remains accurate and timely across all nodes of your infrastructure.

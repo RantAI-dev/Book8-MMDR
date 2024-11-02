@@ -94,40 +94,62 @@ Docker registries are services that store and distribute Docker images, enabling
 To containerize a Rust application, creating an optimized Dockerfile is crucial. Here are the steps involved in crafting a Dockerfile that is well-suited for Rust applications:
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Specify the Base Image<strong></strong>:</p>
-- <p style="text-align: justify;">Use an official Rust image as the base. This image includes all the necessary tools and libraries to compile Rust applications.</p>
-{{< prism lang="rust">}}
-   FROM rust:1.55 as builder
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Create a Working Directory<strong></strong>:</p>
-- <p style="text-align: justify;">Set up a working directory inside the container for storing application code.</p>
-{{< prism lang="shell">}}
-   WORKDIR /usr/src/myapp
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Copy the Source Code<strong></strong>:</p>
-- <p style="text-align: justify;">Copy the local source code into the container.</p>
-{{< prism lang="">}}
-   COPY . .
-{{< /prism >}}
-4. <p style="text-align: justify;"><strong></strong>Compile the Application<strong></strong>:</p>
-- <p style="text-align: justify;">Use <code>cargo build</code> to compile the Rust application. Consider using the <code>--release</code> flag to optimize the build.</p>
-{{< prism lang="yaml">}}
-   RUN cargo build --release
-{{< /prism >}}
-5. <p style="text-align: justify;"><strong></strong>Set Up the Runtime Stage<strong></strong>:</p>
-- <p style="text-align: justify;">For smaller container size and enhanced security, set up a new stage with a minimal base image.</p>
-{{< prism lang="yaml">}}
-   FROM debian:buster-slim
-   COPY --from=builder /usr/src/myapp/target/release/myapp /usr/local/bin/myapp
-{{< /prism >}}
-6. <p style="text-align: justify;"><strong></strong>Define the Command to Run the Application<strong></strong>:</p>
-- <p style="text-align: justify;">Specify the command to run the application when the container starts.</p>
-{{< prism lang="">}}
-   CMD ["myapp"]
-{{< /prism >}}
+<ol>
+    <li style="text-align: justify;"><strong>Specify the Base Image:</strong>
+        <ul>
+            <li>Use an official Rust image as the base. This image includes all the necessary tools and libraries to compile Rust applications.</li>
+        </ul>
+        {{< prism lang="docker">}}
+        FROM rust:1.55 as builder
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Create a Working Directory:</strong>
+        <ul>
+            <li>Set up a working directory inside the container for storing application code.</li>
+        </ul>
+        {{< prism lang="docker">}}
+        WORKDIR /usr/src/myapp
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Copy the Source Code:</strong>
+        <ul>
+            <li>Copy the local source code into the container.</li>
+        </ul>
+        {{< prism lang="docker">}}
+        COPY . .
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Compile the Application:</strong>
+        <ul>
+            <li>Use <code>cargo build</code> to compile the Rust application. Consider using the <code>--release</code> flag to optimize the build.</li>
+        </ul>
+        {{< prism lang="docker">}}
+        RUN cargo build --release
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Set Up the Runtime Stage:</strong>
+        <ul>
+            <li>For smaller container size and enhanced security, set up a new stage with a minimal base image.</li>
+        </ul>
+        {{< prism lang="docker">}}
+        FROM debian:buster-slim
+        COPY --from=builder /usr/src/myapp/target/release/myapp /usr/local/bin/myapp
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Define the Command to Run the Application:</strong>
+        <ul>
+            <li>Specify the command to run the application when the container starts.</li>
+        </ul>
+        {{< prism lang="docker">}}
+        CMD ["myapp"]
+        {{< /prism >}}
+    </li>
+</ol>
+
 <p style="text-align: justify;">
 Docker has become an indispensable tool in modern software development, especially for developers looking to ensure consistency, streamline deployment processes, and achieve scalability in their applications. By understanding Docker’s core concepts and mastering the creation of Dockerfiles for Rust applications, developers can fully leverage Docker’s capabilities to enhance their development workflows and operational efficiency.
 </p>
+
 
 # **24.2 Managing Docker Images**
 <p style="text-align: justify;">
@@ -146,57 +168,84 @@ Docker images are built from a series of instructions specified in a Dockerfile.
 Managing Docker images effectively involves familiarity with Docker command-line tools and adhering to best practices that enhance security and performance.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Building an Image<strong></strong>:</p>
-- <p style="text-align: justify;">Use the <code>docker build</code> command to create an image from a Dockerfile. Tag the image to make version control and retrieval easier.</p>
-{{< prism lang="shell">}}
-   docker build -t myapp:1.0 .
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Listing Images<strong></strong>:</p>
-- <p style="text-align: justify;">View all Docker images stored locally with the <code>docker images</code> command, which shows the repository, tag, image ID, creation time, and size.</p>
-{{< prism lang="shell">}}
-   docker images
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Tagging an Image<strong></strong>:</p>
-- <p style="text-align: justify;">Tagging provides version control for images. You can tag an existing image with a new label or re-tag it for pushing to a different registry.</p>
-{{< prism lang="shell">}}
-   docker tag myapp:1.0 myregistry.com/myapp:1.0
-{{< /prism >}}
-4. <p style="text-align: justify;"><strong></strong>Pushing Images to a Registry<strong></strong>:</p>
-- <p style="text-align: justify;">Push Docker images to a remote registry like Docker Hub or a private registry using the <code>docker push</code> command. Ensure you are logged into the registry before pushing.</p>
-{{< prism lang="shell">}}
-   docker login myregistry.com
-   docker push myregistry.com/myapp:1.0
-{{< /prism >}}
-5. <p style="text-align: justify;"><strong></strong>Pulling Images from a Registry<strong></strong>:</p>
-- <p style="text-align: justify;">Retrieve an image from Docker Hub or another Docker registry to your local system using <code>docker pull</code>.</p>
-{{< prism lang="shell">}}
-   docker pull myregistry.com/myapp:1.0
-{{< /prism >}}
-6. <p style="text-align: justify;"><strong></strong>Removing Images<strong></strong>:</p>
-- <p style="text-align: justify;">To free up disk space or remove unused images, use <code>docker rmi</code> followed by the image ID or name.</p>
-{{< prism lang="shell">}}
-   docker rmi myapp:1.0
-{{< /prism >}}
-7. <p style="text-align: justify;"><strong></strong>Optimizing Image Size<strong></strong>:</p>
-- <p style="text-align: justify;">Use multi-stage builds in Dockerfiles to reduce the final image size. Separate the build environment from the runtime environment to include only necessary components.</p>
-{{< prism lang="shell" line-numbers="true">}}
-   # Build stage
-   FROM rust:1.55 as builder
-   WORKDIR /usr/src/myapp
-   COPY . .
-   RUN cargo build --release
-   
-   # Final stage
-   FROM debian:buster-slim
-   COPY --from=builder /usr/src/myapp/target/release/myapp /usr/local/bin/myapp
-   CMD ["myapp"]
-{{< /prism >}}
-8. <p style="text-align: justify;"><strong></strong>Security Best Practices<strong></strong>:</p>
-- <p style="text-align: justify;">Regularly update the base images to include security patches.</p>
-- <p style="text-align: justify;">Scan images for vulnerabilities using tools like Docker Bench or Clair before deployment.</p>
+<ol>
+    <li style="text-align: justify;"><strong>Building an Image:</strong>
+        <ul>
+            <li>Use the <code>docker build</code> command to create an image from a Dockerfile. Tag the image to make version control and retrieval easier.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        docker build -t myapp:1.0 .
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Listing Images:</strong>
+        <ul>
+            <li>View all Docker images stored locally with the <code>docker images</code> command, which shows the repository, tag, image ID, creation time, and size.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        docker images
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Tagging an Image:</strong>
+        <ul>
+            <li>Tagging provides version control for images. You can tag an existing image with a new label or re-tag it for pushing to a different registry.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        docker tag myapp:1.0 myregistry.com/myapp:1.0
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Pushing Images to a Registry:</strong>
+        <ul>
+            <li>Push Docker images to a remote registry like Docker Hub or a private registry using the <code>docker push</code> command. Ensure you are logged into the registry before pushing.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        docker login myregistry.com
+        docker push myregistry.com/myapp:1.0
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Pulling Images from a Registry:</strong>
+        <ul>
+            <li>Retrieve an image from Docker Hub or another Docker registry to your local system using <code>docker pull</code>.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        docker pull myregistry.com/myapp:1.0
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Removing Images:</strong>
+        <ul>
+            <li>To free up disk space or remove unused images, use <code>docker rmi</code> followed by the image ID or name.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        docker rmi myapp:1.0
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Optimizing Image Size:</strong>
+        <ul>
+            <li>Use multi-stage builds in Dockerfiles to reduce the final image size. Separate the build environment from the runtime environment to include only necessary components.</li>
+        </ul>
+        {{< prism lang="docker" line-numbers="true">}}
+        # Build stage
+        FROM rust:1.55 as builder
+        WORKDIR /usr/src/myapp
+        COPY . .
+        RUN cargo build --release
+        # Final stage
+        FROM debian:buster-slim
+        COPY --from=builder /usr/src/myapp/target/release/myapp /usr/local/bin/myapp
+        CMD ["myapp"]
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Security Best Practices:</strong>
+        <ul>
+            <li>Regularly update the base images to include security patches.</li>
+            <li>Scan images for vulnerabilities using tools like Docker Bench or Clair before deployment.</li>
+        </ul>
+    </li>
+</ol>
+
 <p style="text-align: justify;">
 Effective management of Docker images is vital for maintaining the reliability and security of Docker-based applications. By mastering Docker commands and adhering to best practices for building, storing, and optimizing Docker images, developers can ensure that their applications are both efficient and secure. This guide not only equips developers with the necessary tools to manage Docker images but also enhances their ability to deploy robust, scalable applications in Docker environments.
 </p>
+
 
 # **24.3 Configuring Docker Networks and Volumes**
 <p style="text-align: justify;">
@@ -215,57 +264,72 @@ Docker networks and volumes serve specific roles that are fundamental to the ope
 Setting up Docker networks and volumes involves understanding their configuration and the best practices for deploying these resources with Docker. Below are detailed setups for both Docker networks and volumes aimed at enhancing a Rust application’s deployment.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Creating and Managing Docker Networks<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Create a Network</strong>:</p>
-- <p style="text-align: justify;">Networks can be created to facilitate communication between containers. Here’s how you can create a user-defined bridge network which provides better isolation and inter-container communication capabilities.</p>
-{{< prism lang="shell">}}
-     docker network create my-network
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Connect Containers to a Network</strong>:</p>
-- <p style="text-align: justify;">When running a container, you can connect it to the previously created network.</p>
-{{< prism lang="">}}
-     docker run --name my-rust-app --network my-network rust:latest
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Inspecting Networks</strong>:</p>
-- <p style="text-align: justify;">To see detailed information about a network, including which containers are connected to it.</p>
-{{< prism lang="">}}
-     docker network inspect my-network
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Disconnecting and Removing Networks</strong>:</p>
-- <p style="text-align: justify;">Containers can be disconnected from networks, and unused networks can be removed to clean up resources.</p>
-{{< prism lang="shell">}}
-     docker network disconnect my-network my-rust-app
-     docker network rm my-network
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Configuring Docker Volumes for Rust Applications<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Creating Volumes</strong>:</p>
-- <p style="text-align: justify;">Create a volume to persist data beyond the life of a container. This is crucial for database data.</p>
-{{< prism lang="shell">}}
-     docker volume create my-volume
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Mounting Volumes to Containers</strong>:</p>
-- <p style="text-align: justify;">When running a container, you can mount the created volume to ensure that data written by the application persists.</p>
-{{< prism lang="">}}
-     docker run -d --name my-rust-db -v my-volume:/var/lib/postgresql/data postgres
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Inspecting Volumes</strong>:</p>
-- <p style="text-align: justify;">To get more details about a specific volume or to check its usage.</p>
-{{< prism lang="">}}
-     docker volume inspect my-volume
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Backup and Restore Volumes</strong>:</p>
-- <p style="text-align: justify;">Backing up a volume can be done by copying data to a local system or another volume.</p>
-{{< prism lang="">}}
-     docker run --rm --volumes-from my-rust-db -v $(pwd):/backup ubuntu tar cvf /backup/backup.tar /var/lib/postgresql/data
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Cleaning Up Volumes</strong>:</p>
-- <p style="text-align: justify;">Remove unused volumes to free up space.</p>
-{{< prism lang="">}}
-     docker volume rm my-volume
-{{< /prism >}}
+<ol>
+    <li style="text-align: justify;"><strong>Creating and Managing Docker Networks:</strong>
+        <ul>
+            <li><strong>Create a Network:</strong> Networks can be created to facilitate communication between containers. Here’s how you can create a user-defined bridge network which provides better isolation and inter-container communication capabilities.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        docker network create my-network
+        {{< /prism >}}
+        <ul>
+            <li><strong>Connect Containers to a Network:</strong> When running a container, you can connect it to the previously created network.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        docker run --name my-rust-app --network my-network rust:latest
+        {{< /prism >}}
+        <ul>
+            <li><strong>Inspecting Networks:</strong> To see detailed information about a network, including which containers are connected to it.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        docker network inspect my-network
+        {{< /prism >}}
+        <ul>
+            <li><strong>Disconnecting and Removing Networks:</strong> Containers can be disconnected from networks, and unused networks can be removed to clean up resources.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        docker network disconnect my-network my-rust-app
+        docker network rm my-network
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Configuring Docker Volumes for Rust Applications:</strong>
+        <ul>
+            <li><strong>Creating Volumes:</strong> Create a volume to persist data beyond the life of a container. This is crucial for database data.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        docker volume create my-volume
+        {{< /prism >}}
+        <ul>
+            <li><strong>Mounting Volumes to Containers:</strong> When running a container, you can mount the created volume to ensure that data written by the application persists.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        docker run -d --name my-rust-db -v my-volume:/var/lib/postgresql/data postgres
+        {{< /prism >}}
+        <ul>
+            <li><strong>Inspecting Volumes:</strong> To get more details about a specific volume or to check its usage.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        docker volume inspect my-volume
+        {{< /prism >}}
+        <ul>
+            <li><strong>Backup and Restore Volumes:</strong> Backing up a volume can be done by copying data to a local system or another volume.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        docker run --rm --volumes-from my-rust-db -v $(pwd):/backup ubuntu tar cvf /backup/backup.tar /var/lib/postgresql/data
+        {{< /prism >}}
+        <ul>
+            <li><strong>Cleaning Up Volumes:</strong> Remove unused volumes to free up space.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        docker volume rm my-volume
+        {{< /prism >}}
+    </li>
+</ol>
+
 <p style="text-align: justify;">
 Proper configuration of Docker networks and volumes is essential for deploying robust, scalable, and persistent Rust applications in a Docker environment. By leveraging these Docker features, developers can ensure their applications are not only performant but also resilient to network and data persistency issues, thereby enhancing the overall stability and reliability of the application deployment architecture. This setup not only ensures operational efficiency but also aids in maintaining data integrity and security across deployments.
 </p>
+
 
 # **24.4 Basics of Kubernetes**
 <p style="text-align: justify;">
@@ -318,40 +382,51 @@ Kubernetes architecture is composed of several key components—Nodes, Pods, Dep
 Setting up a Kubernetes cluster varies based on the environment, whether it's local for development or on a cloud platform for production. Below is a generic guide applicable to most environments:
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Local Setup with Minikube<strong></strong>:</p>
-- <p style="text-align: justify;">Minikube is a popular tool that lets you run Kubernetes locally. It creates a virtual machine on your computer and sets up a simple cluster containing only one node.</p>
-{{< prism lang="shell" line-numbers="true">}}
-   # Install Minikube
-   curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 \
-   && chmod +x minikube
-   sudo install minikube /usr/local/bin/
-   
-   # Start the Minikube cluster
-   minikube start
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Cloud-based Setup<strong></strong>:</p>
-- <p style="text-align: justify;">For deploying to the cloud, most providers have Kubernetes services like Google Kubernetes Engine (GKE), Amazon Elastic Kubernetes Service (EKS), or Azure Kubernetes Service (AKS). Here's a generic way to start a cluster using these services:</p>
-{{< prism lang="shell">}}
-   # Example using Google Kubernetes Engine
-   gcloud container clusters create my-cluster --num-nodes=3 --zone=us-central1-acode
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Interacting with Your Cluster<strong></strong>:</p>
-- <p style="text-align: justify;">Use <code>kubectl</code>, the command-line interface for running commands against Kubernetes clusters.</p>
-{{< prism lang="shell" line-numbers="true">}}
-   # Get information about the cluster
-   kubectl cluster-info
-   
-   # Get nodes in the cluster
-   kubectl get nodes
-{{< /prism >}}
+<ol>
+    <li style="text-align: justify;"><strong>Local Setup with Minikube:</strong>
+        <ul>
+            <li>Minikube is a popular tool that lets you run Kubernetes locally. It creates a virtual machine on your computer and sets up a simple cluster containing only one node.</li>
+        </ul>
+        {{< prism lang="shell" line-numbers="true">}}
+        # Install Minikube
+        curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 \
+        && chmod +x minikube
+        sudo install minikube /usr/local/bin/
+        # Start the Minikube cluster
+        minikube start
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Cloud-based Setup:</strong>
+        <ul>
+            <li>For deploying to the cloud, most providers have Kubernetes services like Google Kubernetes Engine (GKE), Amazon Elastic Kubernetes Service (EKS), or Azure Kubernetes Service (AKS). Here's a generic way to start a cluster using these services:</li>
+        </ul>
+        {{< prism lang="shell">}}
+        # Example using Google Kubernetes Engine
+        gcloud container clusters create my-cluster --num-nodes=3 --zone=us-central1-a
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Interacting with Your Cluster:</strong>
+        <ul>
+            <li>Use <code>kubectl</code>, the command-line interface for running commands against Kubernetes clusters.</li>
+        </ul>
+        {{< prism lang="shell" line-numbers="true">}}
+        # Get information about the cluster
+        kubectl cluster-info
+        # Get nodes in the cluster
+        kubectl get nodes
+        {{< /prism >}}
+    </li>
+</ol>
+
 <p style="text-align: justify;">
 Kubernetes is an indispensable tool for developers and operations teams working with containerized applications. By abstracting many aspects of hardware and infrastructure, Kubernetes simplifies deployments and enhances scalability and fault tolerance. Understanding its architecture and learning how to set up and interact with a Kubernetes cluster are fundamental skills for modern software deployment strategies. This guide provides the foundational knowledge and practical steps necessary to begin leveraging Kubernetes for deploying and managing robust, scalable applications in a variety of environments.
 </p>
 
-# **24.5 Deploying Rust Applications in Kubernetes**
+## **24.5 Deploying Rust Applications in Kubernetes**
 <p style="text-align: justify;">
 Kubernetes, with its robust orchestration capabilities, offers an excellent platform for deploying Rust applications in a scalable and manageable fashion. This section delves into the deployment strategies suitable for Rust applications within the Kubernetes ecosystem, emphasizing the creation and management of Kubernetes manifest files which serve as the blueprint for application deployment. This guide aims to equip developers with the knowledge to effectively deploy and manage their Rust applications, optimizing them for the dynamic, distributed environments that Kubernetes orchestrates.
 </p>
+
 
 ## **24.5.1 Deployment Strategies**
 <p style="text-align: justify;">
@@ -370,59 +445,75 @@ These strategies enhance the application's availability and allow for robust tes
 Kubernetes manifests are YAML files that define how an application and its components should be deployed within the cluster. For a Rust application, these manifests will typically include definitions for deployments, services, and any necessary configurations such as ConfigMaps or Secrets.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Creating a Deployment Manifest<strong></strong>:</p>
-- <p style="text-align: justify;">A deployment manifest describes the desired state of your application, including the Docker image to use, the number of replicas, network settings, and more.</p>
-{{< prism lang="yaml" line-numbers="true">}}
-   apiVersion: apps/v1
-   kind: Deployment
-   metadata:
-     name: rust-app-deployment
-   spec:
-     replicas: 3
-     selector:
-       matchLabels:
-         app: rust-app
-     template:
-       metadata:
-         labels:
-           app: rust-app
-       spec:
-         containers:
-         - name: rust-app
-           image: myregistry.com/rust-app:latest
-           ports:
-           - containerPort: 8080
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Service Manifest<strong></strong>:</p>
-- <p style="text-align: justify;">A service in Kubernetes defines how to access the application, such as exposing it to the internet or within the cluster.</p>
-{{< prism lang="yaml" line-numbers="true">}}
-   apiVersion: v1
-   kind: Service
-   metadata:
-     name: rust-app-service
-   spec:
-     type: LoadBalancer
-     ports:
-     - port: 80
-       targetPort: 8080
-     selector:
-       app: rust-app
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Applying Manifests<strong></strong>:</p>
-- <p style="text-align: justify;">Manifests are applied using <code>kubectl</code>, the command-line tool for interacting with the Kubernetes cluster.</p>
-{{< prism lang="">}}
-   kubectl apply -f deployment.yaml
-   kubectl apply -f service.yaml
-{{< /prism >}}
-4. <p style="text-align: justify;"><strong></strong>Monitoring Deployments<strong></strong>:</p>
-- <p style="text-align: justify;">After deploying, it’s crucial to monitor the status and health of the application using Kubernetes' built-in tools.</p>
-{{< prism lang="">}}
-   kubectl get pods
-   kubectl describe deployment rust-app-deployment
-{{< /prism >}}
+<ol>
+    <li style="text-align: justify;"><strong>Creating a Deployment Manifest:</strong>
+        <ul>
+            <li>A deployment manifest describes the desired state of your application, including the Docker image to use, the number of replicas, network settings, and more.</li>
+        </ul>
+        {{< prism lang="yaml" line-numbers="true">}}
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: rust-app-deployment
+        spec:
+          replicas: 3
+          selector:
+            matchLabels:
+              app: rust-app
+          template:
+            metadata:
+              labels:
+                app: rust-app
+            spec:
+              containers:
+              - name: rust-app
+                image: myregistry.com/rust-app:latest
+                ports:
+                - containerPort: 8080
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Service Manifest:</strong>
+        <ul>
+            <li>A service in Kubernetes defines how to access the application, such as exposing it to the internet or within the cluster.</li>
+        </ul>
+        {{< prism lang="yaml" line-numbers="true">}}
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: rust-app-service
+        spec:
+          type: LoadBalancer
+          ports:
+          - port: 80
+            targetPort: 8080
+          selector:
+            app: rust-app
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Applying Manifests:</strong>
+        <ul>
+            <li>Manifests are applied using <code>kubectl</code>, the command-line tool for interacting with the Kubernetes cluster.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        kubectl apply -f deployment.yaml
+        kubectl apply -f service.yaml
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Monitoring Deployments:</strong>
+        <ul>
+            <li>After deploying, it’s crucial to monitor the status and health of the application using Kubernetes' built-in tools.</li>
+        </ul>
+        {{< prism lang="shell">}}
+        kubectl get pods
+        kubectl describe deployment rust-app-deployment
+        {{< /prism >}}
+    </li>
+</ol>
+
 <p style="text-align: justify;">
 Deploying Rust applications in Kubernetes offers scalable, fault-tolerant solutions that leverage Kubernetes' powerful orchestration capabilities. By understanding the different deployment strategies and mastering the creation and manipulation of Kubernetes manifest files, developers can ensure their Rust applications are well-suited to the demands of modern distributed environments. This approach not only facilitates efficient scaling but also significantly simplifies management and operational tasks, allowing developers to focus on enhancing application features and performance.
 </p>
+
 
 # **24.7 Handling Persistent Data in Kubernetes**
 <p style="text-align: justify;">
@@ -445,79 +536,87 @@ Stateful applications are those that save data to persistent storage systems. Ma
 <p style="text-align: justify;">
 StatefulSets and Persistent Volumes are Kubernetes resources designed to handle the deployment and scaling of stateful applications and to manage data persistence effectively.
 </p>
+<ol>
+    <li style="text-align: justify;"><strong>Setting up Persistent Volumes:</strong>
+        <ul>
+            <li><strong>PersistentVolume (PV):</strong> A piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned using Storage Classes.</li>
+            <li><strong>PersistentVolumeClaim (PVC):</strong> A request for storage by a user that can be fulfilled by a PV.</li>
+            <li>Example of creating a PV and a corresponding PVC:</li>
+        </ul>
+        {{< prism lang="yaml" line-numbers="true">}}
+        # PersistentVolume
+        apiVersion: v1
+        kind: PersistentVolume
+        metadata:
+          name: my-pv
+        spec:
+          capacity:
+            storage: 1Gi
+          accessModes:
+            - ReadWriteOnce
+          persistentVolumeReclaimPolicy: Retain
+          storageClassName: standard
+          hostPath:
+            path: "/mnt/data"
+        # PersistentVolumeClaim
+        apiVersion: v1
+        kind: PersistentVolumeClaim
+        metadata:
+          name: my-pvc
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+          storageClassName: standard
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Deploying with StatefulSets:</strong>
+        <ul>
+            <li>StatefulSets are ideal for applications that require stable, unique network identifiers, stable persistent storage, and ordered, graceful deployment and scaling.</li>
+            <li>Example of a StatefulSet using the PVC:</li>
+        </ul>
+        {{< prism lang="yaml" line-numbers="true">}}
+        apiVersion: apps/v1
+        kind: StatefulSet
+        metadata:
+          name: my-stateful-app
+        spec:
+          serviceName: "my-service"
+          replicas: 3
+          selector:
+            matchLabels:
+              app: my-app
+          template:
+            metadata:
+              labels:
+                app: my-app
+            spec:
+              containers:
+              - name: my-app
+                image: my-app-image
+                ports:
+                - containerPort: 80
+                volumeMounts:
+                - name: my-storage
+                  mountPath: /var/lib/my-app
+          volumeClaimTemplates:
+          - metadata:
+              name: my-storage
+            spec:
+              accessModes: [ "ReadWriteOnce" ]
+              resources:
+                requests:
+                  storage: 1Gi
+        {{< /prism >}}
+    </li>
+</ol>
 
-1. <p style="text-align: justify;"><strong></strong>Setting up Persistent Volumes<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>PersistentVolume (PV)</strong>: A piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned using Storage Classes.</p>
-- <p style="text-align: justify;"><strong>PersistentVolumeClaim (PVC)</strong>: A request for storage by a user that can be fulfilled by a PV.</p>
-- <p style="text-align: justify;">Example of creating a PV and a corresponding PVC:</p>
-{{< prism lang="yaml" line-numbers="true">}}
-   # PersistentVolume
-   apiVersion: v1
-   kind: PersistentVolume
-   metadata:
-     name: my-pv
-   spec:
-     capacity:
-       storage: 1Gi
-     accessModes:
-       - ReadWriteOnce
-     persistentVolumeReclaimPolicy: Retain
-     storageClassName: standard
-     hostPath:
-       path: "/mnt/data"
-   
-   # PersistentVolumeClaim
-   apiVersion: v1
-   kind: PersistentVolumeClaim
-   metadata:
-     name: my-pvc
-   spec:
-     accessModes:
-       - ReadWriteOnce
-     resources:
-       requests:
-         storage: 1Gi
-     storageClassName: standard
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Deploying with StatefulSets<strong></strong>:</p>
-- <p style="text-align: justify;">StatefulSets are ideal for applications that require stable, unique network identifiers, stable persistent storage, and ordered, graceful deployment and scaling.</p>
-- <p style="text-align: justify;">Example of a StatefulSet using the PVC:</p>
-{{< prism lang="yaml" line-numbers="true">}}
-   apiVersion: apps/v1
-   kind: StatefulSet
-   metadata:
-     name: my-stateful-app
-   spec:
-     serviceName: "my-service"
-     replicas: 3
-     selector:
-       matchLabels:
-         app: my-app
-     template:
-       metadata:
-         labels:
-           app: my-app
-       spec:
-         containers:
-         - name: my-app
-           image: my-app-image
-           ports:
-           - containerPort: 80
-           volumeMounts:
-           - name: my-storage
-             mountPath: /var/lib/my-app
-     volumeClaimTemplates:
-     - metadata:
-         name: my-storage
-       spec:
-         accessModes: [ "ReadWriteOnce" ]
-         resources:
-           requests:
-             storage: 1Gi
-{{< /prism >}}
 <p style="text-align: justify;">
 Handling persistent data in Kubernetes, particularly for stateful applications, requires a deep understanding of Kubernetes resources like StatefulSets and Persistent Volumes. By leveraging these tools, developers can ensure that their stateful applications run smoothly and reliably in a Kubernetes environment, maintaining data integrity and consistency across pod restarts and rescaling events. This approach not only enhances application stability but also provides scalable and efficient data management within the Kubernetes ecosystem.
 </p>
+
 
 # **24.8 Automating Deployments with CI/CD Pipelines**
 <p style="text-align: justify;">
@@ -538,93 +637,98 @@ Automated CI/CD pipelines offer several key advantages that significantly enhanc
 Integrating Rust projects with CI/CD tools and deploying them in Kubernetes can streamline the process of building, testing, and deploying applications. Below are practical setups for using popular CI/CD tools with Rust and Kubernetes:
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Using GitHub Actions<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Setup a GitHub Actions Workflow</strong>:</p>
-- <p style="text-align: justify;">Create a <code>.github/workflows/ci.yml</code> file in your repository to define the workflow.</p>
-{{< prism lang="yaml" line-numbers="true">}}
-     name: Rust CI
-     
-     on:
-       push:
-         branches: [ master ]
-       pull_request:
-         branches: [ master ]
-     
-     jobs:
-       build:
-         runs-on: ubuntu-latest
-     
-         steps:
-         - uses: actions/checkout@v2
-         - name: Set up Rust
-           uses: actions-rs/toolchain@v1
-           with:
-             toolchain: stable
-             profile: minimal
-             components: rustfmt, clippy
-         - name: Build
-           run: cargo build --verbose
-         - name: Run tests
-           run: cargo test --verbose
-{{< /prism >}}
-- <p style="text-align: justify;">This workflow installs Rust, builds the code, and runs tests on every push to the master branch or on pull requests.</p>
-2. <p style="text-align: justify;"><strong></strong>Using Jenkins<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Set up a Jenkins Pipeline</strong>:</p>
-- <p style="text-align: justify;">Configure a Jenkins pipeline to automate the Rust build and deployment process, integrating with Kubernetes.</p>
-{{< prism lang="shell" line-numbers="true">}}
-     pipeline {
-       agent any
-       stages {
-         stage('Build') {
-           steps {
-             sh 'cargo build --release'
-           }
-         }
-         stage('Test') {
-           steps {
-             sh 'cargo test'
-           }
-         }
-         stage('Deploy') {
-           steps {
-             sh 'kubectl apply -f k8s/'
-           }
-         }
-       }
-     }
-{{< /prism >}}
-- <p style="text-align: justify;">This Jenkinsfile builds the Rust application, runs tests, and deploys the application using <code>kubectl</code> based on the Kubernetes YAML files defined in the <code>k8s/</code> directory.</p>
-3. <p style="text-align: justify;"><strong></strong>Using GitLab CI<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Configure GitLab CI Pipeline</strong>:</p>
-- <p style="text-align: justify;">Create a <code>.gitlab-ci.yml</code> file in your GitLab repository to automate Rust builds and deployments.</p>
-{{< prism lang="yaml" line-numbers="true">}}
-     stages:
-       - build
-       - test
-       - deploy
-     
-     build_job:
-       stage: build
-       script:
-         - cargo build --release
-       artifacts:
-         paths:
-           - target/release/my_app
-     
-     test_job:
-       stage: test
-       script:
-         - cargo test
-     
-     deploy_job:
-       stage: deploy
-       script:
-         - kubectl apply -f deployment.yaml
-{{< /prism >}}
-- <p style="text-align: justify;">This pipeline configuration compiles the Rust application, runs tests, and deploys it to Kubernetes using <code>kubectl</code>.</p>
+<ol>
+    <li style="text-align: justify;"><strong>Using GitHub Actions:</strong>
+        <ul>
+            <li><strong>Setup a GitHub Actions Workflow:</strong> Create a <code>.github/workflows/ci.yml</code> file in your repository to define the workflow.</li>
+        </ul>
+        {{< prism lang="yaml" line-numbers="true">}}
+        name: Rust CI
+        on:
+          push:
+            branches: [ master ]
+          pull_request:
+            branches: [ master ]
+        jobs:
+          build:
+            runs-on: ubuntu-latest
+            steps:
+            - uses: actions/checkout@v2
+            - name: Set up Rust
+              uses: actions-rs/toolchain@v1
+              with:
+                toolchain: stable
+                profile: minimal
+                components: rustfmt, clippy
+            - name: Build
+              run: cargo build --verbose
+            - name: Run tests
+              run: cargo test --verbose
+        {{< /prism >}}
+        <p style="text-align: justify;">This workflow installs Rust, builds the code, and runs tests on every push to the master branch or on pull requests.</p>
+    </li>
+    <li style="text-align: justify;"><strong>Using Jenkins:</strong>
+        <ul>
+            <li><strong>Set up a Jenkins Pipeline:</strong> Configure a Jenkins pipeline to automate the Rust build and deployment process, integrating with Kubernetes.</li>
+        </ul>
+        {{< prism lang="groovy" line-numbers="true">}}
+        pipeline {
+          agent any
+          stages {
+            stage('Build') {
+              steps {
+                sh 'cargo build --release'
+              }
+            }
+            stage('Test') {
+              steps {
+                sh 'cargo test'
+              }
+            }
+            stage('Deploy') {
+              steps {
+                sh 'kubectl apply -f k8s/'
+              }
+            }
+          }
+        }
+        {{< /prism >}}
+        <p style="text-align: justify;">This Jenkinsfile builds the Rust application, runs tests, and deploys the application using <code>kubectl</code> based on the Kubernetes YAML files defined in the <code>k8s/</code> directory.</p>
+    </li>
+    <li style="text-align: justify;"><strong>Using GitLab CI:</strong>
+        <ul>
+            <li><strong>Configure GitLab CI Pipeline:</strong> Create a <code>.gitlab-ci.yml</code> file in your GitLab repository to automate Rust builds and deployments.</li>
+        </ul>
+        {{< prism lang="yaml" line-numbers="true">}}
+        stages:
+          - build
+          - test
+          - deploy
+        
+        build_job:
+          stage: build
+          script:
+            - cargo build --release
+          artifacts:
+            paths:
+              - target/release/my_app
+        test_job:
+          stage: test
+          script:
+            - cargo test
+        deploy_job:
+          stage: deploy
+          script:
+            - kubectl apply -f deployment.yaml
+        {{< /prism >}}
+        <p style="text-align: justify;">This pipeline configuration compiles the Rust application, runs tests, and deploys it to Kubernetes using <code>kubectl</code>.</p>
+    </li>
+</ol>
+
 <p style="text-align: justify;">
 CI/CD pipelines are a cornerstone of modern DevOps practices, offering streamlined processes that enhance the speed, reliability, and quality of software development and deployment. For Rust applications deployed within Kubernetes environments, integrating with CI/CD tools like GitHub Actions, Jenkins, or GitLab CI not only simplifies the workflow but also ensures consistent and error-free deployments. Through detailed examples and configurations, this guide provides the necessary steps to leverage CI/CD pipelines effectively, fostering a culture of automation and continuous improvement in software projects.
 </p>
+
 
 # **24.9 Scaling and Monitoring Deployments**
 <p style="text-align: justify;">
@@ -649,66 +753,76 @@ Kubernetes offers several mechanisms to handle scaling operations, ensuring appl
 Monitoring is vital for understanding the state of applications and infrastructure, especially when scaling mechanisms are frequently engaged. Tools like Prometheus for metric collection and Grafana for metric visualization are commonly used in Kubernetes environments to provide insights into application performance and health.
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Setting Up Prometheus<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Prometheus Installation</strong>:</p>
-- <p style="text-align: justify;">Deploy Prometheus using the Prometheus Operator, which simplifies its installation and configuration in Kubernetes.</p>
-{{< prism lang="yaml" line-numbers="true">}}
-     apiVersion: monitoring.coreos.com/v1
-     kind: Prometheus
-     metadata:
-       name: prometheus
-     spec:
-       replicas: 1
-       serviceAccountName: prometheus
-       serviceMonitorSelector:
-         matchLabels:
-           team: frontend
-{{< /prism >}}
-- <p style="text-align: justify;">This configuration sets up a Prometheus instance that monitors services labeled with <code>team: frontend</code>.</p>
-2. <p style="text-align: justify;"><strong></strong>Configuring Grafana<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Grafana Installation</strong>:</p>
-- <p style="text-align: justify;">Deploy Grafana to visualize the metrics collected by Prometheus.</p>
-{{< prism lang="yaml" line-numbers="true">}}
-     apiVersion: apps/v1
-     kind: Deployment
-     metadata:
-       name: grafana
-     spec:
-       replicas: 1
-       template:
-         metadata:
-           labels:
-             app: grafana
-         spec:
-           containers:
-           - name: grafana
-             image: grafana/grafana:latest
-             ports:
-             - containerPort: 3000
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Grafana Configuration</strong>:</p>
-- <p style="text-align: justify;">Configure Grafana to connect to Prometheus as the data source, allowing you to create dashboards that display real-time metrics.</p>
-- <p style="text-align: justify;">Access Grafana through a service:</p>
-{{< prism lang="yaml" line-numbers="true">}}
-     apiVersion: v1
-     kind: Service
-     metadata:
-       name: grafana
-     spec:
-       type: LoadBalancer
-       ports:
-       - port: 3000
-       selector:
-         app: grafana
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Monitoring Application Health<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Creating Alerts</strong>:</p>
-- <p style="text-align: justify;">Set up alerts in Prometheus to notify the team if certain thresholds are breached, such as high CPU usage or memory leaks.</p>
-- <p style="text-align: justify;"><strong>Performance Dashboards</strong>:</p>
-- <p style="text-align: justify;">Use Grafana to build dashboards that provide insights into the application’s performance metrics, helping you make informed scaling decisions.</p>
+<ol>
+    <li style="text-align: justify;"><strong>Setting Up Prometheus:</strong>
+        <ul>
+            <li><strong>Prometheus Installation:</strong> Deploy Prometheus using the Prometheus Operator, which simplifies its installation and configuration in Kubernetes.</li>
+        </ul>
+        {{< prism lang="yaml" line-numbers="true">}}
+        apiVersion: monitoring.coreos.com/v1
+        kind: Prometheus
+        metadata:
+          name: prometheus
+        spec:
+          replicas: 1
+          serviceAccountName: prometheus
+          serviceMonitorSelector:
+            matchLabels:
+              team: frontend
+        {{< /prism >}}
+        <p style="text-align: justify;">This configuration sets up a Prometheus instance that monitors services labeled with <code>team: frontend</code>.</p>
+    </li>
+    <li style="text-align: justify;"><strong>Configuring Grafana:</strong>
+        <ul>
+            <li><strong>Grafana Installation:</strong> Deploy Grafana to visualize the metrics collected by Prometheus.</li>
+        </ul>
+        {{< prism lang="yaml" line-numbers="true">}}
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: grafana
+        spec:
+          replicas: 1
+          template:
+            metadata:
+              labels:
+                app: grafana
+            spec:
+              containers:
+              - name: grafana
+                image: grafana/grafana:latest
+                ports:
+                - containerPort: 3000
+        {{< /prism >}}
+        <ul>
+            <li><strong>Grafana Configuration:</strong> Configure Grafana to connect to Prometheus as the data source, allowing you to create dashboards that display real-time metrics.</li>
+            <li>Access Grafana through a service:</li>
+        </ul>
+        {{< prism lang="yaml" line-numbers="true">}}
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: grafana
+        spec:
+          type: LoadBalancer
+          ports:
+          - port: 3000
+          selector:
+            app: grafana
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Monitoring Application Health:</strong>
+        <ul>
+            <li><strong>Creating Alerts:</strong> Set up alerts in Prometheus to notify the team if certain thresholds are breached, such as high CPU usage or memory leaks.</li>
+            <li><strong>Performance Dashboards:</strong> Use Grafana to build dashboards that provide insights into the application’s performance metrics, helping you make informed scaling decisions.</li>
+        </ul>
+    </li>
+</ol>
+
 <p style="text-align: justify;">
 Scaling and monitoring are indispensable in managing the lifecycle of applications deployed in Kubernetes. By effectively utilizing Kubernetes' scaling capabilities and integrating powerful monitoring tools like Prometheus and Grafana, teams can ensure their applications are not only performing optimally but also capable of handling changes in load gracefully. This proactive approach to deployment management not only enhances reliability but also optimizes resource usage, ensuring applications run efficiently across the cluster.
 </p>
+
 
 # **24.10 Security Practices for Deployments**
 <p style="text-align: justify;">

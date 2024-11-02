@@ -1152,49 +1152,7 @@ In addition to optimizing individual queries, there are several broader practice
 By batching insertions, you reduce the overhead of multiple database transactions, which can improve throughput in write-heavy systems.
 </p>
 
-#### Section 1: Introduction to ORM and Rust
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>What is ORM?</strong>: Define ORM and its role in abstracting database interactions into object-oriented code.</p>
-- <p style="text-align: justify;"><strong>Benefits of Using ORM in Rust</strong>: Discuss the specific advantages of using ORM tools in Rust, including type safety and memory safety.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>ORM vs. Raw SQL</strong>: Compare the conceptual differences between using ORM tools and writing raw SQL queries directly.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Getting Started with an ORM</strong>: Basic setup and configuration of an ORM tool in a Rust project.</p>
-#### Section 2: Diesel – The Robust ORM for Rust
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Core Features of Diesel</strong>: Overview of Diesel's capabilities, focusing on its strong type system and compile-time query validation.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Advanced Query Building</strong>: Explore how Diesel allows for complex SQL query construction with Rust syntax.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Implementing CRUD Operations with Diesel</strong>: Step-by-step guide to creating, reading, updating, and deleting data using Diesel.</p>
-#### Section 3: SQLx – Async and Compile-time Checked SQL
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Introduction to SQLx</strong>: Features of SQLx that support asynchronous database access and compile-time SQL verification.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>SQLx's Approach to Asynchronous Programming</strong>: Discuss how SQLx integrates with Rust’s async programming model.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Setting Up SQLx in a Rust Application</strong>: Practical setup and example queries demonstrating SQLx's capabilities.</p>
-#### Section 4: SeaORM – A Lightweight, Async ORM
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Overview of SeaORM</strong>: Introduce SeaORM’s features, emphasizing its focus on being lightweight and fully asynchronous.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Comparing SeaORM with Diesel and SQLx</strong>: Analyze the differences in performance, usability, and feature set.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Practical Applications of SeaORM</strong>: Demonstrate how to use SeaORM for database interactions in a real-world application.</p>
-#### Section 5: Integrating ORM Tools with Other Rust Libraries
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Interoperability with Rust Ecosystem</strong>: Discuss how ORM tools can integrate with other Rust libraries and frameworks.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Enhancing ORM Functionality</strong>: Explore ways to extend the functionality of ORM tools using Rust’s ecosystem, such as adding custom data types or plugins.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Example Integrations</strong>: Provide examples of integrating ORM tools with web frameworks like Actix or Rocket.</p>
-#### Section 6: Best Practices and Performance Optimization
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>ORM Performance Considerations</strong>: Address common performance issues associated with ORM usage and how to mitigate them.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Optimizing ORM Queries</strong>: Strategies for optimizing queries to improve performance while using ORM tools.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Performance Tuning with ORM Tools</strong>: Guidelines and tips for tuning ORM configurations to enhance application performance.</p>
+
 # **18.7 Conclusion**
 <p style="text-align: justify;">
 Chapter 18 has meticulously guided you through the intricacies of ORM tools within the Rust ecosystem, such as Diesel, SQLx, and SeaORM. These tools not only simplify database operations by abstracting complex SQL into manageable Rust code but also significantly enhance code quality through Rust’s type-safety features. By delving into each tool's capabilities, you've gained an understanding of how to effectively implement ORM solutions in real-world applications, making database interactions more efficient and maintainable. This chapter has equipped you with the necessary skills to choose and utilize the most appropriate ORM tool for your specific development needs, ensuring that your applications are robust, scalable, and secure.

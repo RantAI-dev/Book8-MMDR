@@ -106,35 +106,57 @@ By using Diesel, developers can leverage Rust’s strengths while benefiting fro
 Getting started with Diesel in a Rust project involves several steps, including installing the necessary crates and configuring the project. Here is a brief guide to setting up Diesel:
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Add Diesel to Your Project<strong></strong>: Begin by adding Diesel and its dependencies to your <code>Cargo.toml</code> file. You will need the Diesel crate itself as well as a database-specific crate (e.g., <code>diesel-postgres</code> for PostgreSQL).</p>
-{{< prism lang="toml" line-numbers="true">}}
-   [dependencies]
-   diesel = { version = "2.0", features = ["postgres"] }
-   dotenv = "0.15"
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Install Diesel CLI<strong></strong>: Diesel provides a command-line interface (CLI) for managing database migrations and other tasks. Install it using Cargo:</p>
-{{< prism lang="shell">}}
-   cargo install diesel_cli --no-default-features --features postgres
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Configure Diesel<strong></strong>: Create a <code>.env</code> file in your project root to specify your database URL:</p>
-{{< prism lang="shell">}}
-   DATABASE_URL=postgres://username:password@localhost/database_name
-{{< /prism >}}
-4. <p style="text-align: justify;"><strong></strong>Run Diesel Setup<strong></strong>: Initialize Diesel with the following command, which sets up the database schema and creates necessary files:</p>
-{{< prism lang="shell">}}
-   diesel setup
-{{< /prism >}}
-5. <p style="text-align: justify;"><strong></strong>Create and Run Migrations<strong></strong>: Use Diesel CLI commands to create and run database migrations. For example, to create a new migration:</p>
-{{< prism lang="shell">}}
-   diesel migration generate create_users
-{{< /prism >}}
-<p style="text-align: justify;">
-Edit the generated migration files to define the schema changes and then apply them:
-</p>
+<ol>
+    <li style="text-align: justify;"><strong>Add Diesel to Your Project:</strong>
+        <ul>
+            <li>Begin by adding Diesel and its dependencies to your <code>Cargo.toml</code> file. You will need the Diesel crate itself as well as a database-specific crate (e.g., <code>diesel-postgres</code> for PostgreSQL).</li>
+        </ul>
+        {{< prism lang="toml" line-numbers="true">}}
+        [dependencies]
+        diesel = { version = "2.0", features = ["postgres"] }
+        dotenv = "0.15"
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Install Diesel CLI:</strong>
+        <ul>
+            <li>Diesel provides a command-line interface (CLI) for managing database migrations and other tasks. Install it using Cargo:</li>
+        </ul>
+        {{< prism lang="shell">}}
+        cargo install diesel_cli --no-default-features --features postgres
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Configure Diesel:</strong>
+        <ul>
+            <li>Create a <code>.env</code> file in your project root to specify your database URL:</li>
+        </ul>
+        {{< prism lang="shell">}}
+        DATABASE_URL=postgres://username:password@localhost/database_name
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Run Diesel Setup:</strong>
+        <ul>
+            <li>Initialize Diesel with the following command, which sets up the database schema and creates necessary files:</li>
+        </ul>
+        {{< prism lang="shell">}}
+        diesel setup
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Create and Run Migrations:</strong>
+        <ul>
+            <li>Use Diesel CLI commands to create and run database migrations. For example, to create a new migration:</li>
+        </ul>
+        {{< prism lang="shell">}}
+        diesel migration generate create_users
+        {{< /prism >}}
+        <p style="text-align: justify;">
+        Edit the generated migration files to define the schema changes and then apply them:
+        </p>
+        {{< prism lang="shell">}}
+        diesel migration run
+        {{< /prism >}}
+    </li>
+</ol>
 
-{{< prism lang="shell">}}
-   diesel migration run
-{{< /prism >}}
 <p style="text-align: justify;">
 By following these steps, you can integrate Diesel into your Rust project and begin leveraging its powerful ORM capabilities to manage database interactions effectively.
 </p>
@@ -142,6 +164,7 @@ By following these steps, you can integrate Diesel into your Rust project and be
 <p style="text-align: justify;">
 In summary, Diesel provides a robust ORM solution for Rust, combining type safety, efficient query construction, and seamless integration with Rust’s ownership model. By understanding the fundamentals of Diesel and ORM concepts, you can enhance your Rust applications with reliable and maintainable database interactions.
 </p>
+
 
 # **4.2 Designing Database Schemas with Diesel**
 <p style="text-align: justify;">
@@ -277,22 +300,24 @@ Implementing migrations involves creating, editing, and applying migration files
 To add a new column to an existing table, follow these steps:
 </p>
 
-1. <p style="text-align: justify;">Generate a new migration:</p>
-{{< prism lang="sql">}}
-   diesel migration generate add_age_to_users
-{{< /prism >}}
-2. <p style="text-align: justify;">Edit the migration file to include the new column:</p>
-{{< prism lang="sql" line-numbers="true">}}
-   // Up migration
-   ALTER TABLE users ADD COLUMN age INTEGER;
-   
-   // Down migration
-   ALTER TABLE users DROP COLUMN age;
-{{< /prism >}}
-3. <p style="text-align: justify;">Apply the migration:</p>
-{{< prism lang="rust">}}
-   diesel migration run
-{{< /prism >}}
+<ol>
+    <li style="text-align: justify;">Generate a new migration:</li>
+    {{< prism lang="shell">}}
+    diesel migration generate add_age_to_users
+    {{< /prism >}}
+    <li style="text-align: justify;">Edit the migration file to include the new column:</li>
+    {{< prism lang="sql" line-numbers="true">}}
+    // Up migration
+    ALTER TABLE users ADD COLUMN age INTEGER;
+    // Down migration
+    ALTER TABLE users DROP COLUMN age;
+    {{< /prism >}}
+    <li style="text-align: justify;">Apply the migration:</li>
+    {{< prism lang="shell">}}
+    diesel migration run
+    {{< /prism >}}
+</ol>
+
 <p style="text-align: justify;">
 <strong>Example 2: Creating a New Table</strong>
 </p>
@@ -301,27 +326,29 @@ To add a new column to an existing table, follow these steps:
 To create a new table, such as a <code>comments</code> table, use the following approach:
 </p>
 
-1. <p style="text-align: justify;">Generate a new migration:</p>
-{{< prism lang="shell">}}
-   diesel migration generate create_comments
-{{< /prism >}}
-2. <p style="text-align: justify;">Edit the migration file to define the new table:</p>
-{{< prism lang="rust" line-numbers="true">}}
-   // Up migration
-   CREATE TABLE comments (
-       id SERIAL PRIMARY KEY,
-       post_id INTEGER NOT NULL,
-       content TEXT NOT NULL,
-       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-   );
-   
-   // Down migration
-   DROP TABLE comments;
-{{< /prism >}}
-3. <p style="text-align: justify;">Apply the migration:</p>
-{{< prism lang="shell">}}
-   diesel migration run
-{{< /prism >}}
+<ol>
+    <li style="text-align: justify;">Generate a new migration:</li>
+    {{< prism lang="shell">}}
+    diesel migration generate create_comments
+    {{< /prism >}}
+    <li style="text-align: justify;">Edit the migration file to define the new table:</li>
+    {{< prism lang="sql" line-numbers="true">}}
+    // Up migration
+    CREATE TABLE comments (
+        id SERIAL PRIMARY KEY,
+        post_id INTEGER NOT NULL,
+        content TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    // Down migration
+    DROP TABLE comments;
+    {{< /prism >}}
+    <li style="text-align: justify;">Apply the migration:</li>
+    {{< prism lang="shell">}}
+    diesel migration run
+    {{< /prism >}}
+</ol>
+
 <p style="text-align: justify;">
 By following these steps, you can effectively manage schema changes in your Diesel-based application, ensuring that your database evolves in tandem with your application’s requirements.
 </p>
@@ -329,6 +356,8 @@ By following these steps, you can effectively manage schema changes in your Dies
 <p style="text-align: justify;">
 In summary, Diesel provides a comprehensive set of tools for designing and managing database schemas in Rust. By leveraging Diesel’s schema DSL, migration management capabilities, and best practices, you can create robust and scalable database structures that support the needs of modern applications.
 </p>
+
+
 
 # **4.3 Advanced Schema Features in Diesel**
 <p style="text-align: justify;">
@@ -627,20 +656,19 @@ Considerations for balancing flexibility and performance include:
 <strong>Techniques for Identifying Bottlenecks</strong>:
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Query Analysis<strong></strong>: Analyze slow-running queries and examine their execution plans. Adjust indexing or rewrite queries to improve performance.</p>
-2. <p style="text-align: justify;"><strong></strong>Connection Pooling<strong></strong>: Use connection pooling to manage database connections efficiently and reduce latency. Diesel supports integration with connection pool libraries like <code>r2d2</code> for this purpose.</p>
-<p style="text-align: justify;">
-<strong>Example</strong>:
-</p>
+<ol>
+    <li style="text-align: justify;"><strong>Query Analysis:</strong> Analyze slow-running queries and examine their execution plans. Adjust indexing or rewrite queries to improve performance.</li>
+    <li style="text-align: justify;"><strong>Connection Pooling:</strong> Use connection pooling to manage database connections efficiently and reduce latency. Diesel supports integration with connection pool libraries like <code>r2d2</code> for this purpose.</li>
+    <p style="text-align: justify;"><strong>Example:</strong></p>
+    {{< prism lang="rust" line-numbers="true">}}
+    use diesel::r2d2::{ConnectionManager, Pool};
+    use diesel::PgConnection;
+    let manager = ConnectionManager::<PgConnection>::new(database_url);
+    let pool = Pool::builder().build(manager)?;
+    {{< /prism >}}
+    <li style="text-align: justify;"><strong>Caching:</strong> Implement caching strategies to reduce the frequency of database queries for frequently accessed data. Use in-memory caches or external caching solutions like Redis.</li>
+</ol>
 
-{{< prism lang="rust" line-numbers="true">}}
-use diesel::r2d2::{ConnectionManager, Pool};
-use diesel::PgConnection;
-
-let manager = ConnectionManager::<PgConnection>::new(database_url);
-let pool = Pool::builder().build(manager)?;
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Caching<strong></strong>: Implement caching strategies to reduce the frequency of database queries for frequently accessed data. Use in-memory caches or external caching solutions like Redis.</p>
 <p style="text-align: justify;">
 In conclusion, optimizing performance with Diesel involves a comprehensive approach that includes efficient indexing, query optimization, and balancing schema flexibility with performance. By leveraging Diesel’s features and employing best practices for performance tuning, you can ensure that your database interactions are both efficient and scalable.
 </p>

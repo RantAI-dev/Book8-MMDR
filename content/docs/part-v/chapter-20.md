@@ -761,49 +761,65 @@ Understanding these data structures and their optimal use cases is crucial for l
 To integrate Redis into a Rust application, the <code>redis-rs</code> crate is typically used. This crate provides a comprehensive set of functionalities to interact with a Redis server. Here’s a step-by-step guide to setting up and using Redis in Rust:
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Adding the Redis Crate<strong></strong>:</p>
-- <p style="text-align: justify;">Include <code>redis-rs</code> in your <code>Cargo.toml</code>:</p>
-{{< prism lang="toml">}}
-     [dependencies]
-     redis = "0.21.0"
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Connecting to Redis<strong></strong>:</p>
-- <p style="text-align: justify;">Establish a connection to your Redis instance:</p>
-{{< prism lang="">}}
-     use redis::AsyncCommands;
-     
-     async fn establish_connection() -> redis::RedisResult<()> {
-         let client = redis::Client::open("redis://127.0.0.1/")?;
-         let mut con = client.get_async_connection().await?;
-         Ok(())
-     }
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Example Operations<strong></strong>:</p>
-- <p style="text-align: justify;"><strong>Setting a Value</strong>:</p>
-{{< prism lang="rust" line-numbers="true">}}
-     async fn set_example(con: &mut redis::aio::Connection) -> redis::RedisResult<()> {
-         let _: () = con.set("my_key", 42).await?;
-         Ok(())
-     }
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Getting a Value</strong>:</p>
-{{< prism lang="rust" line-numbers="true">}}
-     async fn get_example(con: &mut redis::aio::Connection) -> redis::RedisResult<i32> {
-         con.get("my_key").await
-     }
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Using Lists</strong>:</p>
-{{< prism lang="rust" line-numbers="true">}}
-     async fn list_example(con: &mut redis::aio::Connection) -> redis::RedisResult<()> {
-         let _: () = con.lpush("my_list", vec!["world", "hello"]).await?;
-         let result: Vec<String> = con.lrange("my_list", 0, -1).await?;
-         println!("list contents: {:?}", result);
-         Ok(())
-     }
-{{< /prism >}}
+<ol>
+    <li style="text-align: justify;"><strong>Adding the Redis Crate:</strong>
+        <ul>
+            <li>Include <code>redis-rs</code> in your <code>Cargo.toml</code>:</li>
+        </ul>
+        {{< prism lang="toml">}}
+        [dependencies]
+        redis = "0.21.0"
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Connecting to Redis:</strong>
+        <ul>
+            <li>Establish a connection to your Redis instance:</li>
+        </ul>
+        {{< prism lang="rust">}}
+        use redis::AsyncCommands;
+        async fn establish_connection() -> redis::RedisResult<()> {
+            let client = redis::Client::open("redis://127.0.0.1/")?;
+            let mut con = client.get_async_connection().await?;
+            Ok(())
+        }
+        {{< /prism >}}
+    </li>
+    <li style="text-align: justify;"><strong>Example Operations:</strong>
+        <ul>
+            <li><strong>Setting a Value:</strong></li>
+        </ul>
+        {{< prism lang="rust" line-numbers="true">}}
+        async fn set_example(con: &mut redis::aio::Connection) -> redis::RedisResult<()> {
+            let _: () = con.set("my_key", 42).await?;
+            Ok(())
+        }
+        {{< /prism >}}
+        <ul>
+            <li><strong>Getting a Value:</strong></li>
+        </ul>
+        {{< prism lang="rust" line-numbers="true">}}
+        async fn get_example(con: &mut redis::aio::Connection) -> redis::RedisResult<i32> {
+            con.get("my_key").await
+        }
+        {{< /prism >}}
+        <ul>
+            <li><strong>Using Lists:</strong></li>
+        </ul>
+        {{< prism lang="rust" line-numbers="true">}}
+        async fn list_example(con: &mut redis::aio::Connection) -> redis::RedisResult<()> {
+            let _: () = con.lpush("my_list", vec!["world", "hello"]).await?;
+            let result: Vec<String> = con.lrange("my_list", 0, -1).await?;
+            println!("list contents: {:?}", result);
+            Ok(())
+        }
+        {{< /prism >}}
+    </li>
+</ol>
+
 <p style="text-align: justify;">
 Integrating Redis with Rust applications offers a powerful combination for handling high-throughput, low-latency tasks such as caching, messaging, and real-time data processing. Through the use of the <code>redis-rs</code> crate, developers can effectively harness the capabilities of Redis within the safety and performance context of Rust, optimizing data operations and enhancing overall application responsiveness. This integration not only boosts application performance but also simplifies the complexity of managing fast data transactions and storage.
 </p>
+
 
 # **20.5 Real-time Data Handling with Redis**
 <p style="text-align: justify;">
@@ -865,86 +881,100 @@ Rust’s performance and safety features complement Redis’s capabilities, enab
 Setting up a publish/subscribe system using Redis in Rust involves several steps to ensure efficient handling of live data updates:
 </p>
 
-1. <p style="text-align: justify;"><strong></strong>Using Redis Streams for Message Queues<strong></strong>: Stream data structures in Redis can be used to handle real-time message queues. Here's how to write and read from a Redis stream in Rust:</p>
-- <p style="text-align: justify;"><strong>Writing to a Stream</strong>:</p>
-{{< prism lang="rust" line-numbers="true">}}
-     use redis::AsyncCommands;
-     
-     async fn write_to_stream(con: &mut redis::aio::ConnectionManager) -> redis::RedisResult<()> {
-         let data = [("key1", "value1"), ("key2", "value2")];
-         let _: () = redis::cmd("XADD")
-                     .arg("mystream")
-                     .arg("MAXLEN")
-                     .arg("~")
-                     .arg("1000")
-                     .arg("*")
-                     .arg(&data)
-                     .query_async(con).await?;
-         Ok(())
-     }
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Reading from a Stream</strong>:</p>
-{{< prism lang="rust" line-numbers="true">}}
-     async fn read_from_stream(con: &mut redis::aio::ConnectionManager) -> redis::RedisResult<()> {
-         let results: Vec<(String, Vec<(String, Vec<(String, String)>)>)> = redis::cmd("XREAD")
-                 .arg("BLOCK")
-                 .arg("0")
-                 .arg("STREAMS")
-                 .arg("mystream")
-                 .arg("0")
-                 .query_async(con).await?;
-         for (_, messages) in results {
-             for (_, key_values) in messages {
-                 for (key, value) in key_values {
-                     println!("Received key: {}, value: {}", key, value);
-                 }
-             }
-         }
-         Ok(())
-     }
-{{< /prism >}}
-2. <p style="text-align: justify;"><strong></strong>Publish/Subscribe for Real-time Notifications<strong></strong>: Implement a publisher and subscriber model for real-time notifications using Redis's pub/sub capabilities:</p>
-- <p style="text-align: justify;"><strong>Publisher</strong>:</p>
-{{< prism lang="rust" line-numbers="true">}}
-     async fn publish_messages(con: &mut redis::aio::ConnectionManager) -> redis::RedisResult<()> {
-         let mut pubsub = con.as_pubsub();
-         pubsub.subscribe("news_channel").await?;
-         loop {
-             pubsub.publish("news_channel", "Hello, World!").await?;
-             tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;  // Publish every 5 seconds
-         }
-         Ok(())
-     }
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Subscriber</strong>:</p>
-{{< prism lang="rust" line-numbers="true">}}
-     async fn subscribe_messages(con: &mut redis::aio::ConnectionManager) -> redis::RedisResult<()> {
-         let mut pubsub = con.as_pubsub();
-         pubsub.subscribe("news_channel").await?;
-         while let Some(msg) = pubsub.on_message().next().await {
-             let message: String = msg.get_payload()?;
-             println!("Received: {}", message);
-         }
-         Ok(())
-     }
-{{< /prism >}}
-3. <p style="text-align: justify;"><strong></strong>Handling Real-Time Data with Redis Sets<strong></strong>: Use Redis sets for managing unique items efficiently, suitable for real-time applications like online voting, session management, or unique visitor tracking.</p>
-- <p style="text-align: justify;"><strong>Adding Items to a Set</strong>:</p>
-{{< prism lang="rust" line-numbers="true">}}
-     async fn add_to_set(con: &mut redis::aio::ConnectionManager) -> redis::RedisResult<()> {
-         let members = vec!["user1", "user2", "user3"];
-         let _: () = con.sadd("online_users", members).await?;
-         Ok(())
-     }
-{{< /prism >}}
-- <p style="text-align: justify;"><strong>Checking Set Membership</strong>:</p>
-{{< prism lang="rust" line-numbers="true">}}
-     async fn check_membership(con: &mut redis::aio::ConnectionManager) -> redis::RedisResult<()> {
-         let is_member: bool = con.sismember("online_users", "user1").await?;
-         println!("Is user1 online? {}", is_member);
-         Ok(())
-     }
-{{< /prism >}}
+<ol>
+    <li style="text-align: justify;"><strong>Using Redis Streams for Message Queues:</strong> Stream data structures in Redis can be used to handle real-time message queues. Here's how to write and read from a Redis stream in Rust:</li>
+    <ul>
+        <li><strong>Writing to a Stream:</strong></li>
+    </ul>
+    {{< prism lang="rust" line-numbers="true">}}
+    use redis::AsyncCommands;
+    async fn write_to_stream(con: &mut redis::aio::ConnectionManager) -> redis::RedisResult<()> {
+        let data = [("key1", "value1"), ("key2", "value2")];
+        let _: () = redis::cmd("XADD")
+                    .arg("mystream")
+                    .arg("MAXLEN")
+                    .arg("~")
+                    .arg("1000")
+                    .arg("*")
+                    .arg(&data)
+                    .query_async(con).await?;
+        Ok(())
+    }
+    {{< /prism >}}
+    <ul>
+        <li><strong>Reading from a Stream:</strong></li>
+    </ul>
+    {{< prism lang="rust" line-numbers="true">}}
+    async fn read_from_stream(con: &mut redis::aio::ConnectionManager) -> redis::RedisResult<()> {
+        let results: Vec<(String, Vec<(String, Vec<(String, String)>)>)> = redis::cmd("XREAD")
+                .arg("BLOCK")
+                .arg("0")
+                .arg("STREAMS")
+                .arg("mystream")
+                .arg("0")
+                .query_async(con).await?;
+        for (_, messages) in results {
+            for (_, key_values) in messages {
+                for (key, value) in key_values {
+                    println!("Received key: {}, value: {}", key, value);
+                }
+            }
+        }
+        Ok(())
+    }
+    {{< /prism >}}
+    <li style="text-align: justify;"><strong>Publish/Subscribe for Real-time Notifications:</strong> Implement a publisher and subscriber model for real-time notifications using Redis's pub/sub capabilities:</li>
+    <ul>
+        <li><strong>Publisher:</strong></li>
+    </ul>
+    {{< prism lang="rust" line-numbers="true">}}
+    async fn publish_messages(con: &mut redis::aio::ConnectionManager) -> redis::RedisResult<()> {
+        let mut pubsub = con.as_pubsub();
+        pubsub.subscribe("news_channel").await?;
+        loop {
+            pubsub.publish("news_channel", "Hello, World!").await?;
+            tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;  // Publish every 5 seconds
+        }
+        Ok(())
+    }
+    {{< /prism >}}
+    <ul>
+        <li><strong>Subscriber:</strong></li>
+    </ul>
+    {{< prism lang="rust" line-numbers="true">}}
+    async fn subscribe_messages(con: &mut redis::aio::ConnectionManager) -> redis::RedisResult<()> {
+        let mut pubsub = con.as_pubsub();
+        pubsub.subscribe("news_channel").await?;
+        while let Some(msg) = pubsub.on_message().next().await {
+            let message: String = msg.get_payload()?;
+            println!("Received: {}", message);
+        }
+        Ok(())
+    }
+    {{< /prism >}}
+    <li style="text-align: justify;"><strong>Handling Real-Time Data with Redis Sets:</strong> Use Redis sets for managing unique items efficiently, suitable for real-time applications like online voting, session management, or unique visitor tracking.</li>
+    <ul>
+        <li><strong>Adding Items to a Set:</strong></li>
+    </ul>
+    {{< prism lang="rust" line-numbers="true">}}
+    async fn add_to_set(con: &mut redis::aio::ConnectionManager) -> redis::RedisResult<()> {
+        let members = vec!["user1", "user2", "user3"];
+        let _: () = con.sadd("online_users", members).await?;
+        Ok(())
+    }
+    {{< /prism >}}
+    <ul>
+        <li><strong>Checking Set Membership:</strong></li>
+    </ul>
+    {{< prism lang="rust" line-numbers="true">}}
+    async fn check_membership(con: &mut redis::aio::ConnectionManager) -> redis::RedisResult<()> {
+        let is_member: bool = con.sismember("online_users", "user1").await?;
+        println!("Is user1 online? {}", is_member);
+        Ok(())
+    }
+    {{< /prism >}}
+</ol>
+
 <p style="text-align: justify;">
 These examples showcase how Redis can be integrated into Rust applications to facilitate efficient real-time data handling across various use cases, leveraging its powerful data structures and pub/sub system.
 </p>
@@ -952,6 +982,7 @@ These examples showcase how Redis can be integrated into Rust applications to fa
 <p style="text-align: justify;">
 Redis, with its native support for data structures and messaging systems suited to real-time operations, combined with the performance and safety of Rust, provides a robust framework for building real-time applications. This setup ensures that applications are not only responsive and efficient but also maintainable and scalable. The integration of Redis’s streaming and pub/sub capabilities in Rust applications empowers developers to construct advanced real-time data processing systems that can handle the demands of modern software requirements.
 </p>
+
 
 # **20.6 Performance Optimization and Scaling**
 <p style="text-align: justify;">
@@ -1108,49 +1139,7 @@ async fn main() -> mongodb::error::Result<()> {
 Efficiently scaling and optimizing NoSQL databases are crucial for applications that require high performance and scalability. By combining the strengths of NoSQL databases with Rust's performance-oriented features, developers can achieve remarkable efficiency and speed in their applications. This section not only guides the setup and optimization processes but also empowers developers with the knowledge to implement robust, scalable systems that can handle the demands of modern software applications.
 </p>
 
-#### Section 1: Introduction to NoSQL in Rust
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>What is NoSQL?</strong>: Define NoSQL databases and their different types, such as document, key-value, graph, and column stores.</p>
-- <p style="text-align: justify;"><strong>Benefits of NoSQL</strong>: Discuss the scalability, flexibility, and performance advantages of NoSQL databases.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Choosing Between SQL and NoSQL</strong>: Criteria for choosing NoSQL over traditional SQL databases based on application needs.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Overview of NoSQL Crates in Rust</strong>: Introduction to popular Rust crates for NoSQL databases like <code>mongodb</code> and <code>redis</code>.</p>
-#### Section 2: Setting Up MongoDB with Rust
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>MongoDB Basics</strong>: Overview of MongoDB, its document-oriented structure, and use cases.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Designing Document Schemas</strong>: Principles of designing effective document schemas that take advantage of MongoDB’s flexibility.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Integrating MongoDB with Rust</strong>: Step-by-step guide to setting up the <code>mongodb</code> crate in a Rust application and connecting to a MongoDB database.</p>
-#### Section 3: CRUD Operations with MongoDB
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Basic MongoDB Operations</strong>: Explanation of CRUD operations in the context of MongoDB.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Advanced Query Techniques</strong>: How to perform complex queries, including aggregations and joins, in MongoDB.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Implementing CRUD in Rust</strong>: Practical examples of creating, reading, updating, and deleting documents in MongoDB using Rust.</p>
-#### Section 4: Redis Integration and Use Cases
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Understanding Redis</strong>: Overview of Redis and its primary use as a key-value store for caching and message brokering.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Redis Data Structures</strong>: Detailed discussion on Redis data types and how they can be leveraged in applications.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Using Redis with Rust</strong>: Guide on setting up the <code>redis</code> crate and examples of using Redis for caching and real-time data processing in Rust applications.</p>
-#### Section 5: Real-time Data Handling with Redis
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Streaming and Pub/Sub Models</strong>: Introduction to Redis capabilities in handling real-time data streams and publish/subscribe messaging.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Implementing Real-time Systems</strong>: Strategies for building real-time data processing systems using Redis and Rust.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Practical Implementation</strong>: Setting up a publish/subscribe system with Redis in Rust to handle live data updates.</p>
-#### Section 6: Performance Optimization and Scaling
-- <p style="text-align: justify;"><strong>Key Fundamental Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Scaling NoSQL Databases</strong>: Techniques for scaling NoSQL databases like MongoDB and Redis in high-load environments.</p>
-- <p style="text-align: justify;"><strong>Key Conceptual Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Optimizing NoSQL Performance</strong>: Strategies to enhance performance, including indexing, sharding, and replication.</p>
-- <p style="text-align: justify;"><strong>Key Practical Ideas</strong>:</p>
-- <p style="text-align: justify;"><strong>Performance Tuning in Rust</strong>: Tips and examples of optimizing NoSQL database interactions in Rust to handle large-scale data efficiently.</p>
+
 # **20.7 Conclusion**
 <p style="text-align: justify;">
 Chapter 20 has provided a comprehensive exploration of integrating NoSQL databases such as MongoDB and Redis with Rust. This integration harnesses the unique features of NoSQL systems, including their schema flexibility, scalability, and performance advantages, tailored to specific application needs. By diving into the capabilities of MongoDB for document-oriented storage and Redis for key-value caching and real-time data handling, you have learned how to effectively utilize these technologies in Rust applications. This knowledge not only expands your database toolkit but also enhances your ability to develop scalable and high-performance applications that can handle diverse and complex data workloads.

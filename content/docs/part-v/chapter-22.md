@@ -705,21 +705,25 @@ One of the most widely used tools for CPU profiling in Linux environments is <co
 Example: Profiling a Rust Application with <code>perf</code>
 </p>
 
-1. <p style="text-align: justify;">First, install <code>perf</code>:</p>
-{{< prism lang="shell">}}
-   sudo apt-get install linux-tools-common linux-tools-generic linux-tools-$(uname -r)
-{{< /prism >}}
-2. <p style="text-align: justify;">Run the Rust application under <code>perf</code>:</p>
-{{< prism lang="shell">}}
-   perf record --call-graph dwarf ./target/release/my_app
-{{< /prism >}}
-3. <p style="text-align: justify;">Once the application has run, view the performance data:</p>
-{{< prism lang="shell">}}
-   perf report
-{{< /prism >}}
+<ol>
+    <li style="text-align: justify;">First, install <code>perf</code>:</li>
+    {{< prism lang="shell">}}
+    sudo apt-get install linux-tools-common linux-tools-generic linux-tools-$(uname -r)
+    {{< /prism >}}
+    <li style="text-align: justify;">Run the Rust application under <code>perf</code>:</li>
+    {{< prism lang="shell">}}
+    perf record --call-graph dwarf ./target/release/my_app
+    {{< /prism >}}
+    <li style="text-align: justify;">Once the application has run, view the performance data:</li>
+    {{< prism lang="shell">}}
+    perf report
+    {{< /prism >}}
+</ol>
+
 <p style="text-align: justify;">
 The <code>perf report</code> output will show a breakdown of where the most CPU time is spent in the application. If a large portion of the time is spent in functions that interact with the database, such as query execution or result processing, it indicates an area worth optimizing.
 </p>
+
 
 ### **Using Valgrind for Memory Profiling**
 <p style="text-align: justify;">
@@ -727,35 +731,43 @@ The <code>perf report</code> output will show a breakdown of where the most CPU 
 </p>
 
 #### Example: Using Valgrind to Profile Memory Usage
-1. <p style="text-align: justify;">Install Valgrind:</p>
-{{< prism lang="shell">}}
-   sudo apt-get install valgrind
-{{< /prism >}}
-2. <p style="text-align: justify;">Run the Rust application with Valgrind:</p>
-{{< prism lang="shell">}}
-   valgrind --leak-check=full --track-origins=yes ./target/release/my_app
-{{< /prism >}}
-3. <p style="text-align: justify;">Analyze the memory report: Valgrind will generate a report that highlights memory leaks, showing where memory is being allocated and not properly freed. For database applications, this could indicate unclosed database connections or unfreed query results.</p>
+<ol>
+    <li style="text-align: justify;">Install Valgrind:</li>
+    {{< prism lang="shell">}}
+    sudo apt-get install valgrind
+    {{< /prism >}}
+    <li style="text-align: justify;">Run the Rust application with Valgrind:</li>
+    {{< prism lang="shell">}}
+    valgrind --leak-check=full --track-origins=yes ./target/release/my_app
+    {{< /prism >}}
+    <li style="text-align: justify;">Analyze the memory report:</li>
+    <p style="text-align: justify;">Valgrind will generate a report that highlights memory leaks, showing where memory is being allocated and not properly freed. For database applications, this could indicate unclosed database connections or unfreed query results.</p>
+</ol>
+
 ### **Profiling Slow Queries with PostgreSQL’s** `pg_stat_statements`
 <p style="text-align: justify;">
 For database-specific profiling, <strong>pg_stat_statements</strong> is a PostgreSQL extension that tracks the execution statistics of all queries run on the database. It can help identify slow queries, track their frequency, and highlight where optimizations are needed.
 </p>
 
 #### Example: Using `pg_stat_statements`
-1. <p style="text-align: justify;">Enable <code>pg_stat_statements</code> in PostgreSQL by adding it to the configuration file:</p>
-{{< prism lang="">}}
-   shared_preload_libraries = 'pg_stat_statements'
-{{< /prism >}}
-2. <p style="text-align: justify;">After restarting PostgreSQL, use the following SQL query to get a report of the slowest queries:</p>
-{{< prism lang="sql" line-numbers="true">}}
-   SELECT query, total_time, calls, mean_time
-   FROM pg_stat_statements
-   ORDER BY total_time DESC
-   LIMIT 10;
-{{< /prism >}}
+<ol>
+    <li style="text-align: justify;">Enable <code>pg_stat_statements</code> in PostgreSQL by adding it to the configuration file:</li>
+    {{< prism lang="shell">}}
+    shared_preload_libraries = 'pg_stat_statements'
+    {{< /prism >}}
+    <li style="text-align: justify;">After restarting PostgreSQL, use the following SQL query to get a report of the slowest queries:</li>
+    {{< prism lang="sql" line-numbers="true">}}
+    SELECT query, total_time, calls, mean_time
+    FROM pg_stat_statements
+    ORDER BY total_time DESC
+    LIMIT 10;
+    {{< /prism >}}
+</ol>
+
 <p style="text-align: justify;">
 This query will return the top 10 slowest queries, sorted by the total time spent executing them. Developers can then focus on optimizing these queries by adding indexes, rewriting them for efficiency, or caching results where applicable.
 </p>
+
 
 ### **Integrating Profiling into Development Workflow**
 <p style="text-align: justify;">
