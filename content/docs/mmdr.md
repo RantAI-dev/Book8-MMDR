@@ -67,7 +67,7 @@ As a free and open-source resource, MMDR is designed to be accessible to all, pr
                     <img src="../../images/kindle.png" alt="Amazon Logo" class="support-logo-image">
                     <span class="support-btn-text">Buy on Amazon</span>
                 </a>
-                <a href="https://play.google.com/store/books/details?id=QE4lEQAAQBAJ" class="btn btn-lg btn-outline-support m-2 support-btn">
+                <a href="https://play.google.com/store/books/details?id=KW46EQAAQBAJ" class="btn btn-lg btn-outline-support m-2 support-btn">
                     <img src="../../images/GBooks.png" alt="Google Books Logo" class="support-logo-image">
                     <span class="support-btn-text">Buy on Google Books</span>
                 </a>
